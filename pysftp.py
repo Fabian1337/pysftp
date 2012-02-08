@@ -121,6 +121,11 @@ class Connection(object):
         self._sftp_connect()
         return self._sftp.listdir(path)
         
+    def rename(self, src, dest):
+        """rename a file on the remote host."""
+        self._sftp_connect()
+        self._sftp.rename(src,dest)
+        
     def close(self):
         """Closes the connection and cleans up."""
         # Close SFTP Connection.
