@@ -32,5 +32,17 @@ setup(
     long_description=LONG_DESCRIPTION,
     platforms=['any'],
     download_url='https://pypi.python.org/pypi/pysftp',
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'License :: OSI Approved :: BSD License',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: Implementation :: CPython',
+    ],
 
 )
