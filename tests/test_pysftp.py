@@ -1,20 +1,25 @@
-def test_success():
-	assert True
+'''test pysftp module - uses py.test'''
 
-def test_failure():
-	assert False == False
-	
-	
+# the following 3 lines let py.test find the module
+import sys, os
+MYPATH = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, MYPATH + '/../')
+
 import pysftp
 
+
 def test_connection_good():
-    sftp = pysftp.Connection('calypso.delasco.pri')
+    '''connect to a public sftp server'''
+    sftp = pysftp.Connection(host='test.rebex.net',
+                             username='demo',
+                             password='password')
     sftp.close()
-    
-    
+
+
 def test_connection_bad():
+    '''attempt connection to a non-existing server'''
     try:
-        sftp = pysftp.Connection('no-existy.delasco.pri')
+        sftp = pysftp.Connection('nota.realserver.pri')
         assert False
     except:
         assert True
