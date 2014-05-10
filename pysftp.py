@@ -39,7 +39,7 @@ class Connection(object):
         private_key 	 - Your private key file.(None)
         password         - Your password at the remote machine.(None)
         port 	         - The SSH port of the remote machine.(22)
-        private_key_pass - password to use if your private_key is encrypted(None)
+        private_key_pass - password to use if private_key is encrypted(None)
         log              - log connection/handshake details (False)
     returns a connection to the requested machine
 
@@ -87,12 +87,14 @@ class Connection(object):
 
             private_key_file = os.path.expanduser(private_key)
             try:  #try rsa
-                xSx_key = paramiko.RSAKey.from_private_key_file(private_key_file,
-                                                                private_key_pass)
+                rsakey = paramiko.RSAKey
+                prv_key = rsakey.from_private_key_file(private_key_file,
+                                                       private_key_pass)
             except paramiko.SSHException:   #if it fails, try dss
-                xSx_key = paramiko.DSSKey.from_private_key_file(private_key_file,
-                                                                password=private_key_pass)
-            self._transport.connect(username=username, pkey=xSx_key)
+                dsskey = paramiko.DSSKey
+                prv_key = dsskey.from_private_key_file(private_key_file,
+                                                       private_key_pass)
+            self._transport.connect(username=username, pkey=prv_key)
 
     def _sftp_connect(self):
         """Establish the SFTP connection."""
