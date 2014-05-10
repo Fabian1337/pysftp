@@ -1,47 +1,36 @@
-# $Id$
-from setuptools import setup, find_packages
+'''setup for package'''
+
+from setuptools import setup
+
+with open('README.rst') as h_readme:
+    LONG_DESCRIPTION = h_readme.read()
+
+DESCRIPTION = "A friendly face on SFTP"
+
 setup(
-    name = "pysftp",
-    version = "0.2.2",
-    #packages = find_packages(),
-    py_modules = ['pysftp'],
+    name="pysftp",
+    version="0.2.2",
+
+    py_modules=['pysftp'],
 
     # Project uses reStructuredText, so ensure that the docutils get
     # installed or upgraded on the target machine
-    install_requires = ['paramiko>=1.7.4'],
+    install_requires=['paramiko>=1.7.4'],
 
-    package_data = {
+    package_data={
         # If any package contains *.txt or *.rst files, include them:
-        '': ['README','*.txt', '*.rst'],
+        '': ['LICENSE', '*.txt', '*.rst'],
     },
 
     # metadata for upload to PyPI
-    author = "Jeff Hinrichs",
-    author_email = "jeffh@dundeemt.com",
-    description = "A friendly face on SFTP",
-    license = "BSD - http://code.google.com/p/pysftp/source/browse/trunk/LICENSE.txt",
-    keywords = "sftp ssh ftp internet",
-    url = "http://code.google.com/p/pysftp/",   # project home page, if any
-    long_description = """
-pysftp
-======
-
-A simple interface to sftp.  based on zeth's ssh.py
-
-changes
-=======
-
-* 0.2.2
-
-  * additions
-  
-    * chdir(self, path) - change the current working directory on the remote
-    * getcwd(self) - return the current working directory on the remote
-    * listdir(self, path='.')return a list of files for the given path
-
-    """,
+    author="Jeff Hinrichs",
+    author_email="jeffh@dundeemt.com",
+    description=DESCRIPTION,
+    license="BSD",
+    keywords="sftp ssh ftp internet",
+    url="https://bitbucket.org/dundeemt/pysftp",   # project home page
+    long_description=LONG_DESCRIPTION,
     platforms=['any'],
-    download_url='http://code.google.com/p/pysftp/',
+    download_url='https://pypi.python.org/pypi/pysftp',
 
-    # could also include long_description, download_url, classifiers, etc.
 )

@@ -8,16 +8,31 @@ paramiko - http://www.lag.net/paramiko/
   requires:
   pycrypto - http://www.dlitz.net/software/pycrypto/
 
-License: BSD  (see http://code.google.com/p/pysftp/source/browse/trunk/LICENSE.txt)
+License: BSD
 """
 
 import os
 import tempfile
 import paramiko
 
-__version__ = "$Rev$"
+__version__ = "0.2.2"
+
+
+class CredentialError(Exception):
+    """Exception raised for credential problems
+
+    Attributes:
+        msg  -- explanation of the error
+    """
+
+    def __init__(self, message):
+        # Call the base class constructor with the parameters it needs
+        Exception.__init__(self, message)
+        self.message = message
+
+
 class Connection(object):
-    """Connects and logs into the specified hostname. 
+    """Connects and logs into the specified hostname.
     Arguments that are not given are guessed from the environment.
         host             - The Hostname of the remote machine.
         username         - Your username at the remote machine.(None)
@@ -27,19 +42,19 @@ class Connection(object):
         private_key_pass - password to use if your private_key is encrypted(None)
         log              - log connection/handshake details (False)
     returns a connection to the requested machine
-    
+
     srv = pysftp.Connection('example.com')
-    """ 
+    """
 
     def __init__(self,
                  host,
-                 username = None,
-                 private_key = None,
-                 password = None,
-                 port = 22,
-                 private_key_pass = None,
-                 log = False,
-                 ):
+                 username=None,
+                 private_key=None,
+                 password=None,
+                 port=22,
+                 private_key_pass=None,
+                 log=False,
+                ):
         self._sftp_live = False
         self._sftp = None
         if not username:
@@ -57,7 +72,7 @@ class Connection(object):
         # Authenticate the transport. prefer password if given
         if password:
             # Using Password.
-            self._transport.connect(username = username, password = password)
+            self._transport.connect(username=username, password=password)
         else:
             # Use Private Key.
             if not private_key:
@@ -67,29 +82,32 @@ class Connection(object):
                 elif os.path.exists(os.path.expanduser('~/.ssh/id_dsa')):
                     private_key = '~/.ssh/id_dsa'
                 else:
-                    raise TypeError, "You have not specified a password or key."
+                    raise CredentialError("You have not specified a password "\
+                                          "or key.")
 
             private_key_file = os.path.expanduser(private_key)
             try:  #try rsa
-                xSx_key = paramiko.RSAKey.from_private_key_file(private_key_file,private_key_pass)
+                xSx_key = paramiko.RSAKey.from_private_key_file(private_key_file,
+                                                                private_key_pass)
             except paramiko.SSHException:   #if it fails, try dss
-                xSx_key = paramiko.DSSKey.from_private_key_file(private_key_file,password=private_key_pass)
-            self._transport.connect(username = username, pkey = xSx_key)
-    
+                xSx_key = paramiko.DSSKey.from_private_key_file(private_key_file,
+                                                                password=private_key_pass)
+            self._transport.connect(username=username, pkey=xSx_key)
+
     def _sftp_connect(self):
         """Establish the SFTP connection."""
         if not self._sftp_live:
             self._sftp = paramiko.SFTPClient.from_transport(self._transport)
             self._sftp_live = True
 
-    def get(self, remotepath, localpath = None):
+    def get(self, remotepath, localpath=None):
         """Copies a file between the remote host and the local host."""
         if not localpath:
             localpath = os.path.split(remotepath)[1]
         self._sftp_connect()
         self._sftp.get(remotepath, localpath)
 
-    def put(self, localpath, remotepath = None):
+    def put(self, localpath, remotepath=None):
         """Copies a file between the local host and the remote host."""
         if not remotepath:
             remotepath = os.path.split(localpath)[1]
@@ -110,22 +128,22 @@ class Connection(object):
         """change the current working directory on the remote"""
         self._sftp_connect()
         self._sftp.chdir(path)
-        
+
     def getcwd(self):
         """return the current working directory on the remote"""
         self._sftp_connect()
         return self._sftp.getcwd()
-        
+
     def listdir(self, path='.'):
         """return a list of files for the given path"""
         self._sftp_connect()
         return self._sftp.listdir(path)
-        
+
     def rename(self, src, dest):
         """rename a file on the remote host."""
         self._sftp_connect()
-        self._sftp.rename(src,dest)
-        
+        self._sftp.rename(src, dest)
+
     def close(self):
         """Closes the connection and cleans up."""
         # Close SFTP Connection.
