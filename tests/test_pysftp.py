@@ -10,12 +10,20 @@ import pysftp
 from dhp.test import tempfile_containing
 import pytest
 
-def test_connection_bad():
+def test_connection_bad_host():
     '''attempt connection to a non-existing server'''
-    with pytest.raises(pysftp.SSHException):
-        sftp = pysftp.Connection(host='nota.realserver.pri',
+    with pytest.raises(pysftp.ConnectionException):
+        sftp = pysftp.Connection(host='',
                                  username='demo',
                                  password='password')
+        sftp.close()
+
+def test_connection_bad_credentials():
+    '''attempt connection to a non-existing server'''
+    with pytest.raises(pysftp.AuthenticationException):
+        sftp = pysftp.Connection(host='test.rebex.net',
+                                 username='demo',
+                                 password='badword')
         sftp.close()
 
 def test_connection_good():

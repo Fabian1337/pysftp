@@ -12,14 +12,28 @@ License: BSD
 """
 
 import os
+import socket
 import tempfile
 import paramiko
-from paramiko import SSHException   # make available as pysftp.SSHException
+from paramiko import SSHException   # make available
+from paramiko import AuthenticationException   # make available
 
 __version__ = "0.2.3"
 
 
-class CredentialError(Exception):
+class ConnectionException(Exception):
+    """Exception raised for connection problems
+
+    Attributes:
+        msg  -- explanation of the error
+    """
+
+    def __init__(self, host, port):
+        # Call the base class constructor with the parameters it needs
+        Exception.__init__(self, host, port)
+        self.message = 'Could not connect to host:port.  %s:%s'
+
+class CredentialException(Exception):
     """Exception raised for credential problems
 
     Attributes:
@@ -68,8 +82,13 @@ class Connection(object):
             paramiko.util.log_to_file(templog)
 
         # Begin the SSH transport.
-        self._transport = paramiko.Transport((host, port))
-        self._tranport_live = True
+        try:
+            self._transport = paramiko.Transport((host, port))
+            self._tranport_live = True
+        except (AttributeError, socket.gaierror):
+            # couldn't connect
+            raise ConnectionException(host, port)
+
         # Authenticate the transport. prefer password if given
         if password:
             # Using Password.
@@ -83,8 +102,8 @@ class Connection(object):
                 elif os.path.exists(os.path.expanduser('~/.ssh/id_dsa')):
                     private_key = '~/.ssh/id_dsa'
                 else:
-                    raise CredentialError("You have not specified a password "\
-                                          "or key.")
+                    raise CredentialException("You have not specified a "\
+                                              "password or key.")
 
             private_key_file = os.path.expanduser(private_key)
             try:  #try rsa
