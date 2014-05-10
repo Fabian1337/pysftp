@@ -16,6 +16,12 @@ def test_connection_good():
     sftp.close()
 
 
+def test_connection_local():
+    '''try and connect to localhost'''
+    sftp = pysftp.Connection('localhost')
+    sftp.close()
+
+
 def test_connection_bad():
     '''attempt connection to a non-existing server'''
     try:
