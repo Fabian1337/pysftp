@@ -61,6 +61,6 @@ def test_get():
     with tempfile_containing('') as fname:
         sftp.get('readme.txt', fname)
         sftp.close()
-        assert open(fname, 'rb').read()[0:7] == 'Welcome'
+        assert open(fname, 'rb').read()[0:7] == b'Welcome'
 
 
