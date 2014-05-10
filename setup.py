@@ -9,7 +9,7 @@ DESCRIPTION = "A friendly face on SFTP"
 
 setup(
     name="pysftp",
-    version="0.2.2",
+    version="0.2.3",
 
     py_modules=['pysftp'],
 
