@@ -14,6 +14,7 @@ License: BSD
 import os
 import tempfile
 import paramiko
+from paramiko import SSHException   # make available as pysftp.SSHException
 
 __version__ = "0.2.3"
 
