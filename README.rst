@@ -3,6 +3,16 @@ pysftp
 
 A simple interface to sftp.  based on zeth's ssh.py
 
+Supports
+--------
+Tested on Python 2.7, 3.2, 3.3
+
+.. image:: https://drone.io/bitbucket.org/dundeemt/pysftp/status.png
+    :target: https://drone.io/bitbucket.org/dundeemt/pysftp/latest
+    :alt: Build Status
+
+Believed to support Python 3.4
+
 changes
 -------
 
