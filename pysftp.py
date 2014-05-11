@@ -54,7 +54,7 @@ class Connection(object):
     :param log: log connection/handshake details?
     :type bool:
     :returns: a connection to the requested machine
-    :raises: ConnectionException, CredentialException, SSHException, AuthenticationException
+    :raises: ConnectionException, CredentialException, SSHException, AuthenticationException, PasswordRequiredException
 
     """
 
