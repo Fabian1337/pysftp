@@ -17,13 +17,27 @@ SFTP_PUBLIC = {'host':'test.rebex.net', 'username':'demo',
 SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
  #can only reach public, read-only server from CI platform, only test locally
  # set environment variable CI to something to disable local tests
+ # the CI env var is set to true by both drone-io and travis
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 @skip_if_ci
-def test_localhost():
+def test_put():
     '''run test on localhost'''
-    with pysftp.Connection(**SFTP_LOCAL) as sftp:
-        assert False
+    contents = 'now is the time\nfor all good...'
+    with tempfile_containing(contents=contents) as fname:
+        base_fname = os.path.split(fname)[1]
+        with pysftp.Connection(**SFTP_LOCAL) as sftp:
+            if base_fname in sftp.listdir():
+                sftp.remove(base_fname)
+            assert base_fname not in sftp.listdir()
+            sftp.put(fname)
+            assert base_fname in sftp.listdir()
+            with tempfile_containing('') as tfile:
+                sftp.get(base_fname, tfile)
+                assert open(tfile).read() == contents
+            # clean up
+            sftp.remove(base_fname)
+
 
 def test_chdir_bad_dir():
     '''try to cwd() to a non-existing remote dir'''
