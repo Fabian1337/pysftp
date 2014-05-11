@@ -187,14 +187,3 @@ class Connection(object):
     def __exit__(self, etype, value, traceback):
         self.close()
 
-
-def main():
-    """Little test when called directly."""
-    # Set these to your own details.
-    myssh = Connection('example.com')
-    myssh.put('ssh.py')
-    myssh.close()
-
-# start the ball rolling.
-if __name__ == "__main__":
-    main()
