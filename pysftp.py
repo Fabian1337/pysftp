@@ -1,14 +1,14 @@
 """Friendly Python SFTP interface.
 
-pysftp is forked with permission of ssh.py, originally authored by
+pysftp is a fork, with permission, of ssh.py, originally authored by
 Zeth @ http://commandline.org.uk/python/sftp-python-really-simple-ssh/
 
 requires:
-paramiko - http://www.lag.net/paramiko/
-  requires:
+
+  paramiko - http://www.lag.net/paramiko/
+
   pycrypto - http://www.dlitz.net/software/pycrypto/
 
-License: BSD
 """
 
 import os
@@ -25,7 +25,7 @@ class ConnectionException(Exception):
     """Exception raised for connection problems
 
     Attributes:
-        msg  -- explanation of the error
+        message  -- explanation of the error
     """
 
     def __init__(self, host, port):
@@ -37,7 +37,7 @@ class CredentialException(Exception):
     """Exception raised for credential problems
 
     Attributes:
-        msg  -- explanation of the error
+        message  -- explanation of the error
     """
 
     def __init__(self, message):
@@ -49,16 +49,24 @@ class CredentialException(Exception):
 class Connection(object):
     """Connects and logs into the specified hostname.
     Arguments that are not given are guessed from the environment.
-        host             - The Hostname of the remote machine.
-        username         - Your username at the remote machine.(None)
-        private_key 	 - Your private key file.(None)
-        password         - Your password at the remote machine.(None)
-        port 	         - The SSH port of the remote machine.(22)
-        private_key_pass - password to use if private_key is encrypted(None)
-        log              - log connection/handshake details (False)
-    returns a connection to the requested machine
 
-    srv = pysftp.Connection('example.com')
+    :param host: The Hostname or IP of the remote machine.
+    :type str:
+    :param username: Your username at the remote machine.
+    :type str:
+    :param private_key: Your private key file.
+    :type str:
+    :param password: Your password at the remote machine.
+    :type str:
+    :param port: The SSH port of the remote machine.(default: 22)
+    :type int:
+    :param private_key_pass: password to use, if private_key is encrypted.
+    :type str:
+    :param log: log connection/handshake details?
+    :type bool:
+    :returns: a connection to the requested machine
+    :raises: ConnectionException, CredentialException, SSHException, AuthenticationException
+
     """
 
     def __init__(self,
@@ -147,7 +155,13 @@ class Connection(object):
             return channel.makefile_stderr('rb', -1).readlines()
 
     def chdir(self, path):
-        """change the current working directory on the remote"""
+        """change the current working directory on the remote
+
+        :param path: the remote path to change to
+        :type str:
+
+        :returns: nothing
+        """
         self._sftp_connect()
         self._sftp.chdir(path)
 

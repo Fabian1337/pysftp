@@ -1,0 +1,5 @@
+pysftp
+======
+
+.. automodule:: pysftp
+   :members:

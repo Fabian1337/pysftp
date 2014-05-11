@@ -13,7 +13,7 @@ Tested on Python 2.7, 3.2, 3.3
 
 Believed to support Python 3.4
 
-changes
+Changes
 -------
 
 * 0.2.3

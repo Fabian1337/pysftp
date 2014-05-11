@@ -1,16 +1,43 @@
 .. pysftp documentation master file, created by
-   sphinx-quickstart on Sat May 10 00:52:34 2014.
+   sphinx-quickstart on Sun May 11 08:53:24 2014.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
 Welcome to pysftp's documentation!
 ==================================
+A simple interface to sftp.  based on zeth's ssh.py
+
+Example
+-------
+.. code:: python
+
+    import pysftp
+    with pysftp.Connection('my.example.server') as sftp:
+        sftp.put('/my/local/filename', '/my/remote/filename')
+
+
+Supports
+--------
+Tested on Python 2.7, 3.2, 3.3
+
+.. image:: https://drone.io/bitbucket.org/dundeemt/pysftp/status.png
+    :target: https://drone.io/bitbucket.org/dundeemt/pysftp/latest
+    :alt: Build Status
+
+Believed to support Python 3.4
+
+* Project:  https://bitbucket.org/dundeemt/pysftp
+* Download: https://pypi.python.org/pypi/pysftp
+
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
+   pysftp
+   changes
+   authors
 
 
 Indices and tables
