@@ -79,6 +79,7 @@ class Connection(object):
             paramiko.util.log_to_file(templog)
 
         # Begin the SSH transport.
+        self._tranport_live = False
         try:
             self._transport = paramiko.Transport((host, port))
             self._tranport_live = True
@@ -120,7 +121,18 @@ class Connection(object):
             self._sftp_live = True
 
     def get(self, remotepath, localpath=None):
-        """Copies a file between the remote host and the local host."""
+        """Copies a file between the remote host and the local host.
+
+        :param remotepath: the remote path and filename, source
+        :type str:
+        :param localpath: the local path and filename to copy, destination. If not specified, file is copied to local cwd
+        :type str:
+
+        :returns: nothing
+
+        :raises:
+
+        """
         if not localpath:
             localpath = os.path.split(remotepath)[1]
         self._sftp_connect()
