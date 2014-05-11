@@ -130,7 +130,7 @@ class Connection(object):
 
         :returns: nothing
 
-        :raises:
+        :raises: IOError
 
         """
         if not localpath:
@@ -139,7 +139,18 @@ class Connection(object):
         self._sftp.get(remotepath, localpath)
 
     def put(self, localpath, remotepath=None):
-        """Copies a file between the local host and the remote host."""
+        """Copies a file between the local host and the remote host.
+
+        :param localpath: the local path and filename
+        :type str:
+        :param remotepath: the remote path, else the remote cwd() and filename is used.
+        :type str:
+
+        :returns: nothing
+
+        :raises: IOError, OSError
+
+        """
         if not remotepath:
             remotepath = os.path.split(localpath)[1]
         self._sftp_connect()
@@ -162,6 +173,8 @@ class Connection(object):
         :type str:
 
         :returns: nothing
+
+        :raises: IOError
         """
         self._sftp_connect()
         self._sftp.chdir(remotepath)

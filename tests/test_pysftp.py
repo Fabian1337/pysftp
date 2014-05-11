@@ -10,10 +10,43 @@ import pysftp
 from dhp.test import tempfile_containing
 import pytest
 
+# pylint: disable=E1101
+# pylint: disable = W0142
+SFTP_LOGIN = {'host':'test.rebex.net', 'username':'demo', 'password':'password'}
+
+def test_chdir_bad_dir():
+    '''try to cwd() to a non-existing remote dir'''
+    with pysftp.Connection(**SFTP_LOGIN) as sftp:
+        with pytest.raises(IOError):
+            sftp.chdir('i-dont-exist')
+
+def test_put_bad_local():
+    '''try to put a non-existing file to a read-only server'''
+    with pysftp.Connection(**SFTP_LOGIN) as sftp:
+        with tempfile_containing('should fail') as fname:
+            pass
+        # tempfile has been removed
+        with pytest.raises(OSError):
+            sftp.put(fname)
+
+def test_put_not_allowed():
+    '''try to put a file to a read-only server'''
+    with pysftp.Connection(**SFTP_LOGIN) as sftp:
+        with tempfile_containing('should fail') as fname:
+            with pytest.raises(IOError):
+                sftp.put(fname)
+
+def test_get_bad_remote():
+    '''download a file'''
+    with pysftp.Connection(**SFTP_LOGIN) as sftp:
+        with tempfile_containing('') as fname:
+            with pytest.raises(IOError):
+                sftp.get('readme-not-there.txt', fname)
+            assert open(fname, 'rb').read()[0:7] != b'Welcome'
 
 def test_connection_with():
     '''connect to a public sftp server'''
-    with pysftp.Connection('test.rebex.net', 'demo', password='password') as sftp:
+    with pysftp.Connection(**SFTP_LOGIN) as sftp:
         assert sftp.listdir() == ['pub', 'readme.txt']
 
 
