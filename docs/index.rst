@@ -28,6 +28,12 @@ Believed to support Python 3.4
 
 * Project:  https://bitbucket.org/dundeemt/pysftp
 * Download: https://pypi.python.org/pypi/pysftp
+* Documentation: https://pysftp.rtfd.org/
+
+requirements
+------------
+
+  paramiko >= 1.7.4
 
 
 Contents:

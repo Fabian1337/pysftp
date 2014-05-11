@@ -1,15 +1,4 @@
-"""Friendly Python SFTP interface.
-
-pysftp is a fork, with permission, of ssh.py, originally authored by
-Zeth @ http://commandline.org.uk/python/sftp-python-really-simple-ssh/
-
-requires:
-
-  paramiko - http://www.lag.net/paramiko/
-
-  pycrypto - http://www.dlitz.net/software/pycrypto/
-
-"""
+"""A friendly Python SFTP interface."""
 
 import os
 import socket
@@ -154,19 +143,23 @@ class Connection(object):
         else:
             return channel.makefile_stderr('rb', -1).readlines()
 
-    def chdir(self, path):
+    def chdir(self, remotepath):
         """change the current working directory on the remote
 
-        :param path: the remote path to change to
+        :param remotepath: the remote path to change to
         :type str:
 
         :returns: nothing
         """
         self._sftp_connect()
-        self._sftp.chdir(path)
+        self._sftp.chdir(remotepath)
 
     def getcwd(self):
-        """return the current working directory on the remote"""
+        """return the current working directory on the remote
+
+        :returns: a string representing the current remote path
+
+        """
         self._sftp_connect()
         return self._sftp.getcwd()
 
