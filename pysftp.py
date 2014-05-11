@@ -193,6 +193,20 @@ class Connection(object):
         self._sftp_connect()
         return self._sftp.listdir(path)
 
+    def remove(self, remotefile):
+        """remove the file @ remotefile, remotefile may include a path, if no
+        path, then cwd is used.  This method only works on files
+
+        :param remotefile: the remote file to delete
+        :type str:
+
+        :returns: nothing
+
+        :raises: IOError
+        """
+        self._sftp_connect()
+        self._sftp.remove(remotefile)
+
     def rename(self, src, dest):
         """rename a file on the remote host."""
         self._sftp_connect()
