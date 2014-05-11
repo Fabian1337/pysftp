@@ -12,17 +12,28 @@ import pytest
 
 # pylint: disable=E1101
 # pylint: disable = W0142
-SFTP_LOGIN = {'host':'test.rebex.net', 'username':'demo', 'password':'password'}
+SFTP_PUBLIC = {'host':'test.rebex.net', 'username':'demo',
+               'password':'password'}
+SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
+ #can only reach public, read-only server from CI platform, only test locally
+ # set environment variable CI to something to disable local tests
+skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
+
+@skip_if_ci
+def test_localhost():
+    '''run test on localhost'''
+    with pysftp.Connection(**SFTP_LOCAL) as sftp:
+        assert False
 
 def test_chdir_bad_dir():
     '''try to cwd() to a non-existing remote dir'''
-    with pysftp.Connection(**SFTP_LOGIN) as sftp:
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         with pytest.raises(IOError):
             sftp.chdir('i-dont-exist')
 
 def test_put_bad_local():
     '''try to put a non-existing file to a read-only server'''
-    with pysftp.Connection(**SFTP_LOGIN) as sftp:
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         with tempfile_containing('should fail') as fname:
             pass
         # tempfile has been removed
@@ -31,14 +42,14 @@ def test_put_bad_local():
 
 def test_put_not_allowed():
     '''try to put a file to a read-only server'''
-    with pysftp.Connection(**SFTP_LOGIN) as sftp:
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         with tempfile_containing('should fail') as fname:
             with pytest.raises(IOError):
                 sftp.put(fname)
 
 def test_get_bad_remote():
     '''download a file'''
-    with pysftp.Connection(**SFTP_LOGIN) as sftp:
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         with tempfile_containing('') as fname:
             with pytest.raises(IOError):
                 sftp.get('readme-not-there.txt', fname)
@@ -46,7 +57,7 @@ def test_get_bad_remote():
 
 def test_connection_with():
     '''connect to a public sftp server'''
-    with pysftp.Connection(**SFTP_LOGIN) as sftp:
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         assert sftp.listdir() == ['pub', 'readme.txt']
 
 
