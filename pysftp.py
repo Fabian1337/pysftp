@@ -181,6 +181,13 @@ class Connection(object):
         """Attempt to clean up if not explicitly closed."""
         self.close()
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, etype, value, traceback):
+        self.close()
+
+
 def main():
     """Little test when called directly."""
     # Set these to your own details.

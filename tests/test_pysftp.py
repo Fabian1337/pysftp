@@ -10,6 +10,13 @@ import pysftp
 from dhp.test import tempfile_containing
 import pytest
 
+
+def test_connection_with():
+    '''connect to a public sftp server'''
+    with pysftp.Connection('test.rebex.net', 'demo', password='password') as sftp:
+        assert sftp.listdir() == ['pub', 'readme.txt']
+
+
 def test_connection_bad_host():
     '''attempt connection to a non-existing server'''
     with pytest.raises(pysftp.ConnectionException):
