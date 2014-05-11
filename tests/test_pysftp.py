@@ -21,6 +21,23 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 @skip_if_ci
+def test_rename():
+    '''test rename on remote'''
+    contents = 'now is the time\nfor all good...'
+    with tempfile_containing(contents=contents) as fname:
+        base_fname = os.path.split(fname)[1]
+        with pysftp.Connection(**SFTP_LOCAL) as sftp:
+            if base_fname in sftp.listdir():
+                sftp.remove(base_fname)
+            assert base_fname not in sftp.listdir()
+            sftp.put(fname)
+            sftp.rename(base_fname, 'bob')
+            rdirs = sftp.listdir()
+            assert 'bob' in rdirs
+            assert base_fname not in rdirs
+            sftp.remove('bob')
+
+@skip_if_ci
 def test_put():
     '''run test on localhost'''
     contents = 'now is the time\nfor all good...'

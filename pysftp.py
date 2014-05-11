@@ -207,10 +207,20 @@ class Connection(object):
         self._sftp_connect()
         self._sftp.remove(remotefile)
 
-    def rename(self, src, dest):
-        """rename a file on the remote host."""
+    def rename(self, remote_src, remote_dest):
+        """rename a file on the remote host.
+
+        :param remote_src: the remote file to rename
+        :type str:
+
+        :param remote_dest: the remote file to put it
+        :type str:
+        :returns: nothing
+
+        :raises: IOError
+        """
         self._sftp_connect()
-        self._sftp.rename(src, dest)
+        self._sftp.rename(remote_src, remote_dest)
 
     def close(self):
         """Closes the connection and cleans up."""
