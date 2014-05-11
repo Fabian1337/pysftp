@@ -18,7 +18,7 @@ import paramiko
 from paramiko import SSHException   # make available
 from paramiko import AuthenticationException   # make available
 
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 
 
 class ConnectionException(Exception):
