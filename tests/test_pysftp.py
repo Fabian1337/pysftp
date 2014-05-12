@@ -23,6 +23,18 @@ skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 
 @skip_if_ci
+def test_mkdir_mode():
+    '''test mkdir with mode set to 711'''
+    dirname = 'test-dir'
+    mode = 711
+    with pysftp.Connection(**SFTP_LOCAL) as sftp:
+        assert dirname not in sftp.listdir()
+        sftp.mkdir(dirname, mode=mode)
+        attrs = sftp.stat(dirname)
+        sftp.rmdir(dirname)
+        assert pysftp.st_mode_to_int(attrs.st_mode) == mode
+
+@skip_if_ci
 def test_mkdir():
     '''test mkdir'''
     dirname = 'test-dir'

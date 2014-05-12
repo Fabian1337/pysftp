@@ -2,6 +2,7 @@
 
 import os
 import socket
+from stat import S_IMODE
 import tempfile
 import paramiko
 from paramiko import SSHException   # make available
@@ -9,6 +10,14 @@ from paramiko import AuthenticationException   # make available
 from paramiko import AgentKey
 
 __version__ = "0.2.4"
+
+
+def st_mode_to_int(val):
+    '''SFTAttributes st_mode returns an stat type that shows more than what
+    can be set.  Trim off those bits and convert to an int representation.
+    if you want an object that was `chmod 711` to return a value of 711, use
+    this function'''
+    return int(str(oct(S_IMODE(val))))
 
 
 class ConnectionException(Exception):
@@ -219,12 +228,12 @@ class Connection(object):
         return self._sftp.listdir(remotepath)
 
     def mkdir(self, remotepath, mode=777):
-        """Create a directory named remotepath with octal mode mode. On some systems, mode is ignored. Where it is used, the current umask value is first masked out.
+        """Create a directory named remotepath with mode. On some systems, mode is ignored. Where it is used, the current umask value is first masked out.
 
         :param remotepath: directory to create`
         :type str:
-        :param mode: mode for directory, default 777(octal), converts what is given from octal to an int for paramiko
-        :type int or str or octal:
+        :param mode: int representation of octal mode for directory, default 777
+        :type int:
 
         :returns: nothing
 
