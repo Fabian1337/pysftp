@@ -22,6 +22,34 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 
+@skip_if_ci
+def test_mkdir():
+    '''test mkdir'''
+    dirname = 'test-dir'
+    with pysftp.Connection(**SFTP_LOCAL) as sftp:
+        assert dirname not in sftp.listdir()
+        sftp.mkdir(dirname)
+        assert dirname in sftp.listdir()
+        # clean up
+        sftp.rmdir(dirname)
+
+@skip_if_ci
+def test_rmdir():
+    '''test mkdir'''
+    dirname = 'test-rm'
+    with pysftp.Connection(**SFTP_LOCAL) as sftp:
+        sftp.mkdir(dirname)
+        assert dirname in sftp.listdir()
+        sftp.rmdir(dirname)
+        assert dirname not in sftp.listdir()
+
+def test_stat():
+    '''test stat'''
+    dirname = 'pub'
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        rslt = sftp.stat(dirname)
+    assert rslt.st_size >= 0
+
 def test_issue_15():
     '''chdir followed by execute doesn't occur in expected directory.'''
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
@@ -38,8 +66,8 @@ def test_open_read():
     assert contents[0:7] == b'Welcome'
 
 @skip_if_ci
-def test_put_callback_lstat():
-    '''test the callback and lstat feature of put'''
+def test_put_callback_confirm():
+    '''test the callback and confirm feature of put'''
     cback = Mock(return_value=None)
     with tempfile_containing(contents=8192*'*') as fname:
         base_fname = os.path.split(fname)[1]

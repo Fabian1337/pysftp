@@ -206,10 +206,31 @@ class Connection(object):
         self._sftp_connect()
         return self._sftp.getcwd()
 
-    def listdir(self, path='.'):
-        """return a list of files for the given path"""
+    def listdir(self, remotepath='.'):
+        """return a list of files/directories for the given remote path
+
+        :param remotepath: path to list
+        :type str:
+
+        :returns: a list of entries
+
+        """
         self._sftp_connect()
-        return self._sftp.listdir(path)
+        return self._sftp.listdir(remotepath)
+
+    def mkdir(self, remotepath, mode=777):
+        """Create a directory named remotepath with octal mode mode. On some systems, mode is ignored. Where it is used, the current umask value is first masked out.
+
+        :param remotepath: directory to create`
+        :type str:
+        :param mode: mode for directory, default 777(octal), converts what is given from octal to an int for paramiko
+        :type int or str or octal:
+
+        :returns: nothing
+
+        """
+        self._sftp_connect()
+        self._sftp.mkdir(remotepath, mode=int(str(mode), 8))
 
     def remove(self, remotefile):
         """remove the file @ remotefile, remotefile may include a path, if no
@@ -225,13 +246,25 @@ class Connection(object):
         self._sftp_connect()
         self._sftp.remove(remotefile)
 
-    def rename(self, remote_src, remote_dest):
-        """rename a file on the remote host.
+    def rmdir(self, remotepath):
+        """remove remote directory
 
-        :param remote_src: the remote file to rename
+        :param remotepath: the remote directory to remove
         :type str:
 
-        :param remote_dest: the remote file to put it
+        :returns: nothing
+
+        """
+        self._sftp_connect()
+        self._sftp.rmdir(remotepath)
+
+    def rename(self, remote_src, remote_dest):
+        """rename a file or directory on the remote host.
+
+        :param remote_src: the remote file/directory to rename
+        :type str:
+
+        :param remote_dest: the remote file/directory to put it
         :type str:
 
         :returns: nothing
@@ -240,6 +273,18 @@ class Connection(object):
         """
         self._sftp_connect()
         self._sftp.rename(remote_src, remote_dest)
+
+    def stat(self, remotepath):
+        """return information about file/directory for the given remote path
+
+        :param remotepath: path to stat
+        :type str:
+
+        :returns: SFTPAttributes object
+
+        """
+        self._sftp_connect()
+        return self._sftp.stat(remotepath)
 
     def close(self):
         """Closes the connection and cleans up."""

@@ -11,9 +11,12 @@ Change Log
   * added support for .open()
   * fixed password bug and now differentiates between an empty string and None
   * added support for paramiko.AgentKey to be passed in as the private_key for Connection
+  * added support for .mkdir()
+  * added support for .rmdir()
+  * added support for .stat()
 
 
-* 0.2.3 (released 2014-05-10)
+* 0.2.3 (current, released 2014-05-10)
 
   * host code on pypi to keep pip happy
   * move code to bitbucket
