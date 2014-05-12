@@ -22,6 +22,13 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 
+def test_issue_15():
+    '''chdir followed by execute doesn't occur in expected directory.'''
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        hresults = sftp.execute('pwd')
+        sftp.chdir('pub')
+        assert hresults == sftp.execute('pwd')
+
 def test_open_read():
     '''test the open function'''
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:

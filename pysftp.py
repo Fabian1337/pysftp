@@ -164,7 +164,14 @@ class Connection(object):
                               confirm=confirm)
 
     def execute(self, command):
-        """Execute the given commands on a remote machine."""
+        """Execute the given commands on a remote machine.  The command is executed without regard to the remote cwd.
+
+        :param command: the command to execute.
+        :type str:
+
+        :returns: results
+
+        """
         channel = self._transport.open_session()
         channel.exec_command(command)
         output = channel.makefile('rb', -1).readlines()
