@@ -22,7 +22,13 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 
-
+def test_open_read():
+    '''test the open function'''
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        rfile = sftp.open('readme.txt')
+        contents = rfile.read()
+        rfile.close()
+    assert contents[0:7] == b'Welcome'
 
 @skip_if_ci
 def test_put_callback_lstat():
