@@ -8,6 +8,8 @@ Change Log
   * add .remove() method
   * added support for callback and confirm params to .put() method
   * added support for callback on .get() method
+  * added support for .open()
+  * fixed password bug and now differentiates between an empty string and None
 
 
 * 0.2.3 (released 2014-05-10)

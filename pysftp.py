@@ -88,7 +88,7 @@ class Connection(object):
             raise ConnectionException(host, port)
 
         # Authenticate the transport. prefer password if given
-        if password:
+        if password is not None:
             # Using Password.
             self._transport.connect(username=username, password=password)
         else:
