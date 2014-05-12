@@ -6,6 +6,7 @@ import tempfile
 import paramiko
 from paramiko import SSHException   # make available
 from paramiko import AuthenticationException   # make available
+from paramiko import AgentKey
 
 __version__ = "0.2.4"
 
@@ -43,7 +44,7 @@ class Connection(object):
     :type str:
     :param username: Your username at the remote machine.
     :type str:
-    :param private_key: Your private key file.
+    :param private_key: path to private key file or paramiko.AgentKey
     :type str:
     :param password: Your password at the remote machine.
     :type str:
@@ -102,16 +103,19 @@ class Connection(object):
                 else:
                     raise CredentialException("You have not specified a "\
                                               "password or key.")
-
-            private_key_file = os.path.expanduser(private_key)
-            try:  #try rsa
-                rsakey = paramiko.RSAKey
-                prv_key = rsakey.from_private_key_file(private_key_file,
-                                                       private_key_pass)
-            except paramiko.SSHException:   #if it fails, try dss
-                dsskey = paramiko.DSSKey
-                prv_key = dsskey.from_private_key_file(private_key_file,
-                                                       private_key_pass)
+            if not isinstance(private_key, AgentKey):
+                private_key_file = os.path.expanduser(private_key)
+                try:  #try rsa
+                    rsakey = paramiko.RSAKey
+                    prv_key = rsakey.from_private_key_file(private_key_file,
+                                                           private_key_pass)
+                except paramiko.SSHException:   #if it fails, try dss
+                    dsskey = paramiko.DSSKey
+                    prv_key = dsskey.from_private_key_file(private_key_file,
+                                                           private_key_pass)
+            else:
+                # use the paramiko agent key
+                prv_key = private_key
             self._transport.connect(username=username, pkey=prv_key)
 
     def _sftp_connect(self):

@@ -10,6 +10,7 @@ Change Log
   * added support for callback on .get() method
   * added support for .open()
   * fixed password bug and now differentiates between an empty string and None
+  * added support for paramiko.AgentKey to be passed in as the private_key for Connection
 
 
 * 0.2.3 (released 2014-05-10)
