@@ -21,6 +21,9 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
  # the CI env var is set to true by both drone-io and travis
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
+
+
+
 @skip_if_ci
 def test_put_callback_lstat():
     '''test the callback and lstat feature of put'''
@@ -32,7 +35,7 @@ def test_put_callback_lstat():
             # clean up
             sftp.remove(base_fname)
     # verify callback was called more than once - usually a min of 2
-    assert cback.call_count > 0
+    assert cback.call_count >= 2
     # verify that an SFTPAttribute like os.stat was returned
     assert result.st_size == 8192
     assert result.st_uid
@@ -165,4 +168,15 @@ def test_get():
         sftp.close()
         assert open(fname, 'rb').read()[0:7] == b'Welcome'
 
+def test_get_callback():
+    '''download a file'''
+    cback = Mock(return_value=None)
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        with tempfile_containing('') as fname:
+            result = sftp.get('readme.txt', fname, callback=cback)
+            assert open(fname, 'rb').read()[0:7] == b'Welcome'
+    # verify callback was called more than once - usually a min of 2
+    assert cback.call_count >= 2
+    # unlike .put() nothing is returned from the operation
+    assert result == None
 

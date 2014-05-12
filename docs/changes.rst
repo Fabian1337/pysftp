@@ -7,6 +7,7 @@ Change Log
   * pysftp.Connection can be used in a `with` statement
   * add .remove() method
   * added support for callback and confirm params to .put() method
+  * added support for callback on .get() method
 
 
 * 0.2.3 (released 2014-05-10)

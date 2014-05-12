@@ -120,13 +120,15 @@ class Connection(object):
             self._sftp = paramiko.SFTPClient.from_transport(self._transport)
             self._sftp_live = True
 
-    def get(self, remotepath, localpath=None):
+    def get(self, remotepath, localpath=None, callback=None):
         """Copies a file between the remote host and the local host.
 
         :param remotepath: the remote path and filename, source
         :type str:
         :param localpath: the local path and filename to copy, destination. If not specified, file is copied to local cwd
         :type str:
+        :param callback: optional callback function (form: func(int, int)) that accepts the bytes transferred so far and the total bytes to be transferred/
+        :type callable:
 
         :returns: nothing
 
@@ -136,7 +138,7 @@ class Connection(object):
         if not localpath:
             localpath = os.path.split(remotepath)[1]
         self._sftp_connect()
-        self._sftp.get(remotepath, localpath)
+        self._sftp.get(remotepath, localpath, callback=callback)
 
     def put(self, localpath, remotepath=None, callback=None, confirm=True):
         """Copies a file between the local host and the remote host.
@@ -145,7 +147,7 @@ class Connection(object):
         :type str:
         :param remotepath: the remote path, else the remote cwd() and filename is used.
         :type str:
-        :param callback: optional callback function (form: func(int, int)) that accepts the bytes transferred so far and the total bytes to be transferred
+        :param callback: optional callback function (form: func(int, int)) that accepts the bytes transferred so far and the total bytes to be transferred.
         :type callable:
         :param confirm: whether to do a stat() on the file afterwards to confirm the file size
         :type bool:
