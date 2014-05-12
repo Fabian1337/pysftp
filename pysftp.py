@@ -241,6 +241,29 @@ class Connection(object):
             self._transport.close()
             self._tranport_live = False
 
+    def open(self, remote_file, mode='r', bufsize=-1):
+        """Open a file on the remote server.
+
+        See http://paramiko-docs.readthedocs.org/en/latest/api/sftp.html?highlight=open#paramiko.sftp_client.SFTPClient.open for details.
+
+        :param remote_file: name of the file to open.
+        :type str:
+
+        :param mode: mode (Python-style) to open file (always assumed binary)
+        :type str:
+
+        :param bufsize: desired buffering (-1 = default buffer size)
+        :type int:
+
+        :returns: an SFTPFile object representing the open file
+
+        :raises: IOError - if the file could not be opened.
+
+        """
+        self._sftp_connect()
+        return self._sftp.open(remote_file, mode=mode, bufsize=bufsize)
+
+
     def __del__(self):
         """Attempt to clean up if not explicitly closed."""
         self.close()
