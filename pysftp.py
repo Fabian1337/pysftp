@@ -138,15 +138,19 @@ class Connection(object):
         self._sftp_connect()
         self._sftp.get(remotepath, localpath)
 
-    def put(self, localpath, remotepath=None):
+    def put(self, localpath, remotepath=None, callback=None, confirm=True):
         """Copies a file between the local host and the remote host.
 
         :param localpath: the local path and filename
         :type str:
         :param remotepath: the remote path, else the remote cwd() and filename is used.
         :type str:
+        :param callback: optional callback function (form: func(int, int)) that accepts the bytes transferred so far and the total bytes to be transferred
+        :type callable:
+        :param confirm: whether to do a stat() on the file afterwards to confirm the file size
+        :type bool:
 
-        :returns: nothing
+        :returns: an SFTPAttributes object containing attributes about the given file
 
         :raises: IOError, OSError
 
@@ -154,7 +158,8 @@ class Connection(object):
         if not remotepath:
             remotepath = os.path.split(localpath)[1]
         self._sftp_connect()
-        self._sftp.put(localpath, remotepath)
+        return self._sftp.put(localpath, remotepath, callback=callback,
+                              confirm=confirm)
 
     def execute(self, command):
         """Execute the given commands on a remote machine."""
@@ -215,6 +220,7 @@ class Connection(object):
 
         :param remote_dest: the remote file to put it
         :type str:
+
         :returns: nothing
 
         :raises: IOError

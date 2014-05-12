@@ -8,6 +8,7 @@ sys.path.insert(0, MYPATH + '/../')
 import pysftp
 
 from dhp.test import tempfile_containing
+from mock import Mock
 import pytest
 
 # pylint: disable=E1101
@@ -19,6 +20,25 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
  # set environment variable CI to something to disable local tests
  # the CI env var is set to true by both drone-io and travis
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
+
+@skip_if_ci
+def test_put_callback_lstat():
+    '''test the callback and lstat feature of put'''
+    cback = Mock(return_value=None)
+    with tempfile_containing(contents=8192*'*') as fname:
+        base_fname = os.path.split(fname)[1]
+        with pysftp.Connection(**SFTP_LOCAL) as sftp:
+            result = sftp.put(fname, callback=cback)
+            # clean up
+            sftp.remove(base_fname)
+    # verify callback was called more than once - usually a min of 2
+    assert cback.call_count > 0
+    # verify that an SFTPAttribute like os.stat was returned
+    assert result.st_size == 8192
+    assert result.st_uid
+    assert result.st_gid
+    assert result.st_atime
+    assert result.st_mtime
 
 @skip_if_ci
 def test_rename():
