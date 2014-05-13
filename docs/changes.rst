@@ -13,8 +13,9 @@ Change Log
   * added support for paramiko.AgentKey to be passed in as the private_key for Connection
   * added support for .mkdir()
   * added support for .rmdir()
-  * added support for .stat()
-
+  * added support for .stat() and .lstat()
+  * added helper function, st_mode_to_int,to convert the st_mode value back into a common integer representation
+  * added .getfo() method
 
 * 0.2.3 (current, released 2014-05-10)
 

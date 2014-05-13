@@ -1,6 +1,7 @@
 '''test pysftp module - uses py.test'''
 
 # the following 3 lines let py.test find the module
+from StringIO import StringIO
 import sys, os
 MYPATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, MYPATH + '/../')
@@ -21,6 +22,24 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
  # the CI env var is set to true by both drone-io and travis
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
+
+def test_getfo_flo():
+    '''test getfo to a file-like object'''
+    flo = StringIO()
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        num_bytes = sftp.getfo('readme.txt', flo)
+
+    assert flo.getvalue()[0:7] == b'Welcome'
+    assert num_bytes == len(flo.getvalue())
+
+def test_getfo_callback():
+    '''test getfo callback'''
+    flo = StringIO()
+    cback = Mock(return_value=None)
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        sftp.getfo('readme.txt', flo, callback=cback)
+
+    assert cback.call_count >= 2
 
 @skip_if_ci
 def test_mkdir_mode():

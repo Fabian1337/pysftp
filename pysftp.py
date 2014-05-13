@@ -153,6 +153,24 @@ class Connection(object):
         self._sftp_connect()
         self._sftp.get(remotepath, localpath, callback=callback)
 
+    def getfo(self, remotepath, flo, callback=None):
+        """Copy a remote file (remotepath) to a file-like object, flo.
+
+        :param remotepath: the remote path and filename, source
+        :type str:
+        :param flo: open file like object to write, destination.
+        :type str or file object:
+        :param callback: optional callback function (form: func(int, int)) that accepts the bytes transferred so far and the total bytes to be transferred/
+        :type callable:
+
+        :returns: (int) the number of bytes written to the opened file object
+
+        :raises: Any exception raised by operations will be passed through.
+
+        """
+        self._sftp_connect()
+        return self._sftp.getfo(remotepath, flo, callback=callback)
+
     def put(self, localpath, remotepath=None, callback=None, confirm=True):
         """Copies a file between the local host and the remote host.
 
