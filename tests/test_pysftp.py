@@ -1,10 +1,14 @@
 '''test pysftp module - uses py.test'''
 
 # the following 3 lines let py.test find the module
-from StringIO import StringIO
 import sys, os
 MYPATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, MYPATH + '/../')
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 import pysftp
 
@@ -18,7 +22,7 @@ SFTP_PUBLIC = {'host':'test.rebex.net', 'username':'demo',
                'password':'password'}
 SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
  #can only reach public, read-only server from CI platform, only test locally
- # set environment variable CI to something to disable local tests
+ # if environment variable CI is set  to something to disable local tests
  # the CI env var is set to true by both drone-io and travis
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
