@@ -43,6 +43,7 @@ Contents:
 
    pysftp
    changes
+   contributing
    authors
 
 
