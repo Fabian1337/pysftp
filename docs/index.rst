@@ -26,9 +26,13 @@ Tested on Python 2.7, 3.2, 3.3
 
 Believed to support Python 3.4
 
+Additional Information
+----------------------
+
 * Project:  https://bitbucket.org/dundeemt/pysftp
 * Download: https://pypi.python.org/pypi/pysftp
 * Documentation: https://pysftp.rtfd.org/
+* License: BSD
 
 requirements
 ------------
