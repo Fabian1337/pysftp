@@ -295,6 +295,18 @@ class Connection(object):
         self._sftp_connect()
         return self._sftp.stat(remotepath)
 
+    def lstat(self, remotepath):
+        """return information about file/directory for the given remote path, without following symbolic links. Otherwise, the same as .stat()
+
+        :param remotepath: path to stat
+        :type str:
+
+        :returns: SFTPAttributes object
+
+        """
+        self._sftp_connect()
+        return self._sftp.lstat(remotepath)
+
     def close(self):
         """Closes the connection and cleans up."""
         # Close SFTP Connection.

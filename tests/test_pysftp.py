@@ -62,6 +62,13 @@ def test_stat():
         rslt = sftp.stat(dirname)
     assert rslt.st_size >= 0
 
+def test_lstat():
+    '''test lstat  minimal'''
+    dirname = 'pub'
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        rslt = sftp.lstat(dirname)
+    assert rslt.st_size >= 0
+
 def test_issue_15():
     '''chdir followed by execute doesn't occur in expected directory.'''
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
