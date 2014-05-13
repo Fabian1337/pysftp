@@ -202,6 +202,8 @@ class Connection(object):
 
         :returns: results
 
+        :raises: Any exception raised by command will be passed through.
+
         """
         channel = self._transport.open_session()
         channel.exec_command(command)
