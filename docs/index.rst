@@ -14,6 +14,7 @@ Example
     import pysftp
     with pysftp.Connection('my.example.server') as sftp:
         sftp.put('/my/local/filename', '/my/remote/filename')
+        sftp.get('the-file.txt')
 
 
 Supports

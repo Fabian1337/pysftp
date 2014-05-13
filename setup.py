@@ -5,6 +5,9 @@ from setuptools import setup
 with open('README.rst') as h_readme:
     LONG_DESCRIPTION = h_readme.read()
 
+with open('docs/changes.rst') as h_readme:
+    LONG_DESCRIPTION += h_readme.read()
+
 DESCRIPTION = "A friendly face on SFTP"
 
 setup(
@@ -19,7 +22,7 @@ setup(
 
     package_data={
         # If any package contains *.txt or *.rst files, include them:
-        '': ['LICENSE', '*.txt', '*.rst'],
+        '': ['LICENSE.txt', '*.txt', '*.rst'],
     },
 
     # metadata for upload to PyPI
