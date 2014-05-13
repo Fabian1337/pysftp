@@ -5,10 +5,7 @@ import sys, os
 MYPATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, MYPATH + '/../')
 
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
+from io import BytesIO
 
 import pysftp
 
@@ -29,7 +26,7 @@ skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 def test_getfo_flo():
     '''test getfo to a file-like object'''
-    flo = StringIO()
+    flo = BytesIO()
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         num_bytes = sftp.getfo('readme.txt', flo)
 
@@ -38,7 +35,7 @@ def test_getfo_flo():
 
 def test_getfo_callback():
     '''test getfo callback'''
-    flo = StringIO()
+    flo = BytesIO()
     cback = Mock(return_value=None)
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         sftp.getfo('readme.txt', flo, callback=cback)
