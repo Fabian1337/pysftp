@@ -12,3 +12,5 @@ Acknowledgment
 ---------------
 pysftp is a fork, with permission, of ssh.py, originally authored by
 Zeth @ http://commandline.org.uk/python/sftp-python-really-simple-ssh/
+
+paramiko - http://paramiko-docs.readthedocs.org/
