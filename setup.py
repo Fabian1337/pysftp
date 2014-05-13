@@ -20,10 +20,10 @@ setup(
     # installed or upgraded on the target machine
     install_requires=['paramiko>=1.7.7'],
 
-    package_data={
-        # If any package contains *.txt or *.rst files, include them:
-        '': ['LICENSE.txt', '*.txt', '*.rst'],
-    },
+    # package_data={
+    #     # If any package contains *.txt or *.rst files, include them:
+    #     '': ['LICENSE.txt', '*.txt', '*.rst'],
+    # },
 
     # metadata for upload to PyPI
     author="Jeff Hinrichs",
