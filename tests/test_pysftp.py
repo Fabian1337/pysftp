@@ -25,6 +25,16 @@ skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 
 
+def test_connection_ciphers():
+    '''test the ciphers portion of the Connection'''
+    ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')
+    copts = SFTP_PUBLIC.copy()  # don't sully the module level variable
+    copts['ciphers'] = ciphers
+    assert copts != SFTP_PUBLIC
+    with pysftp.Connection(**copts) as sftp:
+        rslt = sftp.listdir()
+        assert len(rslt) > 1
+
 @skip_if_ci
 def test_putfo_callback_fsize():
     '''test putfo with callback and file_size'''
