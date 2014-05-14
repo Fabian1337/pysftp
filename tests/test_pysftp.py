@@ -25,6 +25,16 @@ skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 
 
+def test_get_ciphers():
+    '''test that method returns a tuple of strings, that show ciphers used'''
+    ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')
+    copts = SFTP_PUBLIC.copy()  # don't sully the module level variable
+    copts['ciphers'] = ciphers
+    with pysftp.Connection(**copts) as sftp:
+        local_cipher, remote_cipher = sftp.get_ciphers()
+    assert local_cipher in ciphers
+    assert remote_cipher in ciphers
+
 def test_connection_ciphers():
     '''test the ciphers portion of the Connection'''
     ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')
