@@ -61,6 +61,7 @@ class Connection(object):
     :param str password: Your password at the remote machine.
     :param int port: The SSH port of the remote machine.(default: 22)
     :param str private_key_pass: password to use, if private_key is encrypted.
+    :param list ciphers: List of ciphers to use in order.
     :param bool log: log connection/handshake details?
     :returns: a connection to the requested machine
     :raises:
@@ -76,6 +77,7 @@ class Connection(object):
                  password=None,
                  port=22,
                  private_key_pass=None,
+                 ciphers=None,
                  log=False,
                 ):
         self._sftp_live = False
@@ -93,6 +95,9 @@ class Connection(object):
         self._tranport_live = False
         try:
             self._transport = paramiko.Transport((host, port))
+            # Set security ciphers if set
+            if ciphers is not None:
+                self._transport.get_security_options().ciphers = ciphers
             self._tranport_live = True
         except (AttributeError, socket.gaierror):
             # couldn't connect
