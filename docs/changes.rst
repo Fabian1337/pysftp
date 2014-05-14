@@ -2,6 +2,10 @@ Change Log
 ----------
 
 
+* 0.2.5 (dev)
+
+  * in progress
+
 * 0.2.4 (current, released 2014-05-13)
 
   * pysftp.Connection can be used in a `with` statement
