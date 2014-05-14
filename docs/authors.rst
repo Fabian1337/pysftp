@@ -10,7 +10,7 @@ to have their work enjoined into the project and project license (BSD).
 
 Acknowledgment
 ---------------
-pysftp is a fork, with permission, of ssh.py, originally authored by
-Zeth @ http://commandline.org.uk/python/sftp-python-really-simple-ssh/
+ * pysftp is a fork, with permission, of ssh.py, originally authored by
+   Zeth @ http://zeth.net/archive/2008/05/29/sftp-python-really-simple-ssh/
 
-paramiko - http://paramiko-docs.readthedocs.org/
+ * paramiko - http://paramiko-docs.readthedocs.org/
