@@ -17,7 +17,7 @@ Code
 
   a.  Setup CI testing on drone.io for your Fork.  See `current script <https://drone.io/bitbucket.org/dundeemt/pysftp/admin>`_ .
 
-  b. Some tests can not be run against the public SFTP server, as it is read-only, to run tests that put or modify, you will need to setup an ssh daemon on your local machine and create a user: test with password of test1357 -- Tests that can only be run locally are skipped using the @skip_if_ci decorator
+  b. Some tests can not be run against the public SFTP server, as it is read-only, to run tests that put or modify, you will need to setup an ssh daemon on your local machine and create a user: test with password of test1357 -- Tests that can only be run locally are skipped using the ``@skip_if_ci decorator``
 
 4.  Ensure that your name is added to the end of the :doc:`authors` file using the format Name <email@domain.com> (url), where the (url) portion is optional.
 
@@ -26,7 +26,7 @@ Code
 
 Docs
 -----
-We use sphinx to build the docs.  `make html` is your friend, see docstrings for details on params, etc.
+We use sphinx to build the docs.  ``make html`` is your friend, see docstrings for details on params, etc.
 
 Bug Reports
 -----------

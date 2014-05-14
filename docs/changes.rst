@@ -2,7 +2,11 @@ Change Log
 ----------
 
 
-* 0.2.4 (dev)
+* 0.2.5 (dev)
+
+  * in progress
+
+* 0.2.4 (current, released 2014-05-13)
 
   * pysftp.Connection can be used in a `with` statement
   * add .remove() method
@@ -16,8 +20,9 @@ Change Log
   * added support for .stat() and .lstat()
   * added helper function, st_mode_to_int,to convert the st_mode value back into a common integer representation
   * added .getfo() method
+  * added .putfo() method
 
-* 0.2.3 (current, released 2014-05-10)
+* 0.2.3 (released 2014-05-10)
 
   * host code on pypi to keep pip happy
   * move code to bitbucket
