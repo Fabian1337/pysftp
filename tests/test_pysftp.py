@@ -10,7 +10,7 @@ from io import BytesIO
 import pysftp
 
 from dhp.test import tempfile_containing
-from mock import Mock
+from mock import Mock, call
 import pytest
 
 # pylint: disable=E1101
@@ -23,6 +23,40 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
  # the CI env var is set to true by both drone-io and travis
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
+
+
+@skip_if_ci
+def test_putfo_callback_fsize():
+    '''test putfo with callback and file_size'''
+    rfile = 'a-test-file'
+    buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
+    ' is full of eels.'
+    fsize = len(buf)
+    bwrote = fsize
+    flo = BytesIO(buf)
+    cback = Mock(return_value=None)
+    with pysftp.Connection(**SFTP_LOCAL) as sftp:
+        sftp.putfo(flo, rfile, file_size=fsize, callback=cback)
+        sftp.remove(rfile)
+    assert cback.call_count >= 2
+    # we didn't specify file size, so second arg is 0
+    assert cback.call_args_list == [call(bwrote, fsize), call(bwrote, fsize)]
+    assert False
+
+@skip_if_ci
+def test_putfo_callback():
+    '''test putfo with callback'''
+    rfile = 'a-test-file'
+    buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
+    ' is full of eels.'
+    flo = BytesIO(buf)
+    cback = Mock(return_value=None)
+    with pysftp.Connection(**SFTP_LOCAL) as sftp:
+        sftp.putfo(flo, rfile, callback=cback)
+        sftp.remove(rfile)
+    assert cback.call_count >= 2
+    # we didn't specify file size, so second arg is 0
+    assert cback.call_args_list == [call(len(buf), 0), call(len(buf), 0)]
 
 @skip_if_ci
 def test_putfo_flo():
@@ -40,14 +74,13 @@ def test_putfo_flo():
 
 @skip_if_ci
 def test_putfo_no_remotepath():
-    '''test putfo not specifying a remotepath'''
+    '''test putfo raises TypeError when not specifying a remotepath'''
     buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
     ' is full of eels.'
     flo = BytesIO(buf)
     with pysftp.Connection(**SFTP_LOCAL) as sftp:
         with pytest.raises(TypeError):
             sftp.putfo(flo)
-    assert False
 
 def test_getfo_flo():
     '''test getfo to a file-like object'''

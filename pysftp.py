@@ -204,6 +204,9 @@ class Connection(object):
 
         :param flo: a file-like object that supports .read()
         :param str remotepath: the remote path.
+        :param int file_size:
+            the size of flo, if not given the second param passed to the
+            callback function will always be 0.
         :param callable callback:
             optional callback function (form: ``func(int, int``)) that accepts
             the bytes transferred so far and the total bytes to be transferred..
