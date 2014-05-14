@@ -16,7 +16,13 @@ def st_mode_to_int(val):
     '''SFTAttributes st_mode returns an stat type that shows more than what
     can be set.  Trim off those bits and convert to an int representation.
     if you want an object that was `chmod 711` to return a value of 711, use
-    this function'''
+    this function
+
+    :param int val: the value of an st_mode attr returned by SFTPAttributes
+
+    :returns int: integer representation of octal mode
+
+    '''
     return int(str(oct(S_IMODE(val))))
 
 
@@ -49,22 +55,17 @@ class Connection(object):
     """Connects and logs into the specified hostname.
     Arguments that are not given are guessed from the environment.
 
-    :param host: The Hostname or IP of the remote machine.
-    :type str:
-    :param username: Your username at the remote machine.
-    :type str:
-    :param private_key: path to private key file or paramiko.AgentKey
-    :type str:
-    :param password: Your password at the remote machine.
-    :type str:
-    :param port: The SSH port of the remote machine.(default: 22)
-    :type int:
-    :param private_key_pass: password to use, if private_key is encrypted.
-    :type str:
-    :param log: log connection/handshake details?
-    :type bool:
+    :param str host: The Hostname or IP of the remote machine.
+    :param str username: Your username at the remote machine.
+    :param private_key: path to private key file(str) or paramiko.AgentKey
+    :param str password: Your password at the remote machine.
+    :param int port: The SSH port of the remote machine.(default: 22)
+    :param str private_key_pass: password to use, if private_key is encrypted.
+    :param bool log: log connection/handshake details?
     :returns: a connection to the requested machine
-    :raises: ConnectionException, CredentialException, SSHException, AuthenticationException, PasswordRequiredException
+    :raises:
+        ConnectionException, CredentialException, SSHException,
+        AuthenticationException, PasswordRequiredException
 
     """
 
@@ -136,12 +137,13 @@ class Connection(object):
     def get(self, remotepath, localpath=None, callback=None):
         """Copies a file between the remote host and the local host.
 
-        :param remotepath: the remote path and filename, source
-        :type str:
-        :param localpath: the local path and filename to copy, destination. If not specified, file is copied to local cwd
-        :type str:
-        :param callback: optional callback function (form: func(int, int)) that accepts the bytes transferred so far and the total bytes to be transferred/
-        :type callable:
+        :param str remotepath: the remote path and filename, source
+        :param str localpath:
+            the local path and filename to copy, destination. If not specified,
+            file is copied to local cwd
+        :param callable callback:
+            optional callback function (form: ``func(int, int)``) that accepts
+            the bytes transferred so far and the total bytes to be transferred.
 
         :returns: nothing
 
@@ -156,14 +158,13 @@ class Connection(object):
     def getfo(self, remotepath, flo, callback=None):
         """Copy a remote file (remotepath) to a file-like object, flo.
 
-        :param remotepath: the remote path and filename, source
-        :type str:
+        :param str remotepath: the remote path and filename, source
         :param flo: open file like object to write, destination.
-        :type str or file object:
-        :param callback: optional callback function (form: func(int, int)) that accepts the bytes transferred so far and the total bytes to be transferred/
-        :type callable:
+        :param callable callback:
+            optional callback function (form: ``func(int, int``)) that accepts
+            the bytes transferred so far and the total bytes to be transferred.
 
-        :returns: (int) the number of bytes written to the opened file object
+        :returns int: the number of bytes written to the opened file object
 
         :raises: Any exception raised by operations will be passed through.
 
@@ -174,16 +175,18 @@ class Connection(object):
     def put(self, localpath, remotepath=None, callback=None, confirm=True):
         """Copies a file between the local host and the remote host.
 
-        :param localpath: the local path and filename
-        :type str:
-        :param remotepath: the remote path, else the remote cwd() and filename is used.
-        :type str:
-        :param callback: optional callback function (form: func(int, int)) that accepts the bytes transferred so far and the total bytes to be transferred.
-        :type callable:
-        :param confirm: whether to do a stat() on the file afterwards to confirm the file size
-        :type bool:
+        :param str localpath: the local path and filename
+        :param str remotepath:
+            the remote path, else the remote cwd() and filename is used.
+        :param callable callback:
+            optional callback function (form: ``func(int, int``)) that accepts
+            the bytes transferred so far and the total bytes to be transferred..
+        :param bool confirm:
+            whether to do a stat() on the file afterwards to confirm the file
+            size
 
-        :returns: an SFTPAttributes object containing attributes about the given file
+        :returns:
+            SFTPAttributes object containing attributes about the given file
 
         :raises: IOError, OSError
 
@@ -195,10 +198,10 @@ class Connection(object):
                               confirm=confirm)
 
     def execute(self, command):
-        """Execute the given commands on a remote machine.  The command is executed without regard to the remote cwd.
+        """Execute the given commands on a remote machine.  The command is
+        executed without regard to the remote cwd.
 
-        :param command: the command to execute.
-        :type str:
+        :param str command: the command to execute.
 
         :returns: results
 
@@ -216,12 +219,12 @@ class Connection(object):
     def chdir(self, remotepath):
         """change the current working directory on the remote
 
-        :param remotepath: the remote path to change to
-        :type str:
+        :param str remotepath: the remote path to change to
 
         :returns: nothing
 
         :raises: IOError
+
         """
         self._sftp_connect()
         self._sftp.chdir(remotepath)
@@ -238,8 +241,7 @@ class Connection(object):
     def listdir(self, remotepath='.'):
         """return a list of files/directories for the given remote path
 
-        :param remotepath: path to list
-        :type str:
+        :param str remotepath: path to list on the server
 
         :returns: a list of entries
 
@@ -248,12 +250,13 @@ class Connection(object):
         return self._sftp.listdir(remotepath)
 
     def mkdir(self, remotepath, mode=777):
-        """Create a directory named remotepath with mode. On some systems, mode is ignored. Where it is used, the current umask value is first masked out.
+        """Create a directory named remotepath with mode. On some systems,
+        mode is ignored. Where it is used, the current umask value is first
+        masked out.
 
-        :param remotepath: directory to create`
-        :type str:
-        :param mode: int representation of octal mode for directory, default 777
-        :type int:
+        :param str remotepath: directory to create`
+        :param int mode:
+            int representation of octal mode for directory, default 777
 
         :returns: nothing
 
@@ -265,12 +268,12 @@ class Connection(object):
         """remove the file @ remotefile, remotefile may include a path, if no
         path, then cwd is used.  This method only works on files
 
-        :param remotefile: the remote file to delete
-        :type str:
+        :param str remotefile: the remote file to delete
 
         :returns: nothing
 
         :raises: IOError
+
         """
         self._sftp_connect()
         self._sftp.remove(remotefile)
@@ -278,8 +281,7 @@ class Connection(object):
     def rmdir(self, remotepath):
         """remove remote directory
 
-        :param remotepath: the remote directory to remove
-        :type str:
+        :param str remotepath: the remote directory to remove
 
         :returns: nothing
 
@@ -290,15 +292,14 @@ class Connection(object):
     def rename(self, remote_src, remote_dest):
         """rename a file or directory on the remote host.
 
-        :param remote_src: the remote file/directory to rename
-        :type str:
+        :param str remote_src: the remote file/directory to rename
 
-        :param remote_dest: the remote file/directory to put it
-        :type str:
+        :param str remote_dest: the remote file/directory to put it
 
         :returns: nothing
 
         :raises: IOError
+
         """
         self._sftp_connect()
         self._sftp.rename(remote_src, remote_dest)
@@ -306,8 +307,7 @@ class Connection(object):
     def stat(self, remotepath):
         """return information about file/directory for the given remote path
 
-        :param remotepath: path to stat
-        :type str:
+        :param str remotepath: path to stat
 
         :returns: SFTPAttributes object
 
@@ -316,10 +316,10 @@ class Connection(object):
         return self._sftp.stat(remotepath)
 
     def lstat(self, remotepath):
-        """return information about file/directory for the given remote path, without following symbolic links. Otherwise, the same as .stat()
+        """return information about file/directory for the given remote path,
+        without following symbolic links. Otherwise, the same as .stat()
 
-        :param remotepath: path to stat
-        :type str:
+        :param str remotepath: path to stat
 
         :returns: SFTPAttributes object
 
@@ -343,14 +343,10 @@ class Connection(object):
 
         See http://paramiko-docs.readthedocs.org/en/latest/api/sftp.html?highlight=open#paramiko.sftp_client.SFTPClient.open for details.
 
-        :param remote_file: name of the file to open.
-        :type str:
-
-        :param mode: mode (Python-style) to open file (always assumed binary)
-        :type str:
-
-        :param bufsize: desired buffering (-1 = default buffer size)
-        :type int:
+        :param str remote_file: name of the file to open.
+        :param str mode:
+            mode (Python-style) to open file (always assumed binary)
+        :param int bufsize: desired buffering (-1 = default buffer size)
 
         :returns: an SFTPFile object representing the open file
 
