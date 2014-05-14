@@ -361,6 +361,13 @@ class Connection(object):
         self._sftp_connect()
         return self._sftp.open(remote_file, mode=mode, bufsize=bufsize)
 
+    def get_ciphers(self):
+        """Get list of currently used ciphers.
+        Ciphers are applied in order of first found on server.
+
+        :returns: a tuple of currently used ciphers (local, remote)
+        """
+        return self._transport.local_cipher, self._transport.remote_cipher
 
     def __del__(self):
         """Attempt to clean up if not explicitly closed."""
