@@ -29,7 +29,7 @@ skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 def test_putfo_callback_fsize():
     '''test putfo with callback and file_size'''
     rfile = 'a-test-file'
-    buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
+    buf = 'I will not buy this record, it is scratched\nMy hovercraft'\
     ' is full of eels.'
     fsize = len(buf)
     bwrote = fsize
@@ -41,13 +41,12 @@ def test_putfo_callback_fsize():
     assert cback.call_count >= 2
     # we didn't specify file size, so second arg is 0
     assert cback.call_args_list == [call(bwrote, fsize), call(bwrote, fsize)]
-    assert False
 
 @skip_if_ci
 def test_putfo_callback():
     '''test putfo with callback'''
     rfile = 'a-test-file'
-    buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
+    buf = 'I will not buy this record, it is scratched\nMy hovercraft'\
     ' is full of eels.'
     flo = BytesIO(buf)
     cback = Mock(return_value=None)
@@ -62,7 +61,7 @@ def test_putfo_callback():
 def test_putfo_flo():
     '''test putfo in simple form'''
     rfile = 'a-test-file'
-    buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
+    buf = 'I will not buy this record, it is scratched\nMy hovercraft'\
     ' is full of eels.'
     flo = BytesIO(buf)
     with pysftp.Connection(**SFTP_LOCAL) as sftp:
@@ -75,7 +74,7 @@ def test_putfo_flo():
 @skip_if_ci
 def test_putfo_no_remotepath():
     '''test putfo raises TypeError when not specifying a remotepath'''
-    buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
+    buf = 'I will not buy this record, it is scratched\nMy hovercraft'\
     ' is full of eels.'
     flo = BytesIO(buf)
     with pysftp.Connection(**SFTP_LOCAL) as sftp:
