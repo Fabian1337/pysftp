@@ -197,6 +197,30 @@ class Connection(object):
         return self._sftp.put(localpath, remotepath, callback=callback,
                               confirm=confirm)
 
+    def putfo(self, flo, remotepath=None, file_size=0, callback=None,
+              confirm=True):
+
+        """Copies the contents of a file like object to remotepath.
+
+        :param flo: a file-like object that supports .read()
+        :param str remotepath: the remote path.
+        :param callable callback:
+            optional callback function (form: ``func(int, int``)) that accepts
+            the bytes transferred so far and the total bytes to be transferred..
+        :param bool confirm:
+            whether to do a stat() on the file afterwards to confirm the file
+            size
+
+        :returns:
+            SFTPAttributes object containing attributes about the given file
+
+        :raises: TypeError if remotepath not specified, any underlying error
+
+        """
+        self._sftp_connect()
+        return self._sftp.putfo(flo, remotepath, file_size=file_size,
+                                callback=callback, confirm=confirm)
+
     def execute(self, command):
         """Execute the given commands on a remote machine.  The command is
         executed without regard to the remote cwd.

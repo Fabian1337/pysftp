@@ -24,6 +24,31 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 
+@skip_if_ci
+def test_putfo_flo():
+    '''test putfo in simple form'''
+    rfile = 'a-test-file'
+    buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
+    ' is full of eels.'
+    flo = BytesIO(buf)
+    with pysftp.Connection(**SFTP_LOCAL) as sftp:
+        assert rfile not in sftp.listdir()
+        rslt = sftp.putfo(flo, rfile)
+        assert rfile in sftp.listdir()
+        sftp.remove(rfile)
+    assert rslt.st_size == len(buf)
+
+@skip_if_ci
+def test_putfo_no_remotepath():
+    '''test putfo not specifying a remotepath'''
+    buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
+    ' is full of eels.'
+    flo = BytesIO(buf)
+    with pysftp.Connection(**SFTP_LOCAL) as sftp:
+        with pytest.raises(TypeError):
+            sftp.putfo(flo)
+    assert False
+
 def test_getfo_flo():
     '''test getfo to a file-like object'''
     flo = BytesIO()
