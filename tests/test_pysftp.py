@@ -34,13 +34,13 @@ def test_security_options():
         assert hasattr(secopts, attr)
         assert isinstance(getattr(secopts, attr), tuple)
 
-def test_get_ciphers():
+def test_active_ciphers():
     '''test that method returns a tuple of strings, that show ciphers used'''
     ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')
     copts = SFTP_PUBLIC.copy()  # don't sully the module level variable
     copts['ciphers'] = ciphers
     with pysftp.Connection(**copts) as sftp:
-        local_cipher, remote_cipher = sftp.get_ciphers()
+        local_cipher, remote_cipher = sftp.active_ciphers
     assert local_cipher in ciphers
     assert remote_cipher in ciphers
 
