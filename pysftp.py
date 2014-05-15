@@ -184,7 +184,8 @@ class Connection(object):
         self._sftp_connect()
         return self._sftp.getfo(remotepath, flo, callback=callback)
 
-    def put(self, localpath, remotepath=None, callback=None, confirm=True):
+    def put(self, localpath, remotepath=None, callback=None, confirm=True,
+            preserve_mtime=False):
         """Copies a file between the local host and the remote host.
 
         :param str localpath: the local path and filename
@@ -196,6 +197,10 @@ class Connection(object):
         :param bool confirm:
             whether to do a stat() on the file afterwards to confirm the file
             size
+        :param bool preserve_mtime:
+            *Default: False* - make the times(st_mtime) on the remote
+            file match the time on the local. (st_atime can differ because
+            stat'ing the localfile can/does update it's st_atime)
 
         :returns:
             SFTPAttributes object containing attributes about the given file
@@ -206,8 +211,18 @@ class Connection(object):
         if not remotepath:
             remotepath = os.path.split(localpath)[1]
         self._sftp_connect()
-        return self._sftp.put(localpath, remotepath, callback=callback,
-                              confirm=confirm)
+
+        if preserve_mtime:
+            local_stat = os.stat(localpath)
+            times = (local_stat.st_atime, local_stat.st_mtime)
+
+        sftpattrs = self._sftp.put(localpath, remotepath, callback=callback,
+                                   confirm=confirm)
+        if preserve_mtime:
+            self._sftp.utime(remotepath, times)
+            sftpattrs = self._sftp.stat(remotepath)
+
+        return sftpattrs
 
     def putfo(self, flo, remotepath=None, file_size=0, callback=None,
               confirm=True):
