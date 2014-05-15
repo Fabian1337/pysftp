@@ -99,13 +99,13 @@ class Connection(object):
             paramiko.util.log_to_file(self._logfile)
 
         # Begin the SSH transport.
-        self._tranport_live = False
+        self._transport_live = False
         try:
             self._transport = paramiko.Transport((host, port))
             # Set security ciphers if set
             if ciphers is not None:
                 self._transport.get_security_options().ciphers = ciphers
-            self._tranport_live = True
+            self._transport_live = True
         except (AttributeError, socket.gaierror):
             # couldn't connect
             raise ConnectionException(host, port)
@@ -373,9 +373,9 @@ class Connection(object):
             self._sftp.close()
             self._sftp_live = False
         # Close the SSH Transport.
-        if self._tranport_live:
+        if self._transport_live:
             self._transport.close()
-            self._tranport_live = False
+            self._transport_live = False
 
     def open(self, remote_file, mode='r', bufsize=-1):
         """Open a file on the remote server.
