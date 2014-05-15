@@ -2,14 +2,14 @@ Change Log
 ----------
 
 
-* 0.2.5 (dev)
+* 0.2.5 (current, released 2014-05-15)
 
   * added ciphers parameter to Connection object
   * added .active_ciphers method to return local and remote cipher in use
   * added .security_options, where you can get available ciphers, among other information
   * enhanced logging, and added documentation and tests
 
-* 0.2.4 (current, released 2014-05-13)
+* 0.2.4 (released 2014-05-13)
 
   * pysftp.Connection can be used in a `with` statement
   * add .remove() method
