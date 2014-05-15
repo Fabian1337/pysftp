@@ -62,8 +62,12 @@ class Connection(object):
     :param int port: The SSH port of the remote machine.(default: 22)
     :param str private_key_pass: password to use, if private_key is encrypted.
     :param list ciphers: List of ciphers to use in order.
-    :param bool log: log connection/handshake details?
-    :returns: a connection to the requested machine
+    :param bool|str log:
+        log connection/handshake details? (default=False) if set to True,
+        pysftp creates a temporary file and logs to that.  If set to a valid
+        path and filename, pysftp logs to that.  The name of the logfile can
+        be found at  ``.logfile``
+    :returns: a connection to the requested host
     :raises:
         ConnectionException, CredentialException, SSHException,
         AuthenticationException, PasswordRequiredException
@@ -86,10 +90,13 @@ class Connection(object):
             username = os.environ['LOGNAME']
 
 
+        self._logfile = log
         if log:
-            # Log to a temporary file.
-            templog = tempfile.mkstemp('.txt', 'ssh-')[1]
-            paramiko.util.log_to_file(templog)
+            if isinstance(log, bool):
+                # Log to a temporary file.
+                fhnd, self._logfile = tempfile.mkstemp('.txt', 'ssh-')
+                os.close(fhnd)  # don't want os file descriptors open
+            paramiko.util.log_to_file(self._logfile)
 
         # Begin the SSH transport.
         self._tranport_live = False
@@ -392,7 +399,8 @@ class Connection(object):
     def active_ciphers(self):
         """Get tuple of currently used local and remote ciphers.
 
-        :returns: a tuple of currently used ciphers (local, remote)
+        :returns:
+            a tuple of currently used ciphers (local_cipher, remote_cipher)
 
         """
         return self._transport.local_cipher, self._transport.remote_cipher
@@ -409,6 +417,15 @@ class Connection(object):
         """
 
         return self._transport.get_security_options()
+
+    @property
+    def logfile(self):
+        '''return the name of the file used for logging or False it not logging
+
+        :returns: logfile(str) or False(bool)
+
+        '''
+        return self._logfile
 
     def __del__(self):
         """Attempt to clean up if not explicitly closed."""

@@ -24,6 +24,33 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 
+def test_logging_user_file():
+    '''test .logfile returns temp filename when logging is set to True'''
+    copts = SFTP_PUBLIC.copy()  # don't sully the module level variable
+    copts['log'] = os.path.expanduser('~/my-logfile.txt')
+    print copts
+    with pysftp.Connection(**copts) as sftp:
+        assert sftp.logfile == copts['log']
+        assert os.path.exists(sftp.logfile)
+    # cleanup
+    os.unlink(copts['log'])
+
+def test_logging_false():
+    '''test .logfile returns false when logging is set to false'''
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        assert sftp.logfile == False
+
+def test_logging_true():
+    '''test .logfile returns temp filename when logging is set to True'''
+    copts = SFTP_PUBLIC.copy()  # don't sully the module level variable
+    copts['log'] = True
+    with pysftp.Connection(**copts) as sftp:
+        assert os.path.exists(sftp.logfile)
+        # and we are not writing to a file named 'True'
+        assert sftp.logfile != copts['log']
+        logfile = sftp.logfile
+    # cleanup
+    os.unlink(logfile)
 
 def test_security_options():
     '''test the security_options property has expected attributes and that
