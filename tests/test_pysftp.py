@@ -28,7 +28,6 @@ def test_logging_user_file():
     '''test .logfile returns temp filename when logging is set to True'''
     copts = SFTP_PUBLIC.copy()  # don't sully the module level variable
     copts['log'] = os.path.expanduser('~/my-logfile.txt')
-    print copts
     with pysftp.Connection(**copts) as sftp:
         assert sftp.logfile == copts['log']
         assert os.path.exists(sftp.logfile)
