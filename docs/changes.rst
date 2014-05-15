@@ -4,7 +4,7 @@ Change Log
 
 * 0.2.6 (dev)
 
-  * in progress
+  * added preserve_mtime parameter to .put() method, optionally updates the remote file's mtime to match the local file.
 
 * 0.2.5 (current, released 2014-05-15)
 
