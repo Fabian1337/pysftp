@@ -38,7 +38,7 @@ Additional Information
 requirements
 ------------
 
-  paramiko >= 1.7.4
+  paramiko >= 1.7.7
 
 
 Contents:
