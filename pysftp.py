@@ -82,7 +82,6 @@ class Connection(object):
                 ):
         self._sftp_live = False
         self._sftp = None
-        self._security_options = None
         if not username:
             username = os.environ['LOGNAME']
 
@@ -96,7 +95,6 @@ class Connection(object):
         self._tranport_live = False
         try:
             self._transport = paramiko.Transport((host, port))
-            self._security_options = self._transport.get_security_options()
             # Set security ciphers if set
             if ciphers is not None:
                 self._transport.get_security_options().ciphers = ciphers
@@ -409,7 +407,8 @@ class Connection(object):
             exchange algorithms, listed in order of preference.
 
         """
-        return self._security_options
+
+        return self._transport.get_security_options()
 
     def __del__(self):
         """Attempt to clean up if not explicitly closed."""
