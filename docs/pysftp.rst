@@ -22,3 +22,9 @@ transferred so far and the second int is the total bytes to be transferred.
 
 **Note**: On a ``.putfo``, if you don't set the ``file_size`` parameter, it will always be
 passed a zero, the default ``file_size`` value.
+
+SecurityOptions
+---------------
+a simple object returned with available Security Options
+
+see http://paramiko-docs.readthedocs.org/en/latest/api/transport.html?highlight=ciphers#paramiko.transport.SecurityOptions for details

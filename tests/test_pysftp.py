@@ -25,6 +25,15 @@ skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 
 
+def test_security_options():
+    '''test the security_options property has expected attributes and that
+    they are tuples'''
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        secopts = sftp.security_options
+    for attr in ['ciphers', 'compression', 'digests', 'kex', 'key_types']:
+        assert hasattr(secopts, attr)
+        assert isinstance(getattr(secopts, attr), tuple)
+
 def test_get_ciphers():
     '''test that method returns a tuple of strings, that show ciphers used'''
     ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')

@@ -4,7 +4,9 @@ Change Log
 
 * 0.2.5 (dev)
 
-  * in progress
+  * added ciphers parameter to Connection object
+  * added .get_ciphers method to return local and remote cipher in use
+  * added .security_options
 
 * 0.2.4 (current, released 2014-05-13)
 

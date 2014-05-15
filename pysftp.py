@@ -82,6 +82,7 @@ class Connection(object):
                 ):
         self._sftp_live = False
         self._sftp = None
+        self._security_options = None
         if not username:
             username = os.environ['LOGNAME']
 
@@ -95,6 +96,7 @@ class Connection(object):
         self._tranport_live = False
         try:
             self._transport = paramiko.Transport((host, port))
+            self._security_options = self._transport.get_security_options()
             # Set security ciphers if set
             if ciphers is not None:
                 self._transport.get_security_options().ciphers = ciphers
@@ -395,6 +397,18 @@ class Connection(object):
         :returns: a tuple of currently used ciphers (local, remote)
         """
         return self._transport.local_cipher, self._transport.remote_cipher
+
+    @property
+    def security_options(self):
+        """return the available security options recognized by paramiko.
+
+        :returns SecurityOptions:
+            a simple object security preferences of an ssh transport. These
+            are tuples of acceptable ciphers, digests, key types, and key
+            exchange algorithms, listed in order of preference.
+
+        """
+        return self._security_options
 
     def __del__(self):
         """Attempt to clean up if not explicitly closed."""
