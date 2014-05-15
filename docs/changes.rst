@@ -2,6 +2,10 @@ Change Log
 ----------
 
 
+* 0.2.6 (dev)
+
+  * in progress
+
 * 0.2.5 (current, released 2014-05-15)
 
   * added ciphers parameter to Connection object
