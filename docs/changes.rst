@@ -8,6 +8,7 @@ Change Log
   * added ``preserve_mtime`` parameter to ``.get()`` method, optionally updates the local file's st_mtime to match the remote file
   * added ``.exists()`` and ``.lexists()`` function, use .``.stat()`` and ``.lstat()`` respectively
   * added ``.symlink()`` method
+  * added ``.isdir()``, ``.isfile()``, ``.makedirs()``
 
 * 0.2.5 (current, released 2014-05-15)
 

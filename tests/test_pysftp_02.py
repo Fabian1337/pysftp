@@ -26,6 +26,88 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 
+def test_path_retreat():
+    '''test path_retreat generator'''
+    pth = 'foo/bar/baz'
+    assert list(pysftp.path_retreat(pth)) == ['foo/bar/baz',
+                                              'foo/bar',
+                                              'foo']
+    pth = '/foo/bar/baz'
+    assert list(pysftp.path_retreat(pth)) == ['/foo/bar/baz',
+                                              '/foo/bar',
+                                              '/foo']
+
+def test_path_advance():
+    '''test path_advance generator'''
+    pth = 'foo/bar/baz'
+    assert list(pysftp.path_advance(pth)) == ['foo',
+                                              'foo/bar',
+                                              'foo/bar/baz']
+    pth = '/foo/bar/baz'
+    assert list(pysftp.path_advance(pth)) == ['/foo',
+                                              '/foo/bar',
+                                              '/foo/bar/baz']
+
+@skip_if_ci
+def test_makedirs():
+    '''test makedirs simple, testing 2 things, oh well'''
+    rdir = 'foo/bar/baz'
+    rdir2 = 'foo/bar'
+    with pysftp.Connection(**SFTP_LOCAL) as sftp:
+        assert sftp.exists(rdir) == False
+        sftp.makedirs(rdir)
+        is_dir = sftp.isdir(rdir)
+        sftp.rmdir(rdir)
+        sftp.rmdir(rdir2)
+        sftp.makedirs(rdir)     # try partially existing path
+        is_dir_partial = sftp.isdir(rdir)
+        for rpath in pysftp.path_retreat(rdir):
+            sftp.rmdir(rpath)
+    assert is_dir
+    assert is_dir_partial
+
+def test_isfile():
+    '''test .isfile() functionality'''
+    rfile = 'readme.txt'
+    rdir = 'pub'
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        assert sftp.isfile(rfile) == True
+        assert sftp.isfile(rdir) == False
+
+@skip_if_ci
+def test_isfile_2():
+    '''test .isfile() functionality against a symlink'''
+    rsym = 'my-link.txt'
+    with tempfile_containing(contents=8192*'*') as fname:
+        with pysftp.Connection(**SFTP_LOCAL) as sftp:
+            sftp.put(fname)
+            sftp.symlink(fname, rsym)
+            is_file = sftp.isfile(rsym)
+            sftp.remove(rsym)
+            sftp.remove(os.path.split(fname)[1])
+    assert is_file == True
+
+def test_isdir():
+    '''test .isdir() functionality'''
+    rfile = 'readme.txt'
+    rdir = 'pub'
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        assert sftp.isdir(rfile) == False
+        assert sftp.isdir(rdir) == True
+
+@skip_if_ci
+def test_isdir_2():
+    '''test .isdir() functionality against a symlink'''
+    rsym = 'my-link.txt'
+    with tempfile_containing(contents=8192*'*') as fname:
+        with pysftp.Connection(**SFTP_LOCAL) as sftp:
+            sftp.put(fname)
+            sftp.symlink(fname, rsym)
+            is_dir = sftp.isdir(rsym)
+            sftp.remove(rsym)
+            sftp.remove(os.path.split(fname)[1])
+    assert is_dir == False
+
 @skip_if_ci
 def test_lexists_symbolic():
     '''test .lexists() vs. symbolic link'''

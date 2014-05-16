@@ -2,7 +2,7 @@
 
 import os
 import socket
-from stat import S_IMODE
+from stat import S_IMODE, S_ISDIR, S_ISREG
 import tempfile
 import paramiko
 from paramiko import SSHException   # make available
@@ -329,6 +329,69 @@ class Connection(object):
         self._sftp_connect()
         self._sftp.mkdir(remotepath, mode=int(str(mode), 8))
 
+    def isdir(self, remotepath):
+        """return true if remotepath is a directory
+
+        :param str remotepath: the path to test
+
+        :returns bool:
+
+        """
+        self._sftp_connect()
+        try:
+            result = S_ISDIR(self._sftp.stat(remotepath).st_mode)
+        except IOError:     # no such file
+            result = False
+        return result
+
+    def isfile(self, remotepath):
+        """return true if remotepath is a file
+
+        :param str remotepath: the path to test
+
+        :returns bool:
+
+        """
+        self._sftp_connect()
+        try:
+            result = S_ISREG(self._sftp.stat(remotepath).st_mode)
+        except IOError:     # no such file
+            result = False
+        return result
+
+    def makedirs(self, remotedir, mode=777):
+        """create all directories in remotedir as needed, setting their mode
+        to mode, if created.
+
+        If remotedir already exists, silently complete. If a regular file is
+        in the way, raise an exception.
+
+        :param str remotedir: the direcotry structure to create
+        :param int mode:
+            int representation of octal mode for directory, default 777
+
+        :returns: None
+
+        :raises: OSError
+
+        """
+        self._sftp_connect()
+        if self.isdir(remotedir):
+            pass
+
+        elif self.isfile(remotedir):
+            raise OSError("a file with the same name as the remotedir, " \
+                          "'%s', already exists." % remotedir)
+        else:
+
+            head, tail = os.path.split(remotedir)
+            print remotedir, head, tail
+            if head and not self.isdir(head):
+                self.makedirs(head, mode)
+
+            if tail:
+                self.mkdir(remotedir, mode=mode)
+
     def remove(self, remotefile):
         """remove the file @ remotefile, remotefile may include a path, if no
         path, then cwd is used.  This method only works on files
@@ -483,9 +546,10 @@ class Connection(object):
         """return the available security options recognized by paramiko.
 
         :returns SecurityOptions:
-            a simple object security preferences of an ssh transport. These
-            are tuples of acceptable ciphers, digests, key types, and key
-            exchange algorithms, listed in order of preference.
+            a simple object security preferences of an
+            ssh transport. These are tuples of acceptable ciphers, digests,
+            key types, and key exchange algorithms, listed in order of
+            preference.
 
         """
 
@@ -510,3 +574,45 @@ class Connection(object):
     def __exit__(self, etype, value, traceback):
         self.close()
 
+def path_advance(thepath, sep=os.sep):
+    '''generator to iterate over a file path forwards
+
+    :param str thepath: the path to navigate forwards
+    :param str sep: the path separator to use, defaults to ``os.sep``
+
+    :returns generator: of strings
+
+    '''
+    # handle a direct path
+    pre = ''
+    if thepath[0] == sep:
+        pre = sep
+    curpath = ''
+    parts = thepath.split(sep)
+    if pre:
+        if parts[0]:
+            parts[0] = pre + parts[0]
+        else:
+            parts[1] = pre + parts[1]
+    for part in parts:
+        curpath = os.path.join(curpath, part)
+        if curpath:
+            yield curpath
+
+def path_retreat(thepath, sep=os.sep):
+    '''generator to iterate over a file path in reverse
+
+    :param str thepath: the path to retreat over
+    :param str sep: the path separator to use, default to ``os.sep``
+
+    :returns generator: of strings
+
+    '''
+    pre = ''
+    if thepath[0] == sep:
+        pre = sep
+    parts = thepath.split(sep)
+    while parts:
+        if os.path.join(*parts):
+            yield '%s%s' % (pre, os.path.join(*parts))
+        parts = parts[:-1]
