@@ -385,7 +385,6 @@ class Connection(object):
         else:
 
             head, tail = os.path.split(remotedir)
-            print remotedir, head, tail
             if head and not self.isdir(head):
                 self.makedirs(head, mode)
 
@@ -574,6 +573,7 @@ class Connection(object):
     def __exit__(self, etype, value, traceback):
         self.close()
 
+
 def path_advance(thepath, sep=os.sep):
     '''generator to iterate over a file path forwards
 
@@ -598,6 +598,7 @@ def path_advance(thepath, sep=os.sep):
         curpath = os.path.join(curpath, part)
         if curpath:
             yield curpath
+
 
 def path_retreat(thepath, sep=os.sep):
     '''generator to iterate over a file path in reverse
