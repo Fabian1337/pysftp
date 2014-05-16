@@ -294,6 +294,22 @@ class Connection(object):
         self._sftp_connect()
         self._sftp.chdir(remotepath)
 
+    def chmod(self, remotepath, mode=777):
+        """set the mode of a remotepath to mode, where mode is an integer
+        representation of the octal mode to use.
+
+        :param str remotepath: the remote path/file to modify
+        :param int mode:
+            int representation of octal mode for directory, default 777
+
+        :returns: None
+
+        :raises: IOError if remotepath does not exist
+
+        """
+        self._sftp_connect()
+        self._sftp.chmod(remotepath, mode=int(str(mode), 8))
+
     def getcwd(self):
         """return the current working directory on the remote
 
