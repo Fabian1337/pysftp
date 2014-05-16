@@ -6,6 +6,7 @@ MYPATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, MYPATH + '/../')
 
 # from io import BytesIO
+from stat import S_ISLNK
 from time import sleep
 
 import pysftp
@@ -23,6 +24,52 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
  # if environment variable CI is set  to something to disable local tests
  # the CI env var is set to true by both drone-io and travis
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
+
+
+@skip_if_ci
+def test_lexists_symbolic():
+    '''test .lexists() vs. symbolic link'''
+    rdest = 'honey-boo-boo'
+    with tempfile_containing(contents=8192*'*') as fname:
+        with pysftp.Connection(**SFTP_LOCAL) as sftp:
+            sftp.put(fname)
+            sftp.symlink(fname, rdest)
+            sftp.remove(os.path.split(fname)[1])
+            found = sftp.lexists(rdest) == True
+            sftp.remove(rdest)
+    assert found
+
+@skip_if_ci
+def test_symlink():
+    '''test symlink creation'''
+    rdest = 'honey-boo-boo'
+    with tempfile_containing(contents=8192*'*') as fname:
+        with pysftp.Connection(**SFTP_LOCAL) as sftp:
+            sftp.put(fname)
+            sftp.symlink(fname, rdest)
+            rslt = sftp.lstat(rdest)
+            is_link = S_ISLNK(rslt.st_mode) == True
+            sftp.remove(rdest)
+            sftp.remove(os.path.split(fname)[1])
+    assert is_link
+
+def test_exists():
+    '''test .exists() fuctionality'''
+    rfile = 'readme.txt'
+    rbad = 'pee-a-boo.txt'
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        assert sftp.exists(rfile) == True
+        assert sftp.exists(rbad) == False
+        assert sftp.exists('pub') == True
+
+def test_lexists():
+    '''test .lexists() functionality'''
+    rfile = 'readme.txt'
+    rbad = 'pee-a-boo.txt'
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        assert sftp.lexists(rfile) == True
+        assert sftp.lexists(rbad) == False
+        assert sftp.lexists('pub') == True
 
 def test_get_preserve_mtime():
     '''test that m_time is preserved from local to remote, when get'''

@@ -421,6 +421,53 @@ class Connection(object):
         self._sftp_connect()
         return self._sftp.open(remote_file, mode=mode, bufsize=bufsize)
 
+    def exists(self, remotepath):
+        """Test whether a remotepath exists.
+
+        :param str remotepath: the remote path to verify
+
+        :returns bool: True if remotepath exists, else False
+
+        """
+        self._sftp_connect()
+        try:
+            self._sftp.stat(remotepath)
+        except IOError:
+            return False
+        return True
+
+    def lexists(self, remotepath):
+        """Test whether a remotepath exists.  Returns True for broken symbolic
+        links
+
+        :param str remotepath: the remote path to verify
+
+        :returns bool: True if lexists, else False
+
+        """
+        self._sftp_connect()
+        try:
+            self._sftp.lstat(remotepath)
+        except IOError:
+            return False
+        return True
+
+    def symlink(self, remote_src, remote_dest):
+        '''create a symlink for a remote file on the server
+
+        :param str remote_src: path of original file
+        :param str remote_dest: path of the created symlink
+
+        :returns: None
+
+        :raises:
+            any underlying error, IOError if something already exists at
+            remote_dest
+
+        '''
+        self._sftp_connect()
+        self._sftp.symlink(remote_src, remote_dest)
+
     @property
     def active_ciphers(self):
         """Get tuple of currently used local and remote ciphers.
