@@ -146,7 +146,8 @@ class Connection(object):
             self._sftp = paramiko.SFTPClient.from_transport(self._transport)
             self._sftp_live = True
 
-    def get(self, remotepath, localpath=None, callback=None):
+    def get(self, remotepath, localpath=None, callback=None,
+            preserve_mtime=False):
         """Copies a file between the remote host and the local host.
 
         :param str remotepath: the remote path and filename, source
@@ -156,6 +157,10 @@ class Connection(object):
         :param callable callback:
             optional callback function (form: ``func(int, int)``) that accepts
             the bytes transferred so far and the total bytes to be transferred.
+        :param bool preserve_mtime:
+            *Default: False* - make the modification time(st_mtime) on the
+            local file match the time on the remote. (st_atime can differ
+            because stat'ing the localfile can/does update it's st_atime)
 
         :returns: nothing
 
@@ -164,8 +169,14 @@ class Connection(object):
         """
         if not localpath:
             localpath = os.path.split(remotepath)[1]
+
         self._sftp_connect()
+        if preserve_mtime:
+            sftpattrs = self._sftp.stat(remotepath)
+
         self._sftp.get(remotepath, localpath, callback=callback)
+        if preserve_mtime:
+            os.utime(localpath, (sftpattrs.st_atime, sftpattrs.st_mtime))
 
     def getfo(self, remotepath, flo, callback=None):
         """Copy a remote file (remotepath) to a file-like object, flo.
@@ -198,9 +209,9 @@ class Connection(object):
             whether to do a stat() on the file afterwards to confirm the file
             size
         :param bool preserve_mtime:
-            *Default: False* - make the times(st_mtime) on the remote
-            file match the time on the local. (st_atime can differ because
-            stat'ing the localfile can/does update it's st_atime)
+            *Default: False* - make the modification time(st_mtime) on the
+            remote file match the time on the local. (st_atime can differ
+            because stat'ing the localfile can/does update it's st_atime)
 
         :returns:
             SFTPAttributes object containing attributes about the given file

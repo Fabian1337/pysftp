@@ -24,6 +24,15 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
  # the CI env var is set to true by both drone-io and travis
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
+def test_get_preserve_mtime():
+    '''test that m_time is preserved from local to remote, when get'''
+    rfile = 'readme.txt'
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        with tempfile_containing('') as localfile:
+            r_stat = sftp.stat(rfile)
+            sftp.get(rfile, localfile, preserve_mtime=True)
+            assert r_stat.st_mtime == os.stat(localfile).st_mtime
+
 @skip_if_ci
 def test_put_preserve_mtime():
     '''test that m_time is preserved from local to remote, when put'''
@@ -41,3 +50,4 @@ def test_put_preserve_mtime():
     assert base.st_mtime == result1.st_mtime
     # assert result1.st_atime == result2.st_atime
     assert result1.st_mtime == result2.st_mtime
+
