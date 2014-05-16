@@ -4,21 +4,21 @@ Change Log
 
 * 0.2.6 (dev)
 
-  * added preserve_mtime parameter to .put() function, optionally updates the remote file's st_mtime to match the local file.
-  * added preserve_mtime parameter to .get() method, optionally updates the local file's st_mtime to match the remote file
-  * added .exists() and .lexists() function, use .stat() and .lstat() respectively
-  * added .symlink() method
+  * added ``preserve_mtime`` parameter to ``.put()`` function, optionally updates the remote file's st_mtime to match the local file.
+  * added ``preserve_mtime`` parameter to ``.get()`` method, optionally updates the local file's st_mtime to match the remote file
+  * added ``.exists()`` and ``.lexists()`` function, use .``.stat()`` and ``.lstat()`` respectively
+  * added ``.symlink()`` method
 
 * 0.2.5 (current, released 2014-05-15)
 
-  * added ciphers parameter to Connection object
-  * added .active_ciphers method to return local and remote cipher in use
-  * added .security_options, where you can get available ciphers, among other information
+  * added ``ciphers`` parameter to ``Connection`` object
+  * added ``.active_ciphers`` method to return local and remote cipher in use
+  * added ``.security_options``, where you can get available ciphers, among other information
   * enhanced logging, and added documentation and tests
 
 * 0.2.4 (released 2014-05-13)
 
-  * pysftp.Connection can be used in a `with` statement
+  * pysftp.Connection can be used in a ``with`` statement
   * add .remove() method
   * added support for callback and confirm params to .put() method
   * added support for callback on .get() method
