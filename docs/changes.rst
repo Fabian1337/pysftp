@@ -2,7 +2,7 @@ Change Log
 ----------
 
 
-* 0.2.6 (dev)
+* 0.2.6 (current, released 2014-05-17)
 
   * added ``preserve_mtime`` parameter to :meth:`.put`, optionally updates the remote file's st_mtime to match the local file.
   * added ``preserve_mtime`` parameter to :meth:`.get`, optionally updates the local file's st_mtime to match the remote file
@@ -13,7 +13,7 @@ Change Log
   * added :meth:`.chown`
   * added :attr:`.sftp_client` which exposes underlying, active ``SFTPClient`` object for advance use
 
-* 0.2.5 (current, released 2014-05-15)
+* 0.2.5 (released 2014-05-15)
 
   * added ``ciphers`` parameter to :class:`.Connection` object
   * added :attr:`.active_ciphers` to return local and remote cipher in use
