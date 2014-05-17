@@ -2,11 +2,11 @@
 
 from setuptools import setup
 
-with open('README.rst') as h_readme:
-    LONG_DESCRIPTION = h_readme.read()
+with open('README.rst') as h_rst:
+    LONG_DESCRIPTION = h_rst.read()
 
-with open('docs/changes.rst') as h_readme:
-    BUF = h_readme.read()
+with open('docs/changes.rst') as h_rst:
+    BUF = h_rst.read()
     BUF = BUF.replace('``', '$')        # protect existing code markers
     for xref in [':meth:', ':attr:', ':class:', ':func:']:
         BUF = BUF.replace(xref, '')     # remove xrefs
