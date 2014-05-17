@@ -2,6 +2,9 @@ Change Log
 ----------
 
 
+* 0.2.7 (dev)
+  * in progress
+
 * 0.2.6 (current, released 2014-05-17)
 
   * added ``preserve_mtime`` parameter to :meth:`.put`, optionally updates the remote file's st_mtime to match the local file.
