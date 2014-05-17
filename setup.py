@@ -7,13 +7,9 @@ with open('README.rst') as h_readme:
 
 with open('docs/changes.rst') as h_readme:
     BUF = h_readme.read()
-    BUF = BUF.replace('``', '$')        # protect code markers
+    BUF = BUF.replace('``', '$')        # protect existing code markers
     for xref in [':meth:', ':attr:', ':class:', ':func:']:
         BUF = BUF.replace(xref, '')     # remove xrefs
-    # BUF = BUF.replace(':meth:', '')     # remove links
-    # BUF = BUF.replace(':attr:', '')
-    # BUF = BUF.replace(':class:', '')
-    # BUF = BUF.replace(':func:', '')
     BUF = BUF.replace('`', '``')        # replace refs with code markers
     BUF = BUF.replace('$', '``')        # restore existing code markers
 LONG_DESCRIPTION += BUF
@@ -29,11 +25,6 @@ setup(
     # Project uses reStructuredText, so ensure that the docutils get
     # installed or upgraded on the target machine
     install_requires=['paramiko>=1.7.7'],
-
-    # package_data={
-    #     # If any package contains *.txt or *.rst files, include them:
-    #     '': ['LICENSE.txt', '*.txt', '*.rst'],
-    # },
 
     # metadata for upload to PyPI
     author="Jeff Hinrichs",
