@@ -26,5 +26,5 @@ Believed to support Python 3.4
 
 * Project:  https://bitbucket.org/dundeemt/pysftp
 * Download: https://pypi.python.org/pypi/pysftp
-* Documentation: https://pysftp.rtfd.org/
+* Documentation: http://pysftp.rtfd.org/
 
