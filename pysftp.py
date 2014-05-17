@@ -304,11 +304,37 @@ class Connection(object):
 
         :returns: None
 
-        :raises: IOError if remotepath does not exist
+        :raises: IOError if the file doesn't exist
 
         """
         self._sftp_connect()
         self._sftp.chmod(remotepath, mode=int(str(mode), 8))
+
+    def chown(self, remotepath, uid=None, gid=None):
+        """ set uid and/or gid on a remotepath, you may specify either or both.
+        Unless you have **permission** to do this on the remote server, you will
+        raise an IOError: 13 - permission denied
+
+        :param str remotepath: the remote path/file to modify
+        :param int uid: the user id to set on the remotepath
+        :param int gid: the group id to set on the remotepath
+
+        :returns None:
+
+        :raises IOError: if you don't have permission or the file doesn't exist
+
+        """
+        self._sftp_connect()
+        if uid is None or gid is None:
+            if uid is None and gid is None:  # short circuit if no change
+                return
+            rstat = self._sftp.stat(remotepath)
+            if uid is None:
+                uid = rstat.st_uid
+            if gid is None:
+                gid = rstat.st_gid
+
+        self._sftp.chown(remotepath, uid=uid, gid=gid)
 
     def getcwd(self):
         """return the current working directory on the remote

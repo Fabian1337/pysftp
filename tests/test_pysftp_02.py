@@ -27,6 +27,60 @@ skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 
 @skip_if_ci
+def test_chown_uid():
+    '''test changing just the uid'''
+    with tempfile_containing('contents') as fname:
+        base_fname = base_fname = os.path.split(fname)[1]
+        with pysftp.Connection(**SFTP_LOCAL) as sftp:
+            org_attrs = sftp.put(fname)
+            uid = org_attrs.st_uid  # - 1
+            sftp.chown(base_fname, uid=uid)
+            new_attrs = sftp.stat(base_fname)
+            sftp.remove(base_fname)
+    assert new_attrs.st_uid == uid
+    assert new_attrs.st_gid == org_attrs.st_gid  # confirm no change to gid
+
+@skip_if_ci
+def test_chown_gid():
+    '''test changing just the gid'''
+    with tempfile_containing('contents') as fname:
+        base_fname = base_fname = os.path.split(fname)[1]
+        with pysftp.Connection(**SFTP_LOCAL) as sftp:
+            org_attrs = sftp.put(fname)
+            gid = org_attrs.st_gid  # - 1
+            sftp.chown(base_fname, gid=gid)
+            new_attrs = sftp.stat(base_fname)
+            sftp.remove(base_fname)
+    assert new_attrs.st_gid == gid
+    assert new_attrs.st_uid == org_attrs.st_uid  # confirm no change to uid
+
+@skip_if_ci
+def test_chown_none():
+    '''call .chown with no gid or uid specified'''
+    with tempfile_containing('contents') as fname:
+        base_fname = base_fname = os.path.split(fname)[1]
+        with pysftp.Connection(**SFTP_LOCAL) as sftp:
+            org_attrs = sftp.put(fname)
+            sftp.chown(base_fname)
+            new_attrs = sftp.stat(base_fname)
+            sftp.remove(base_fname)
+    assert new_attrs.st_gid == org_attrs.st_gid
+    assert new_attrs.st_uid == org_attrs.st_uid  # confirm no change to uid
+
+@skip_if_ci
+def test_chown_not_exist():
+    '''call .chown on a non-existing path'''
+    with pytest.raises(IOError):
+        with pysftp.Connection(**SFTP_LOCAL) as sftp:
+            sftp.chown('i-do-not-exist.txt', 666)
+
+def test_chown_ro_server():
+    '''call .chown against path on read-only server'''
+    with pytest.raises(IOError):
+        with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+            sftp.chown('readme.txt', gid=1000, uid=1000)
+
+@skip_if_ci
 def test_chmod_not_exist():
     '''verify error if trying to chmod something that isn't there'''
     with pytest.raises(IOError):
