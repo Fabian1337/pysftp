@@ -4,37 +4,37 @@ Change Log
 
 * 0.2.6 (dev)
 
-  * added ``preserve_mtime`` parameter to ``.put()`` function, optionally updates the remote file's st_mtime to match the local file.
-  * added ``preserve_mtime`` parameter to ``.get()`` method, optionally updates the local file's st_mtime to match the remote file
-  * added ``.exists()`` and ``.lexists()`` function, use .``.stat()`` and ``.lstat()`` respectively
-  * added ``.symlink()`` method
-  * added ``.isdir()``, ``.isfile()``, ``.makedirs()``
-  * added ``.chmod()``
-  * added ``.chown()``
-  * exposed underlying, active ``SFTPClient`` object for advance use
+  * added ``preserve_mtime`` parameter to :meth:`.put`, optionally updates the remote file's st_mtime to match the local file.
+  * added ``preserve_mtime`` parameter to :meth:`.get`, optionally updates the local file's st_mtime to match the remote file
+  * added :meth:`.exists` and :meth:`.lexists`, use :meth:`.stat` and :meth:`.lstat` respectively
+  * added :meth:`.symlink`
+  * added :meth:`.isdir`, :meth:`.isfile`, :meth:`.makedirs`
+  * added :meth:`.chmod`
+  * added :meth:`.chown`
+  * added :attr:`.sftp_client` which exposes underlying, active ``SFTPClient`` object for advance use
 
 * 0.2.5 (current, released 2014-05-15)
 
-  * added ``ciphers`` parameter to ``Connection`` object
-  * added ``.active_ciphers`` method to return local and remote cipher in use
-  * added ``.security_options``, where you can get available ciphers, among other information
+  * added ``ciphers`` parameter to :class:`.Connection` object
+  * added :attr:`.active_ciphers` to return local and remote cipher in use
+  * added :attr:`.security_options`, where you can get available ciphers, among other information
   * enhanced logging, and added documentation and tests
 
 * 0.2.4 (released 2014-05-13)
 
-  * pysftp.Connection can be used in a ``with`` statement
-  * add .remove() method
-  * added support for callback and confirm params to .put() method
-  * added support for callback on .get() method
-  * added support for .open()
+  * :class:`.Connection` can be used in a ``with`` statement
+  * add :meth:`.remove`
+  * added support for callback and confirm params to :meth:`.put`
+  * added support for callback on :meth:`.get`
+  * added support for :meth:`.open`
   * fixed password bug and now differentiates between an empty string and None
-  * added support for paramiko.AgentKey to be passed in as the private_key for Connection
-  * added support for .mkdir()
-  * added support for .rmdir()
-  * added support for .stat() and .lstat()
-  * added helper function, st_mode_to_int,to convert the st_mode value back into a common integer representation
-  * added .getfo() method
-  * added .putfo() method
+  * added support for ``paramiko.AgentKey`` to be passed in as the ``private_key`` for Connection
+  * added support for :meth:`.mkdir`
+  * added support for :meth:`.rmdir`
+  * added support for :meth:`.stat` and :meth:`.lstat`
+  * added helper function, :func:`.st_mode_to_int`,to convert the ``st_mode`` value back into a common integer representation
+  * added :meth:`.getfo`
+  * added :meth:`.putfo`
 
 * 0.2.3 (released 2014-05-10)
 

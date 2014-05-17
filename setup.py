@@ -6,7 +6,17 @@ with open('README.rst') as h_readme:
     LONG_DESCRIPTION = h_readme.read()
 
 with open('docs/changes.rst') as h_readme:
-    LONG_DESCRIPTION += h_readme.read()
+    BUF = h_readme.read()
+    BUF = BUF.replace('``', '$')        # protect code markers
+    for xref in [':meth:', ':attr:', ':class:', ':func:']:
+        BUF = BUF.replace(xref, '')     # remove xrefs
+    # BUF = BUF.replace(':meth:', '')     # remove links
+    # BUF = BUF.replace(':attr:', '')
+    # BUF = BUF.replace(':class:', '')
+    # BUF = BUF.replace(':func:', '')
+    BUF = BUF.replace('`', '``')        # replace refs with code markers
+    BUF = BUF.replace('$', '``')        # restore existing code markers
+LONG_DESCRIPTION += BUF
 
 DESCRIPTION = "A friendly face on SFTP"
 
