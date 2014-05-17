@@ -573,6 +573,20 @@ class Connection(object):
         self._sftp.symlink(remote_src, remote_dest)
 
     @property
+    def sftp_client(self):
+        """give access to the underlying, connected paramiko SFTPClient object
+
+        see http://paramiko-docs.readthedocs.org/en/latest/api/sftp.html?highlight=sftpclient
+
+        :params: None
+
+        :returns: the active SFTPClient object
+
+        """
+        self._sftp_connect()
+        return self._sftp
+
+    @property
     def active_ciphers(self):
         """Get tuple of currently used local and remote ciphers.
 

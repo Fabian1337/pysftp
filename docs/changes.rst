@@ -11,6 +11,7 @@ Change Log
   * added ``.isdir()``, ``.isfile()``, ``.makedirs()``
   * added ``.chmod()``
   * added ``.chown()``
+  * exposed underlying, active ``SFTPClient`` object for advance use
 
 * 0.2.5 (current, released 2014-05-15)
 

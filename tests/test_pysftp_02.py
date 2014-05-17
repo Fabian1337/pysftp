@@ -26,6 +26,12 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 
+def test_sftp_client():
+    '''test for access to the underlying, active sftpclient'''
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        assert 'normalize' in dir(sftp.sftp_client)
+        assert 'readlink' in dir(sftp.sftp_client)
+
 @skip_if_ci
 def test_chown_uid():
     '''test changing just the uid'''
