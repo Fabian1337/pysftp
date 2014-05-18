@@ -50,8 +50,8 @@ def test_walktree_cbclass():
                       dcallback=wtcb.dir_cb,
                       ucallback=wtcb.unk_cb)
 
-    assert u'./pub/example/ConsoleClient.png' in wtcb.flist
-    assert u'./readme.txt' in wtcb.flist
+    assert './pub/example/ConsoleClient.png' in wtcb.flist
+    assert './readme.txt' in wtcb.flist
     assert len(wtcb.flist) > 3
 
     assert wtcb.dlist == [u'./pub', u'./pub/example', u'./pub/test']
