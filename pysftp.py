@@ -4,6 +4,7 @@ import os
 import socket
 from stat import S_IMODE, S_ISDIR, S_ISREG
 import tempfile
+
 import paramiko
 from paramiko import SSHException   # make available
 from paramiko import AuthenticationException   # make available
@@ -88,7 +89,6 @@ class Connection(object):
         self._sftp = None
         if not username:
             username = os.environ['LOGNAME']
-
 
         self._logfile = log
         if log:

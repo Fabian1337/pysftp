@@ -208,14 +208,6 @@ def test_issue_15():
         sftp.chdir('pub')
         assert hresults == sftp.execute('pwd')
 
-def test_open_read():
-    '''test the open function'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        rfile = sftp.open('readme.txt')
-        contents = rfile.read()
-        rfile.close()
-    assert contents[0:7] == b'Welcome'
-
 @skip_if_ci
 def test_put_callback_confirm():
     '''test the callback and confirm feature of put'''
