@@ -447,6 +447,8 @@ class Connection(object):
         self._sftp_connect()
         self._sftp.remove(remotefile)
 
+    unlink = remove     # synonym for remove
+
     def rmdir(self, remotepath):
         """remove remote directory
 
