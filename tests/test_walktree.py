@@ -54,7 +54,7 @@ def test_walktree_cbclass():
     assert './readme.txt' in wtcb.flist
     assert len(wtcb.flist) > 3
 
-    assert wtcb.dlist == [u'./pub', u'./pub/example', u'./pub/test']
+    assert wtcb.dlist == ['./pub', './pub/example', './pub/test']
 
     assert wtcb.ulist == []
 
