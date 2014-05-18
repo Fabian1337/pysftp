@@ -572,6 +572,43 @@ class Connection(object):
         self._sftp_connect()
         self._sftp.symlink(remote_src, remote_dest)
 
+    def walktree(self, remotepath, fcallback, dcallback, ucallback):
+        '''recursively descend, depth first, the directory tree rooted at
+        remotepath, calling discreet callback functions for each regular file,
+        directory and unknown file type.
+
+        :param str remotepath:
+            root of remote directory to descend, use '.' to start at cwd
+        :param callable fcallback:
+            callback function to invoke for a regular file.
+            (form: ``func(str)``)
+        :param callable dcallback:
+            callback function to invoke for a directory. (form: ``func(str)``)
+        :param callable ucallback:
+            callback function to invoke for an unknown file type.
+            (form: ``func(str)``)
+
+        :returns: None
+
+        :raises:
+
+        '''
+        self._sftp_connect()
+        for entry in self._sftp.listdir(remotepath):
+            pathname = os.path.join(remotepath, entry)
+            mode = self._sftp.stat(pathname).st_mode
+            if S_ISDIR(mode):
+                # It's a directory, call the dcallback function
+                dcallback(pathname)
+                # now, recurse into it
+                self.walktree(pathname, fcallback, dcallback, ucallback)
+            elif S_ISREG(mode):
+                # It's a file, call the fcallback function
+                fcallback(pathname)
+            else:
+                # Unknown file type, print a message
+                ucallback(pathname)
+
     @property
     def sftp_client(self):
         """give access to the underlying, connected paramiko SFTPClient object
