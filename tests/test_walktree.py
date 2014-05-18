@@ -71,12 +71,12 @@ def test_walktree_cbmock():
                       dcallback=dir_cb,
                       ucallback=unk_cb)
     # check calls to the file callback
-    file_cb.assert_called_with(u'./readme.txt')
-    assert call(u'./pub/example/ConsoleClient.png') in file_cb.mock_calls
+    file_cb.assert_called_with('./readme.txt')
+    assert call('./pub/example/ConsoleClient.png') in file_cb.mock_calls
     assert file_cb.call_count > 3
     # check calls to the directory callback
-    assert [call(u'./pub'),
-            call(u'./pub/example'),
-            call(u'./pub/test')] == dir_cb.mock_calls
+    assert [call('./pub'),
+            call('./pub/example'),
+            call('./pub/test')] == dir_cb.mock_calls
     # check calls to the unknown callback
     assert [] == unk_cb.mock_calls
