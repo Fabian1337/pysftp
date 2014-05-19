@@ -371,6 +371,19 @@ class Connection(object):
         self._sftp_connect()
         self._sftp.mkdir(remotepath, mode=int(str(mode), 8))
 
+    def normalize(self, remotepath):
+        """Return the expanded path, w.r.t the server, of a given path.  This
+        can be used to resolve symlinks or determine what the server believes
+        to be the cwd, by passing '.' as remotepath.
+
+        :param str path: path to be normalized
+        :return: (str) normalized form of the given path
+
+        :raises: IOError, if remotepath can't be resolved
+        """
+        self._sftp_connect()
+        return self._sftp.normalize(remotepath)
+
     def isdir(self, remotepath):
         """return true if remotepath is a directory
 
