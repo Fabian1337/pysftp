@@ -51,6 +51,26 @@ class CredentialException(Exception):
         Exception.__init__(self, message)
         self.message = message
 
+class WTCallbacks(object):
+    '''create an object to house the callbacks'''
+    def __init__(self):
+        '''set instance vars'''
+        self.flist = []
+        self.dlist = []
+        self.ulist = []
+
+    def file_cb(self, pathname):
+        '''called for regular files'''
+        self.flist.append(pathname)
+
+    def dir_cb(self, pathname):
+        '''called for directories'''
+        self.dlist.append(pathname)
+
+    def unk_cb(self, pathname):
+        '''called for unknown file types'''
+        self.ulist.append(pathname)
+
 
 class Connection(object):
     """Connects and logs into the specified hostname.
@@ -177,6 +197,47 @@ class Connection(object):
         self._sftp.get(remotepath, localpath, callback=callback)
         if preserve_mtime:
             os.utime(localpath, (sftpattrs.st_atime, sftpattrs.st_mtime))
+
+    def get_r(self, remotedir, localdir, preserve_mtime=False):
+        """recursively copy remotedir structure to localdir
+
+        :param str remotedir: the remote directory to copy from
+        :param str localdir: the local directory to copy to
+        :param bool preserve_mtime:
+            preserve modification time on files(default: False)
+
+        :returns: None
+
+        :raises:
+
+        """
+        self._sftp_connect()
+        wtcb = WTCallbacks()
+        self.walktree(remotedir, wtcb.file_cb, wtcb.dir_cb, wtcb.unk_cb)
+        # handle directories we recursed through
+        for dname in wtcb.dlist:
+            for subdir in path_advance(dname):
+                try:
+                    os.mkdir(reparent(localdir, subdir))
+                    wtcb.dlist.append(subdir)
+                except OSError:     # dir exists
+                    pass
+
+        for fname in wtcb.flist:
+            # they may have told us to start down farther, so we may not have
+            # recursed through some, ensure local dir structure matches
+            head, _ = os.path.split(fname)
+            if head not in wtcb.dlist:
+                for subdir in path_advance(head):
+                    if subdir not in wtcb.dlist and subdir != '.':
+                        os.mkdir(reparent(localdir, subdir))
+                        wtcb.dlist.append(subdir)
+
+            self.get(fname,
+                     reparent(localdir, fname),
+                     preserve_mtime=preserve_mtime
+                    )
+
 
     def getfo(self, remotepath, flo, callback=None):
         """Copy a remote file (remotepath) to a file-like object, flo.
@@ -621,7 +682,7 @@ class Connection(object):
                 # It's a file, call the fcallback function
                 fcallback(pathname)
             else:
-                # Unknown file type, print a message
+                # Unknown file type
                 ucallback(pathname)
 
     @property
@@ -725,3 +786,20 @@ def path_retreat(thepath, sep=os.sep):
         if os.path.join(*parts):
             yield '%s%s' % (pre, os.path.join(*parts))
         parts = parts[:-1]
+
+def reparent(newparent, oldpath):
+    '''when copying or moving a directory structure, you need to re-parent the
+    oldpath.  When using os.path.join to calculate this new path, the
+    appearance of a / root path at the beginning of oldpath, supplants the
+    newparent and we don't want this to happen, so we need to make the oldpath
+    root appear as a child of the newparent.
+
+    :param: str newparent: the new parent location for oldpath (target)
+    :param str oldpath: the path being adopted by newparent (source)
+
+    :returns str: the resulting adoptive path
+    '''
+
+    if oldpath[0] == os.sep:
+        oldpath = '.' + oldpath
+    return os.path.join(newparent, oldpath)

@@ -21,30 +21,10 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
 
-class WTCallbacks(object):
-    '''create an object to house the callbacks'''
-    def __init__(self):
-        '''set instance vars'''
-        self.flist = []
-        self.dlist = []
-        self.ulist = []
-
-    def file_cb(self, pathname):
-        '''called for regular files'''
-        self.flist.append(pathname)
-
-    def dir_cb(self, pathname):
-        '''called for directories'''
-        self.dlist.append(pathname)
-
-    def unk_cb(self, pathname):
-        '''called for unknown file types'''
-        self.ulist.append(pathname)
-
 def test_walktree_cbclass():
     '''test the walktree function with callbacks from a class'''
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        wtcb = WTCallbacks()
+        wtcb = pysftp.WTCallbacks()
         sftp.walktree('.',
                       fcallback=wtcb.file_cb,
                       dcallback=wtcb.dir_cb,

@@ -4,9 +4,10 @@ Change Log
 
 * 0.2.7 (dev)
 
-  * added :meth:`.walktree`, recursively walk, depth first, a remote directory structure.  Used as the base of :meth:`get_recursive`. See tests/test_walktree.py for examples.
+  * added :meth:`.walktree`, recursively walk, depth first, a remote directory structure.  Used as the base of :meth:`.get_r`. See tests/test_walktree.py for examples.
   * added :meth:`.unlink` as synonym for :meth:`.remove`
   * added :meth:`.normalize`
+  * added :meth:`.get_r` to recursively copy remote directories to a local path
 
 
 * 0.2.6 (current, released 2014-05-17)
