@@ -208,6 +208,28 @@ class Connection(object):
         if preserve_mtime:
             os.utime(localpath, (sftpattrs.st_atime, sftpattrs.st_mtime))
 
+    def get_d(self, remotedir, localdir, preserve_mtime=False):
+        """get the contents of remotedir and write the to locadir.
+
+        :param str remotedir: the remote directory to copy from
+        :param str localdir: the local directory to copy to
+        :param bool preserve_mtime:
+            preserve modification time on files(default: False)
+
+        :returns: None
+
+        :raises:
+        """
+        self._sftp_connect()
+        saved = self.pwd
+        self.cwd(remotedir)
+        for sattr in self._sftp.listdir_attr('.'):
+            if S_ISREG(sattr.st_mode):
+                rname = sattr.filename
+                self.get(rname, reparent(localdir, rname),
+                         preserve_mtime=preserve_mtime)
+        self.cwd(saved)
+
     def get_r(self, remotedir, localdir, preserve_mtime=False):
         """recursively copy remotedir structure to localdir
 

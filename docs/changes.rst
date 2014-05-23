@@ -4,15 +4,15 @@ Change Log
 
 * 0.2.7 (dev)
 
-  * added :meth:`.walktree`, recursively walk, depth first, a remote directory structure.  Used as the base of :meth:`.get_r`. See tests/test_walktree.py for examples.
+  * created :meth:`.walktree`, recursively walk, depth first, a remote directory structure.  Used as the base of :meth:`.get_r`. See tests/test_walktree.py for examples.
   * added :meth:`.unlink` as synonym for :meth:`.remove`
   * added :meth:`.normalize`
-  * added :meth:`.get_r` to recursively copy remote directories to a local path
-  * added :attr:`.pwd` to return the current working directory
-  * added :meth:`.cwd` as synonym for :meth:`.chdir`
+  * created :meth:`.get_r` to recursively copy remote directories to a local path
+  * created :attr:`.pwd` to return the current working directory
+  * created :meth:`.cwd` as synonym for :meth:`.chdir`
   * modified :meth:`.listdir` to return a sorted list instead of an arbitrary one
   * added :meth:`.readlink`, always returns an absolute path
-
+  * created :meth:`.get_d` to copy the remote directory to a local path (non-recursive)
 
 * 0.2.6 (current, released 2014-05-17)
 
@@ -20,7 +20,7 @@ Change Log
   * added ``preserve_mtime`` parameter to :meth:`.get`, optionally updates the local file's st_mtime to match the remote file
   * added :meth:`.exists` and :meth:`.lexists`, use :meth:`.stat` and :meth:`.lstat` respectively
   * added :meth:`.symlink`
-  * added :meth:`.isdir`, :meth:`.isfile`, :meth:`.makedirs`
+  * created :meth:`.isdir`, :meth:`.isfile`, :meth:`.makedirs`
   * added :meth:`.chmod`
   * added :meth:`.chown`
   * added :attr:`.sftp_client` which exposes underlying, active ``SFTPClient`` object for advance use
