@@ -53,16 +53,16 @@ def test_walktree_cbmock():
     assert thecall in file_cb.mock_calls
     assert file_cb.call_count > 3
     # check calls to the directory callback
-    assert [call(u'./pub'),
-            call(u'./pub/build'),
-            call(u'./pub/build/build01'),
-            call(u'./pub/build/build01/build01a'),
-            call(u'./pub/build/build01/build01b'),
-            call(u'./pub/build/build01/build01c'),
-            call(u'./pub/example'),
-            call(u'./pub/src'),
-            call(u'./pub/src/libs'),
-            call(u'./pub/src/media'),
-            call(u'./pub/src/tests')] == dir_cb.mock_calls
+    assert [call('./pub'),
+            call('./pub/build'),
+            call('./pub/build/build01'),
+            call('./pub/build/build01/build01a'),
+            call('./pub/build/build01/build01b'),
+            call('./pub/build/build01/build01c'),
+            call('./pub/example'),
+            call('./pub/src'),
+            call('./pub/src/libs'),
+            call('./pub/src/media'),
+            call('./pub/src/tests')] == dir_cb.mock_calls
     # check calls to the unknown callback
     assert [] == unk_cb.mock_calls
