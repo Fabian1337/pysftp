@@ -52,7 +52,12 @@ class CredentialException(Exception):
         self.message = message
 
 class WTCallbacks(object):
-    '''create an object to house the callbacks'''
+    '''an object to house the callbacks, used internally
+
+    :ivar flist: list of files currently traversed
+    :ivar dlist: list of directories currently traversed
+    :ivar ulist: list of unknown entities currently traversed
+    '''
     def __init__(self):
         '''set instance vars'''
         self.flist = []
@@ -60,15 +65,24 @@ class WTCallbacks(object):
         self.ulist = []
 
     def file_cb(self, pathname):
-        '''called for regular files'''
+        '''called for regular files
+
+        :param str pathname: file path
+        '''
         self.flist.append(pathname)
 
     def dir_cb(self, pathname):
-        '''called for directories'''
+        '''called for directories
+
+        :param str pathname: directory path
+        '''
         self.dlist.append(pathname)
 
     def unk_cb(self, pathname):
-        '''called for unknown file types'''
+        '''called for unknown file types
+
+        :param str pathname: unknown entity path
+        '''
         self.ulist.append(pathname)
 
 
@@ -88,7 +102,7 @@ class Connection(object):
         pysftp creates a temporary file and logs to that.  If set to a valid
         path and filename, pysftp logs to that.  The name of the logfile can
         be found at  ``.logfile``
-    :returns: a connection to the requested host
+    :returns: (obj) connection to the requested host
     :raises:
         ConnectionException, CredentialException, SSHException,
         AuthenticationException, PasswordRequiredException
@@ -192,7 +206,7 @@ class Connection(object):
             local file match the time on the remote. (st_atime can differ
             because stat'ing the localfile can/does update it's st_atime)
 
-        :returns: nothing
+        :returns: None
 
         :raises: IOError
 
@@ -209,10 +223,10 @@ class Connection(object):
             os.utime(localpath, (sftpattrs.st_atime, sftpattrs.st_mtime))
 
     def get_d(self, remotedir, localdir, preserve_mtime=False):
-        """get the contents of remotedir and write the to locadir.
+        """get the contents of remotedir and write to locadir. (non-recursive)
 
-        :param str remotedir: the remote directory to copy from
-        :param str localdir: the local directory to copy to
+        :param str remotedir: the remote directory to copy from (source)
+        :param str localdir: the local directory to copy to (target)
         :param bool preserve_mtime:
             preserve modification time on files(default: False)
 
@@ -280,7 +294,7 @@ class Connection(object):
             optional callback function (form: ``func(int, int``)) that accepts
             the bytes transferred so far and the total bytes to be transferred.
 
-        :returns int: the number of bytes written to the opened file object
+        :returns: (int) the number of bytes written to the opened file object
 
         :raises: Any exception raised by operations will be passed through.
 
@@ -307,7 +321,7 @@ class Connection(object):
             because stat'ing the localfile can/does update it's st_atime)
 
         :returns:
-            SFTPAttributes object containing attributes about the given file
+            (obj) SFTPAttributes containing attributes about the given file
 
         :raises: IOError, OSError
 
@@ -346,9 +360,9 @@ class Connection(object):
             size
 
         :returns:
-            SFTPAttributes object containing attributes about the given file
+            (obj) SFTPAttributes containing attributes about the given file
 
-        :raises: TypeError if remotepath not specified, any underlying error
+        :raises: TypeError, if remotepath not specified, any underlying error
 
         """
         self._sftp_connect()
@@ -379,9 +393,9 @@ class Connection(object):
 
         :param str remotepath: the remote path to change to
 
-        :returns: nothing
+        :returns: None
 
-        :raises: IOError
+        :raises: IOError, if path does not exist
 
         """
         self._sftp_connect()
@@ -399,7 +413,7 @@ class Connection(object):
 
         :returns: None
 
-        :raises: IOError if the file doesn't exist
+        :raises: IOError, if the file doesn't exist
 
         """
         self._sftp_connect()
@@ -414,7 +428,7 @@ class Connection(object):
         :param int uid: the user id to set on the remotepath
         :param int gid: the group id to set on the remotepath
 
-        :returns None:
+        :returns: None
 
         :raises: IOError, if you don't have permission or the file doesn't exist
 
@@ -435,7 +449,7 @@ class Connection(object):
         """return the current working directory on the remote. This is a wrapper
         for paramiko's method and not to be confused with the SFTP command, cwd.
 
-        :returns: a string representing the current remote path
+        :returns: (str) the current remote path. None, if not set.
 
         """
         self._sftp_connect()
@@ -447,7 +461,7 @@ class Connection(object):
 
         :param str remotepath: path to list on the server
 
-        :returns: a list of entries
+        :returns: (list) directory entries, sorted
 
         """
         self._sftp_connect()
@@ -462,7 +476,7 @@ class Connection(object):
         :param int mode:
             int representation of octal mode for directory, default 777
 
-        :returns: nothing
+        :returns: None
 
         """
         self._sftp_connect()
@@ -473,7 +487,8 @@ class Connection(object):
         can be used to resolve symlinks or determine what the server believes
         to be the :attr:`.pwd`, by passing '.' as remotepath.
 
-        :param str path: path to be normalized
+        :param str remotepath: path to be normalized
+
         :return: (str) normalized form of the given path
 
         :raises: IOError, if remotepath can't be resolved
@@ -482,11 +497,11 @@ class Connection(object):
         return self._sftp.normalize(remotepath)
 
     def isdir(self, remotepath):
-        """return true if remotepath is a directory
+        """return true, if remotepath is a directory
 
         :param str remotepath: the path to test
 
-        :returns bool:
+        :returns: (bool)
 
         """
         self._sftp_connect()
@@ -501,7 +516,7 @@ class Connection(object):
 
         :param str remotepath: the path to test
 
-        :returns bool:
+        :returns: (bool)
 
         """
         self._sftp_connect()
@@ -518,7 +533,7 @@ class Connection(object):
         If remotedir already exists, silently complete. If a regular file is
         in the way, raise an exception.
 
-        :param str remotedir: the direcotry structure to create
+        :param str remotedir: the directory structure to create
         :param int mode:
             int representation of octal mode for directory, default 777
 
@@ -561,7 +576,7 @@ class Connection(object):
 
         :param str remotefile: the remote file to delete
 
-        :returns: nothing
+        :returns: None
 
         :raises: IOError
 
@@ -576,7 +591,7 @@ class Connection(object):
 
         :param str remotepath: the remote directory to remove
 
-        :returns: nothing
+        :returns: None
 
         """
         self._sftp_connect()
@@ -589,7 +604,7 @@ class Connection(object):
 
         :param str remote_dest: the remote file/directory to put it
 
-        :returns: nothing
+        :returns: None
 
         :raises: IOError
 
@@ -602,7 +617,7 @@ class Connection(object):
 
         :param str remotepath: path to stat
 
-        :returns: SFTPAttributes object
+        :returns: (obj) SFTPAttributes
 
         """
         self._sftp_connect()
@@ -614,7 +629,7 @@ class Connection(object):
 
         :param str remotepath: path to stat
 
-        :returns: SFTPAttributes object
+        :returns: (obj) SFTPAttributes object
 
         """
         self._sftp_connect()
@@ -641,9 +656,9 @@ class Connection(object):
             mode (Python-style) to open file (always assumed binary)
         :param int bufsize: desired buffering (-1 = default buffer size)
 
-        :returns: an SFTPFile object representing the open file
+        :returns: (obj) SFTPFile, a handle the remote open file
 
-        :raises: IOError - if the file could not be opened.
+        :raises: IOError, if the file could not be opened.
 
         """
         self._sftp_connect()
@@ -654,7 +669,7 @@ class Connection(object):
 
         :param str remotepath: the remote path to verify
 
-        :returns bool: True if remotepath exists, else False
+        :returns: (bool) True, if remotepath exists, else False
 
         """
         self._sftp_connect()
@@ -670,7 +685,7 @@ class Connection(object):
 
         :param str remotepath: the remote path to verify
 
-        :returns bool: True if lexists, else False
+        :returns: (bool), True, if lexists, else False
 
         """
         self._sftp_connect()
@@ -742,7 +757,7 @@ class Connection(object):
 
         :params: None
 
-        :returns: the active SFTPClient object
+        :returns: (obj) the active SFTPClient object
 
         """
         self._sftp_connect()
@@ -753,7 +768,7 @@ class Connection(object):
         """Get tuple of currently used local and remote ciphers.
 
         :returns:
-            a tuple of currently used ciphers (local_cipher, remote_cipher)
+            (tuple of  str) currently used ciphers (local_cipher, remote_cipher)
 
         """
         return self._transport.local_cipher, self._transport.remote_cipher
@@ -762,11 +777,10 @@ class Connection(object):
     def security_options(self):
         """return the available security options recognized by paramiko.
 
-        :returns SecurityOptions:
-            a simple object security preferences of an
-            ssh transport. These are tuples of acceptable ciphers, digests,
-            key types, and key exchange algorithms, listed in order of
-            preference.
+        :returns:
+            (obj) security preferences of the ssh transport. These are tuples
+            of acceptable `.ciphers`, `.digests`, `.key_types`, and key exchange
+            algorithms `.kex`, listed in order of preference.
 
         """
 
@@ -776,7 +790,7 @@ class Connection(object):
     def logfile(self):
         '''return the name of the file used for logging or False it not logging
 
-        :returns: logfile(str) or False(bool)
+        :returns: (str)logfile or (bool) False
 
         '''
         return self._logfile
@@ -798,7 +812,7 @@ def path_advance(thepath, sep=os.sep):
     :param str thepath: the path to navigate forwards
     :param str sep: the path separator to use, defaults to ``os.sep``
 
-    :returns generator: of strings
+    :returns: (iter)able of strings
 
     '''
     # handle a direct path
@@ -824,7 +838,7 @@ def path_retreat(thepath, sep=os.sep):
     :param str thepath: the path to retreat over
     :param str sep: the path separator to use, default to ``os.sep``
 
-    :returns generator: of strings
+    :returns: (iter)able of strings
 
     '''
     pre = ''
@@ -846,7 +860,7 @@ def reparent(newparent, oldpath):
     :param: str newparent: the new parent location for oldpath (target)
     :param str oldpath: the path being adopted by newparent (source)
 
-    :returns str: the resulting adoptive path
+    :returns: (str) resulting adoptive path
     '''
 
     if oldpath[0] == os.sep:
