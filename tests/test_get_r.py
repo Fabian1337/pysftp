@@ -16,7 +16,7 @@ SFTP_PUBLIC = {'host':'68.226.78.92', 'username':'test',
 
 
 def test_get_r():
-    '''test the get_r for remotepath is cwd '.' '''
+    '''test the get_r for remotepath is pwd '.' '''
     localpath = mkdtemp()
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         sftp.get_r('.', localpath)
@@ -47,8 +47,8 @@ def test_get_r():
     shutil.rmtree(localpath)
 
 
-def test_get_r_cwd():
-    '''test the get_r for remotepath is cwd '/home/test' '''
+def test_get_r_pwd():
+    '''test the get_r for remotepath is pwd '/home/test' '''
     localpath = mkdtemp()
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         sftp.get_r('/home/test', localpath)
@@ -84,7 +84,7 @@ def test_get_r_cwd():
 
 
 def test_get_r_pathed():
-    '''test the get_r for localpath, starting deeper then cwd '''
+    '''test the get_r for localpath, starting deeper then pwd '''
     localpath = mkdtemp()
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         sftp.get_r('./pub/example', localpath)

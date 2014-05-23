@@ -20,8 +20,19 @@ def test_normalize():
         sftp.chdir('pub')
         assert sftp.normalize('.') == '/home/test/pub'
 
+
 def test_normalize_symlink():
     '''test normalize against a symlink'''
     rsym = 'readme.sym'
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         assert sftp.normalize(rsym) == '/home/test/readme.txt'
+
+
+def test_pwd():
+    '''test the pwd property'''
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        assert sftp.pwd == '/home/test'
+        sftp.chdir('pub')
+        assert sftp.pwd == '/home/test/pub'
+        sftp.chdir('src/tests')
+        assert sftp.pwd == '/home/test/pub/src/tests'

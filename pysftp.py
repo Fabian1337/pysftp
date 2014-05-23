@@ -166,6 +166,16 @@ class Connection(object):
             self._sftp = paramiko.SFTPClient.from_transport(self._transport)
             self._sftp_live = True
 
+    @property
+    def pwd(self):
+        '''return the current working directory
+
+        :returns: (str) current working directory
+
+        '''
+        self._sftp_connect()
+        return self._sftp.normalize('.')
+
     def get(self, remotepath, localpath=None, callback=None,
             preserve_mtime=False):
         """Copies a file between the remote host and the local host.
@@ -173,7 +183,7 @@ class Connection(object):
         :param str remotepath: the remote path and filename, source
         :param str localpath:
             the local path and filename to copy, destination. If not specified,
-            file is copied to local cwd
+            file is copied to local current working directory
         :param callable callback:
             optional callback function (form: ``func(int, int)``) that accepts
             the bytes transferred so far and the total bytes to be transferred.
@@ -262,7 +272,7 @@ class Connection(object):
 
         :param str localpath: the local path and filename
         :param str remotepath:
-            the remote path, else the remote cwd() and filename is used.
+            the remote path, else the remote :attr:`.pwd` and filename is used.
         :param callable callback:
             optional callback function (form: ``func(int, int``)) that accepts
             the bytes transferred so far and the total bytes to be transferred..
@@ -325,7 +335,7 @@ class Connection(object):
 
     def execute(self, command):
         """Execute the given commands on a remote machine.  The command is
-        executed without regard to the remote cwd.
+        executed without regard to the remote :attr:`.pwd`.
 
         :param str command: the command to execute.
 
@@ -398,7 +408,8 @@ class Connection(object):
         self._sftp.chown(remotepath, uid=uid, gid=gid)
 
     def getcwd(self):
-        """return the current working directory on the remote
+        """return the current working directory on the remote. This is a wrapper
+        for paramiko's method and not to be confused with the SFTP command, cwd.
 
         :returns: a string representing the current remote path
 
@@ -435,7 +446,7 @@ class Connection(object):
     def normalize(self, remotepath):
         """Return the expanded path, w.r.t the server, of a given path.  This
         can be used to resolve symlinks or determine what the server believes
-        to be the cwd, by passing '.' as remotepath.
+        to be the :attr:`.pwd`, by passing '.' as remotepath.
 
         :param str path: path to be normalized
         :return: (str) normalized form of the given path
@@ -509,7 +520,7 @@ class Connection(object):
 
     def remove(self, remotefile):
         """remove the file @ remotefile, remotefile may include a path, if no
-        path, then cwd is used.  This method only works on files
+        path, then :attr:`.pwd` is used.  This method only works on files
 
         :param str remotefile: the remote file to delete
 
@@ -654,7 +665,8 @@ class Connection(object):
         directory and unknown file type.
 
         :param str remotepath:
-            root of remote directory to descend, use '.' to start at cwd
+            root of remote directory to descend, use '.' to start at
+            :attr:`.pwd`
         :param callable fcallback:
             callback function to invoke for a regular file.
             (form: ``func(str)``)

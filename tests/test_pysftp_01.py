@@ -264,7 +264,7 @@ def test_put():
 
 
 def test_chdir_bad_dir():
-    '''try to cwd() to a non-existing remote dir'''
+    '''try to chdir() to a non-existing remote dir'''
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         with pytest.raises(IOError):
             sftp.chdir('i-dont-exist')
@@ -332,7 +332,7 @@ def test_listdir():
     sftp.close()
 
 
-def test_cwd():
+def test_getcwd():
     '''try and connect to localhost'''
     sftp = pysftp.Connection(host='test.rebex.net',
                              username='demo',
