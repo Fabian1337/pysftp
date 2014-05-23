@@ -521,6 +521,18 @@ class Connection(object):
             if tail:
                 self.mkdir(remotedir, mode=mode)
 
+    def readlink(self, remotelink):
+        """Return the target of a symlink (shortcut).  The result will be
+        an absolute pathname.
+
+        :param str remotelink: remote path of the symlink
+
+        :return: (str) absolute path to target
+
+        """
+        self._sftp_connect()
+        return self._sftp.normalize(self._sftp.readlink(remotelink))
+
     def remove(self, remotefile):
         """remove the file @ remotefile, remotefile may include a path, if no
         path, then :attr:`.pwd` is used.  This method only works on files

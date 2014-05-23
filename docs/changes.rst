@@ -11,6 +11,7 @@ Change Log
   * added :attr:`.pwd` to return the current working directory
   * added :meth:`.cwd` as synonym for :meth:`.chdir`
   * modified :meth:`.listdir` to return a sorted list instead of an arbitrary one
+  * added :meth:`.readlink`, always returns an absolute path
 
 
 * 0.2.6 (current, released 2014-05-17)
