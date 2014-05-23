@@ -394,7 +394,7 @@ class Connection(object):
 
         :returns None:
 
-        :raises IOError: if you don't have permission or the file doesn't exist
+        :raises: IOError, if you don't have permission or the file doesn't exist
 
         """
         self._sftp_connect()

@@ -12,8 +12,8 @@ import pytest
 
 # pylint: disable=E1101
 # pylint: disable = W0142
-SFTP_PUBLIC = {'host':'test.rebex.net', 'username':'demo',
-               'password':'password'}
+SFTP_PUBLIC = {'host':'68.226.78.92', 'username':'test',
+               'password':'test1357', 'port':2222}
 SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
  #can only reach public, read-only server from CI platform, only test locally
  # if environment variable CI is set  to something to disable local tests

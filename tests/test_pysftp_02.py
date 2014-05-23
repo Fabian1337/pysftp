@@ -17,8 +17,8 @@ import pytest
 
 # pylint: disable=E1101
 # pylint: disable = W0142
-SFTP_PUBLIC = {'host':'test.rebex.net', 'username':'demo',
-               'password':'password'}
+SFTP_PUBLIC = {'host':'68.226.78.92', 'username':'test',
+               'password':'test1357', 'port':2222}
 SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
  #can only reach public, read-only server from CI platform, only test locally
  # if environment variable CI is set  to something to disable local tests
@@ -157,18 +157,11 @@ def test_isfile():
         assert sftp.isfile(rfile) == True
         assert sftp.isfile(rdir) == False
 
-@skip_if_ci
 def test_isfile_2():
     '''test .isfile() functionality against a symlink'''
-    rsym = 'my-link.txt'
-    with tempfile_containing(contents=8192*'*') as fname:
-        with pysftp.Connection(**SFTP_LOCAL) as sftp:
-            sftp.put(fname)
-            sftp.symlink(fname, rsym)
-            is_file = sftp.isfile(rsym)
-            sftp.remove(rsym)
-            sftp.remove(os.path.split(fname)[1])
-    assert is_file == True
+    rsym = 'readme.sym'
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        assert sftp.isfile(rsym)
 
 def test_isdir():
     '''test .isdir() functionality'''
@@ -178,31 +171,17 @@ def test_isdir():
         assert sftp.isdir(rfile) == False
         assert sftp.isdir(rdir) == True
 
-@skip_if_ci
 def test_isdir_2():
     '''test .isdir() functionality against a symlink'''
-    rsym = 'my-link.txt'
-    with tempfile_containing(contents=8192*'*') as fname:
-        with pysftp.Connection(**SFTP_LOCAL) as sftp:
-            sftp.put(fname)
-            sftp.symlink(fname, rsym)
-            is_dir = sftp.isdir(rsym)
-            sftp.remove(rsym)
-            sftp.remove(os.path.split(fname)[1])
-    assert is_dir == False
+    rsym = 'readme.sym'
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        assert sftp.isdir(rsym) == False
 
-@skip_if_ci
 def test_lexists_symbolic():
     '''test .lexists() vs. symbolic link'''
-    rdest = 'honey-boo-boo'
-    with tempfile_containing(contents=8192*'*') as fname:
-        with pysftp.Connection(**SFTP_LOCAL) as sftp:
-            sftp.put(fname)
-            sftp.symlink(fname, rdest)
-            sftp.remove(os.path.split(fname)[1])
-            found = sftp.lexists(rdest) == True
-            sftp.remove(rdest)
-    assert found
+    rsym = 'readme.sym'
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        assert sftp.lexists(rsym)
 
 @skip_if_ci
 def test_symlink():
