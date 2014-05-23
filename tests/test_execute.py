@@ -25,7 +25,7 @@ def test_execute_simple_ro():
     '''test execute simple on a read-only server '''
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         # always starts at no timeout,
-        results = ['This service allows sftp connections only.\n',]
+        results = [b'This service allows sftp connections only.\n',]
         assert sftp.execute('ls') == results
 
 @skip_if_ci
