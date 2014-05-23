@@ -296,8 +296,7 @@ def test_get_bad_remote():
 def test_connection_with():
     '''connect to a public sftp server'''
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert sorted(sftp.listdir()) == sorted(['pub', 'readme.txt',
-                                                 'readme.sym'])
+        assert sftp.listdir() == ['pub', 'readme.sym', 'readme.txt']
 
 
 def test_connection_bad_host():
@@ -325,7 +324,7 @@ def test_connection_good():
 def test_listdir():
     '''test listdir'''
     sftp = pysftp.Connection(**SFTP_PUBLIC)
-    assert sorted(sftp.listdir()) == sorted(['pub', 'readme.sym', 'readme.txt'])
+    assert sftp.listdir() == ['pub', 'readme.sym', 'readme.txt']
     sftp.close()
 
 

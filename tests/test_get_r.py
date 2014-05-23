@@ -41,7 +41,7 @@ def test_get_r():
                ['test01.py', 'test02.py', 'test03.py']),
              ]
     for pth, fls in checks:
-        assert sorted(os.listdir(os.path.join(localpath, *pth))) == sorted(fls)
+        assert sorted(os.listdir(os.path.join(localpath, *pth))) == fls
 
     # cleanup local
     shutil.rmtree(localpath)
@@ -77,7 +77,7 @@ def test_get_r_pwd():
                ['test01.py', 'test02.py', 'test03.py']),
              ]
     for pth, fls in checks:
-        assert sorted(os.listdir(os.path.join(localpath, *pth))) == sorted(fls)
+        assert sorted(os.listdir(os.path.join(localpath, *pth))) == fls
 
     # cleanup local
     shutil.rmtree(localpath)
@@ -95,7 +95,7 @@ def test_get_r_pathed():
                ['image01.jpg', 'image02.png', 'image03.gif', 'worksheet.xls']),
              ]
     for pth, fls in checks:
-        assert sorted(os.listdir(os.path.join(localpath, *pth))) == sorted(fls)
+        assert sorted(os.listdir(os.path.join(localpath, *pth))) == fls
 
     # cleanup local
     shutil.rmtree(localpath)
@@ -111,7 +111,7 @@ def test_get_r_cdd():
                ['image01.jpg', 'image02.png', 'image03.gif', 'worksheet.xls']),
              ]
     for pth, fls in checks:
-        assert sorted(os.listdir(os.path.join(localpath, *pth))) == sorted(fls)
+        assert sorted(os.listdir(os.path.join(localpath, *pth))) == fls
 
     # cleanup local
     shutil.rmtree(localpath)

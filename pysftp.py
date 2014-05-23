@@ -420,7 +420,8 @@ class Connection(object):
         return self._sftp.getcwd()
 
     def listdir(self, remotepath='.'):
-        """return a list of files/directories for the given remote path
+        """return a list of files/directories for the given remote path.
+        Unlike, paramiko, the directory listing is sorted.
 
         :param str remotepath: path to list on the server
 
@@ -428,7 +429,7 @@ class Connection(object):
 
         """
         self._sftp_connect()
-        return self._sftp.listdir(remotepath)
+        return sorted(self._sftp.listdir(remotepath))
 
     def mkdir(self, remotepath, mode=777):
         """Create a directory named remotepath with mode. On some systems,
