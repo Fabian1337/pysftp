@@ -375,7 +375,7 @@ class Connection(object):
 
         :param str command: the command to execute.
 
-        :returns: results
+        :returns: (list of str) representing the results of the command
 
         :raises: Any exception raised by command will be passed through.
 
