@@ -9,6 +9,7 @@ Change Log
   * added :meth:`.normalize`
   * added :meth:`.get_r` to recursively copy remote directories to a local path
   * added :attr:`.pwd` to return the current working directory
+  * added :meth:`.cwd` as synonym for :meth:`.chdir`
 
 
 * 0.2.6 (current, released 2014-05-17)

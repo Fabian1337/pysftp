@@ -365,6 +365,8 @@ class Connection(object):
         self._sftp_connect()
         self._sftp.chdir(remotepath)
 
+    cwd = chdir     # synonym for chdir
+
     def chmod(self, remotepath, mode=777):
         """set the mode of a remotepath to mode, where mode is an integer
         representation of the octal mode to use.

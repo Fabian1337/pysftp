@@ -15,8 +15,8 @@ import pytest
 
 # pylint: disable=E1101
 # pylint: disable = W0142
-SFTP_PUBLIC = {'host':'test.rebex.net', 'username':'demo',
-               'password':'password'}
+SFTP_PUBLIC = {'host':'68.226.78.92', 'username':'test',
+               'password':'test1357', 'port':2222}
 SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
  #can only reach public, read-only server from CI platform, only test locally
  # if environment variable CI is set  to something to disable local tests
@@ -142,7 +142,7 @@ def test_getfo_flo():
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         num_bytes = sftp.getfo('readme.txt', flo)
 
-    assert flo.getvalue()[0:7] == b'Welcome'
+    assert flo.getvalue()[0:9] == b'This SFTP'
     assert num_bytes == len(flo.getvalue())
 
 def test_getfo_callback():
@@ -296,7 +296,8 @@ def test_get_bad_remote():
 def test_connection_with():
     '''connect to a public sftp server'''
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert sftp.listdir() == ['pub', 'readme.txt']
+        assert sorted(sftp.listdir()) == sorted(['pub', 'readme.txt',
+                                                 'readme.sym'])
 
 
 def test_connection_bad_host():
@@ -309,56 +310,48 @@ def test_connection_bad_host():
 
 def test_connection_bad_credentials():
     '''attempt connection to a non-existing server'''
-    with pytest.raises(pysftp.AuthenticationException):
-        sftp = pysftp.Connection(host='test.rebex.net',
-                                 username='demo',
-                                 password='badword')
-        sftp.close()
+    with pytest.raises(pysftp.SSHException):
+        copts = SFTP_PUBLIC.copy()
+        copts['password'] = 'badword'
+        with pysftp.Connection(**copts) as sftp:
+            pass
 
 def test_connection_good():
     '''connect to a public sftp server'''
-    sftp = pysftp.Connection(host='test.rebex.net',
-                             username='demo',
-                             password='password')
+    sftp = pysftp.Connection(**SFTP_PUBLIC)
     sftp.close()
 
 
 def test_listdir():
-    '''try and connect to localhost'''
-    sftp = pysftp.Connection(host='test.rebex.net',
-                             username='demo',
-                             password='password')
-    assert sftp.listdir() == ['pub', 'readme.txt']
+    '''test listdir'''
+    sftp = pysftp.Connection(**SFTP_PUBLIC)
+    assert sorted(sftp.listdir()) == sorted(['pub', 'readme.sym', 'readme.txt'])
     sftp.close()
 
 
 def test_getcwd():
-    '''try and connect to localhost'''
-    sftp = pysftp.Connection(host='test.rebex.net',
-                             username='demo',
-                             password='password')
+    '''test .getcwd'''
+    sftp = pysftp.Connection(**SFTP_PUBLIC)
     assert sftp.getcwd() == None
     sftp.chdir('pub')
-    assert sftp.getcwd() == '/pub'
+    assert sftp.getcwd() == '/home/test/pub'
     sftp.close()
 
 def test_get():
     '''download a file'''
-    sftp = pysftp.Connection(host='test.rebex.net',
-                             username='demo',
-                             password='password')
+    sftp = pysftp.Connection(**SFTP_PUBLIC)
     with tempfile_containing('') as fname:
         sftp.get('readme.txt', fname)
         sftp.close()
-        assert open(fname, 'rb').read()[0:7] == b'Welcome'
+        assert open(fname, 'rb').read()[0:9] == b'This SFTP'
 
 def test_get_callback():
-    '''download a file'''
+    '''test .get callback'''
     cback = Mock(return_value=None)
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         with tempfile_containing('') as fname:
             result = sftp.get('readme.txt', fname, callback=cback)
-            assert open(fname, 'rb').read()[0:7] == b'Welcome'
+            assert open(fname, 'rb').read()[0:9] == b'This SFTP'
     # verify callback was called more than once - usually a min of 2
     assert cback.call_count >= 2
     # unlike .put() nothing is returned from the operation
