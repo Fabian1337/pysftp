@@ -795,6 +795,27 @@ class Connection(object):
         '''
         return self._logfile
 
+    @property
+    def timeout(self):
+        ''' (float|None) get or set the underlying socket timeout for pending
+        read/write ops.  (default: None - no timeout)
+
+        :returns:
+            (float|None) seconds to wait for a pending read/write operation
+            before raising socket.timeout, or None for no timeout
+        '''
+        self._sftp_connect()
+        channel = self._sftp.get_channel()
+
+        return channel.gettimeout()
+
+    @timeout.setter
+    def timeout(self, val):
+        '''setter for timeout'''
+        self._sftp_connect()
+        channel = self._sftp.get_channel()
+        channel.settimeout(val)
+
     def __del__(self):
         """Attempt to clean up if not explicitly closed."""
         self.close()

@@ -13,6 +13,7 @@ Change Log
   * modified :meth:`.listdir` to return a sorted list instead of an arbitrary one
   * added :meth:`.readlink`, always returns an absolute path
   * created :meth:`.get_d` to copy the remote directory to a local path (non-recursive)
+  * added :attr:`.timeout` to set the read/write timeout of the underlying channel for pending read/write ops
 
 * 0.2.6 (current, released 2014-05-17)
 
