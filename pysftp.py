@@ -729,6 +729,23 @@ class Connection(object):
         self._sftp_connect()
         self._sftp.symlink(remote_src, remote_dest)
 
+    def truncate(self, remotepath, size):
+        """Change the size of the file specified by path. Used to modify the
+        size of the file, just like the truncate method on Python file objects.
+        The new file size is confirmed and returned.
+
+        :param str remotepath: remote file path to modify
+        :param int|long size: the new file size
+
+        :returns: (int) new size of file
+
+        :raises: IOError, if file does not exist
+
+        """
+        self._sftp_connect()
+        self._sftp.truncate(remotepath, size)
+        return self._sftp.stat(remotepath).st_size
+
     def walktree(self, remotepath, fcallback, dcallback, ucallback):
         '''recursively descend, depth first, the directory tree rooted at
         remotepath, calling discreet callback functions for each regular file,
