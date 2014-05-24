@@ -14,6 +14,7 @@ Change Log
   * added :meth:`.readlink`, always returns an absolute path
   * created :meth:`.get_d` to copy the remote directory to a local path (non-recursive)
   * added :attr:`.timeout` to set the read/write timeout of the underlying channel for pending read/write ops
+  * added :meth:`.listdir_attr`, wrapper for paramiko method
 
 * 0.2.6 (current, released 2014-05-17)
 

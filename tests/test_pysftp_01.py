@@ -321,13 +321,6 @@ def test_connection_good():
     sftp.close()
 
 
-def test_listdir():
-    '''test listdir'''
-    sftp = pysftp.Connection(**SFTP_PUBLIC)
-    assert sftp.listdir() == ['pub', 'readme.sym', 'readme.txt']
-    sftp.close()
-
-
 def test_getcwd():
     '''test .getcwd'''
     sftp = pysftp.Connection(**SFTP_PUBLIC)

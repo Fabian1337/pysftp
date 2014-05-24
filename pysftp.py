@@ -467,6 +467,24 @@ class Connection(object):
         self._sftp_connect()
         return sorted(self._sftp.listdir(remotepath))
 
+    def listdir_attr(self, remotepath='.'):
+        """return a list of SFTPAttribute objects of the files/directories for
+        the given remote path. The list is in arbitrary order. It does not
+        include the special entries '.' and '..'.
+
+        The returned SFTPAttributes objects will each have an additional field:
+        longname, which may contain a formatted string of the file's
+        attributes, in unix format. The content of this string will depend on
+        the SFTP server.
+
+        :param str remotepath: path to list on the server
+
+        :returns: (list of SFTPAttributes)
+
+        """
+        self._sftp_connect()
+        return self._sftp.listdir_attr(remotepath)
+
     def mkdir(self, remotepath, mode=777):
         """Create a directory named remotepath with mode. On some systems,
         mode is ignored. Where it is used, the current umask value is first
