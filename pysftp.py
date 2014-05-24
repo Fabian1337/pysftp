@@ -10,7 +10,7 @@ from paramiko import SSHException   # make available
 from paramiko import AuthenticationException   # make available
 from paramiko import AgentKey
 
-__version__ = "0.2.7"
+__version__ = "0.2.8"
 
 
 def st_mode_to_int(val):
