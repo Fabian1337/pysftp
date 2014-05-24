@@ -1,10 +1,7 @@
 '''test pysftp.reparent(newparent, oldpath) - uses py.test'''
 
-# the following 3 lines let py.test find the module
-import sys, os
-MYPATH = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, MYPATH + '/../')
-
+# pylint: disable = W0142
+from common import *
 from pysftp import reparent
 
 

@@ -1,17 +1,9 @@
 '''test pysftp.Connection.open - uses py.test'''
 
-# the following 3 lines let py.test find the module
-import sys, os
-MYPATH = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, MYPATH + '/../')
-
-import pysftp
-
+# pylint: disable = W0142
+from common import *
 from mock import Mock, call
 
-# pylint: disable = W0142
-SFTP_PUBLIC = {'host':'68.226.78.92', 'username':'test',
-               'password':'test1357', 'port':2222}
 
 def test_walktree_cbclass():
     '''test the walktree function with callbacks from a class'''

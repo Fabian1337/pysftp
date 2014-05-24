@@ -1,18 +1,9 @@
 '''test pysftp.Connection.get_d - uses py.test'''
 
-# the following 3 lines let py.test find the module
-import sys, os
-MYPATH = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, MYPATH + '/../')
-
-import pysftp
-
-import shutil
-from tempfile import mkdtemp
-
 # pylint: disable = W0142
-SFTP_PUBLIC = {'host':'68.226.78.92', 'username':'test',
-               'password':'test1357', 'port':2222}
+from common import *
+from tempfile import mkdtemp
+import shutil
 
 
 def test_get_d():
