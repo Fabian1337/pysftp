@@ -2,6 +2,11 @@ Change Log
 ----------
 
 
+* 0.2.8 (dev)
+
+  * in progress
+
+
 * 0.2.7 (current, released 2014-05-24)
 
   * created :meth:`.walktree`, recursively walk, depth first, a remote directory structure.  Used as the base of :meth:`.get_r`. See tests/test_walktree.py for examples.
