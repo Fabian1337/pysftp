@@ -2,7 +2,7 @@ Change Log
 ----------
 
 
-* 0.2.7 (dev)
+* 0.2.7 (current, released 2014-05-24)
 
   * created :meth:`.walktree`, recursively walk, depth first, a remote directory structure.  Used as the base of :meth:`.get_r`. See tests/test_walktree.py for examples.
   * added :meth:`.unlink` as synonym for :meth:`.remove`
@@ -18,7 +18,7 @@ Change Log
   * added :meth:`.truncate`, method returns the new file size
   * improved DRY'ness of test suite
 
-* 0.2.6 (current, released 2014-05-17)
+* 0.2.6 (released 2014-05-17)
 
   * added ``preserve_mtime`` parameter to :meth:`.put`, optionally updates the remote file's st_mtime to match the local file.
   * added ``preserve_mtime`` parameter to :meth:`.get`, optionally updates the local file's st_mtime to match the remote file
