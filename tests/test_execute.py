@@ -5,6 +5,7 @@ import sys, os
 MYPATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, MYPATH + '/../')
 
+from dhp.VI import py_ver
 import pytest
 
 import pysftp
@@ -31,7 +32,7 @@ def test_execute_simple_ro():
 @skip_if_ci
 def test_execute_simple():
     '''test execute simple'''
-    if sys.version_info[0] == 2:
+    if py_ver() == 2:
         type_check = basestring
     else:
         type_check = str
