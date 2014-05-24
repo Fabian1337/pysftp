@@ -16,7 +16,7 @@ Change Log
   * added :attr:`.timeout` to set the read/write timeout of the underlying channel for pending read/write ops
   * added :meth:`.listdir_attr`, wrapper for paramiko method
   * added :meth:`.truncate`, method returns the new file size
-
+  * improved DRY'ness of test suite
 
 * 0.2.6 (current, released 2014-05-17)
 
