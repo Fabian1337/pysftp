@@ -1,6 +1,7 @@
 """A friendly Python SFTP interface."""
 
 import os
+from contextlib import contextmanager
 import socket
 from stat import S_IMODE, S_ISDIR, S_ISREG
 import tempfile
@@ -460,6 +461,24 @@ class Connection(object):
             return output
         else:
             return channel.makefile_stderr('rb', -1).readlines()
+
+    @contextmanager
+    def cd(self, remotepath=None):
+        """context manager that can change to a optionally specified remote
+        directory and restores the old pwd on exit.
+
+        :param str|None remotepath: *Default: None* -
+            remotepath to temporarily make the current directory
+        :returns: None
+        :raises: IOError, if remote path doesn't exist
+        """
+        try:
+            original_path = self.pwd
+            if remotepath is not None:
+                self.cwd(remotepath)
+            yield
+        finally:
+            self.cwd(original_path)
 
     def chdir(self, remotepath):
         """change the current working directory on the remote
