@@ -12,7 +12,7 @@ import shutil
 
 @skip_if_ci
 def test_put_d():
-    '''test the put_d for remotepath is pwd '.' '''
+    '''test put_d'''
     localpath = mkdtemp()
     print(localpath)
     remote_dir = os.path.split(localpath)[1]
@@ -62,3 +62,16 @@ def test_put_d():
     assert rfs.ulist == lfs.ulist
     assert rfs.ulist == []
 
+def test_put_d_ro():
+    '''test put_d failure on remote read-only srvr'''
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        # run the op
+        with pytest.raises(IOError):
+            sftp.put_d('.', '.')
+
+def test_put_d_bad_local():
+    '''test put_d failure on non-existing local directory'''
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        # run the op
+        with pytest.raises(OSError):
+            sftp.put_d('/non-existing', '.')

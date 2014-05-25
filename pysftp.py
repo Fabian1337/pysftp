@@ -330,7 +330,8 @@ class Connection(object):
         :returns:
             (obj) SFTPAttributes containing attributes about the given file
 
-        :raises: IOError, OSError
+        :raises IOError: if remotepath doesn't exist
+        :raises OSError: if localpath doesn't exist
 
         """
         if not remotepath:
@@ -365,7 +366,8 @@ class Connection(object):
 
         :returns: None
 
-        :raises: IOError, OSError
+        :raises IOError: if remotepath doesn't exist
+        :raises OSError: if localpath doesn't exist
         """
         self._sftp_connect()
         wtcb = WTCallbacks()
@@ -398,7 +400,8 @@ class Connection(object):
 
         :returns: None
 
-        :raises: IOError, OSError
+        :raises IOError: if remotepath doesn't exist
+        :raises OSError: if localpath doesn't exist
         """
         self._sftp_connect()
         wtcb = WTCallbacks()
