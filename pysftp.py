@@ -245,14 +245,12 @@ class Connection(object):
         :raises:
         """
         self._sftp_connect()
-        saved = self.pwd
-        self.cwd(remotedir)
-        for sattr in self._sftp.listdir_attr('.'):
-            if S_ISREG(sattr.st_mode):
-                rname = sattr.filename
-                self.get(rname, reparent(localdir, rname),
-                         preserve_mtime=preserve_mtime)
-        self.cwd(saved)
+        with self.cd(remotedir):
+            for sattr in self._sftp.listdir_attr('.'):
+                if S_ISREG(sattr.st_mode):
+                    rname = sattr.filename
+                    self.get(rname, reparent(localdir, rname),
+                             preserve_mtime=preserve_mtime)
 
     def get_r(self, remotedir, localdir, preserve_mtime=False):
         """recursively copy remotedir structure to localdir

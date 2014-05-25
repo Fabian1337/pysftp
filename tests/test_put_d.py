@@ -27,10 +27,9 @@ def test_put_d():
 
         # inspect results
         rfs = pysftp.WTCallbacks()
-        save_rdir = sftp.pwd
-        sftp.chdir(remote_dir)
-        sftp.walktree('.', rfs.file_cb, rfs.dir_cb, rfs.unk_cb)
-        sftp.cwd(save_rdir)
+        with sftp.cd(remote_dir):
+            sftp.walktree('.', rfs.file_cb, rfs.dir_cb, rfs.unk_cb)
+
         lfs = pysftp.WTCallbacks()
         save_dir = os.getcwd()
         os.chdir(localpath)
