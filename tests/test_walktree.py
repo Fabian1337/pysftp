@@ -60,6 +60,29 @@ def test_walktree_cbmock():
     # check calls to the unknown callback
     assert [] == unk_cb.mock_calls
 
+def test_walktree_no_recurse():
+    '''test the walktree function, with mocked callbacks (standalone functions)
+    '''
+    file_cb = Mock(return_value=None)
+    dir_cb = Mock(return_value=None)
+    unk_cb = Mock(return_value=None)
+
+    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+        sftp.walktree('.',
+                      fcallback=file_cb,
+                      dcallback=dir_cb,
+                      ucallback=unk_cb,
+                      recurse=False)
+    # check calls to the file callback
+    file_cb.assert_called_with('./readme.txt')
+    thecall = call('./readme.sym')
+    assert thecall in file_cb.mock_calls
+    assert file_cb.call_count == 2
+    # check calls to the directory callback
+    assert [call('./pub'),] == dir_cb.mock_calls
+    # check calls to the unknown callback
+    assert [] == unk_cb.mock_calls
+
 def test_walktree_local():
     '''test the capability of walktree to walk a local directory structure'''
     wtcb = pysftp.WTCallbacks()
