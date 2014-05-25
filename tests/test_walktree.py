@@ -68,7 +68,7 @@ def test_walktree_local():
                     dcallback=wtcb.dir_cb,
                     ucallback=wtcb.unk_cb)
     print(wtcb.dlist)
-    for dname in ['./docs', './dist', './tests']:
+    for dname in ['./docs', './tests']:
         assert dname in wtcb.dlist
 
     print(wtcb.ulist)
@@ -77,3 +77,24 @@ def test_walktree_local():
     print(wtcb.flist)
     for fname in ['./release.sh', './MANIFEST.in', './tests/test_execute.py']:
         assert fname in wtcb.flist
+
+def test_walktree_local_no_recurse():
+    '''test the capability of walktree with recurse=False to walk a local
+    directory structure'''
+    wtcb = pysftp.WTCallbacks()
+    pysftp.walktree('.',
+                    fcallback=wtcb.file_cb,
+                    dcallback=wtcb.dir_cb,
+                    ucallback=wtcb.unk_cb,
+                    recurse=False)
+    print(wtcb.dlist)
+    for dname in ['./docs', './tests']:
+        assert dname in wtcb.dlist
+
+    print(wtcb.ulist)
+    assert wtcb.ulist == []
+
+    print(wtcb.flist)
+    for fname in ['./release.sh', './MANIFEST.in']:
+        assert fname in wtcb.flist
+    assert './tests/test_execute.py' not in wtcb.flist

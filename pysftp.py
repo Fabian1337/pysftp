@@ -924,7 +924,7 @@ def reparent(newparent, oldpath):
     return os.path.join(newparent, oldpath)
 
 
-def walktree(localpath, fcallback, dcallback, ucallback):
+def walktree(localpath, fcallback, dcallback, ucallback, recurse=True):
     '''recursively descend, depth first, the directory tree rooted at
     localpath, calling discreet callback functions for each regular file,
     directory and unknown file type.
@@ -953,8 +953,9 @@ def walktree(localpath, fcallback, dcallback, ucallback):
         if S_ISDIR(mode):
             # It's a directory, call the dcallback function
             dcallback(pathname)
-            # now, recurse into it
-            walktree(pathname, fcallback, dcallback, ucallback)
+            if recurse:
+                # now, recurse into it
+                walktree(pathname, fcallback, dcallback, ucallback)
         elif S_ISREG(mode):
             # It's a file, call the fcallback function
             fcallback(pathname)
