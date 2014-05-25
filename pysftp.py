@@ -90,15 +90,22 @@ class Connection(object):
     """Connects and logs into the specified hostname.
     Arguments that are not given are guessed from the environment.
 
-    :param str host: The Hostname or IP of the remote machine.
-    :param str username: Your username at the remote machine.
-    :param private_key: path to private key file(str) or paramiko.AgentKey
-    :param str password: Your password at the remote machine.
-    :param int port: The SSH port of the remote machine.(default: 22)
-    :param str private_key_pass: password to use, if private_key is encrypted.
-    :param list ciphers: List of ciphers to use in order.
-    :param bool|str log:
-        log connection/handshake details? (default=False) if set to True,
+    :param str host:
+        The Hostname or IP of the remote machine.
+    :param str|None username: *Default: None* -
+        Your username at the remote machine.
+    :param str|obj|None private_key: *Default: None* -
+        path to private key file(str) or paramiko.AgentKey
+    :param str|None password: *Default: None* -
+        Your password at the remote machine.
+    :param int port: *Default: 22* -
+        The SSH port of the remote machine.
+    :param str|None private_key_pass: *Default: None* -
+        password to use, if private_key is encrypted.
+    :param list|None ciphers: *Default: None* -
+        List of ciphers to use in order.
+    :param bool|str log: *Default: False* -
+        log connection/handshake details? If set to True,
         pysftp creates a temporary file and logs to that.  If set to a valid
         path and filename, pysftp logs to that.  The name of the logfile can
         be found at  ``.logfile``
@@ -227,8 +234,8 @@ class Connection(object):
 
         :param str remotedir: the remote directory to copy from (source)
         :param str localdir: the local directory to copy to (target)
-        :param bool preserve_mtime:
-            preserve modification time on files(default: False)
+        :param bool preserve_mtime: *Default: False* -
+            preserve modification time on files
 
         :returns: None
 
@@ -249,8 +256,8 @@ class Connection(object):
 
         :param str remotedir: the remote directory to copy from
         :param str localdir: the local directory to copy to
-        :param bool preserve_mtime:
-            preserve modification time on files(default: False)
+        :param bool preserve_mtime: *Default: False* -
+            preserve modification time on files
 
         :returns: None
 
@@ -408,8 +415,8 @@ class Connection(object):
         representation of the octal mode to use.
 
         :param str remotepath: the remote path/file to modify
-        :param int mode:
-            int representation of octal mode for directory, default 777
+        :param int mode: *Default: 777* -
+            int representation of octal mode for directory
 
         :returns: None
 
@@ -491,8 +498,8 @@ class Connection(object):
         masked out.
 
         :param str remotepath: directory to create`
-        :param int mode:
-            int representation of octal mode for directory, default 777
+        :param int mode: *Default: 777* -
+            int representation of octal mode for directory
 
         :returns: None
 
@@ -552,8 +559,8 @@ class Connection(object):
         in the way, raise an exception.
 
         :param str remotedir: the directory structure to create
-        :param int mode:
-            int representation of octal mode for directory, default 777
+        :param int mode: *Default: 777* -
+            int representation of octal mode for directory
 
         :returns: None
 
@@ -672,7 +679,7 @@ class Connection(object):
         :param str remote_file: name of the file to open.
         :param str mode:
             mode (Python-style) to open file (always assumed binary)
-        :param int bufsize: desired buffering (-1 = default buffer size)
+        :param int bufsize: *Default: -1* - desired buffering
 
         :returns: (obj) SFTPFile, a handle the remote open file
 
@@ -762,7 +769,7 @@ class Connection(object):
         :param callable ucallback:
             callback function to invoke for an unknown file type.
             (form: ``func(str)``)
-        :param bool recurse: (default: True) should it recurse
+        :param bool recurse: *Default: True* - should it recurse
 
         :returns: None
 
@@ -834,8 +841,9 @@ class Connection(object):
 
     @property
     def timeout(self):
-        ''' (float|None) get or set the underlying socket timeout for pending
-        read/write ops.  (default: None - no timeout)
+        ''' (float|None) *Default: None* -
+            get or set the underlying socket timeout for pending read/write
+            ops.
 
         :returns:
             (float|None) seconds to wait for a pending read/write operation
@@ -868,7 +876,7 @@ def path_advance(thepath, sep=os.sep):
     '''generator to iterate over a file path forwards
 
     :param str thepath: the path to navigate forwards
-    :param str sep: the path separator to use, defaults to ``os.sep``
+    :param str sep: *Default: os.sep* - the path separator to use
 
     :returns: (iter)able of strings
 
@@ -894,7 +902,7 @@ def path_retreat(thepath, sep=os.sep):
     '''generator to iterate over a file path in reverse
 
     :param str thepath: the path to retreat over
-    :param str sep: the path separator to use, default to ``os.sep``
+    :param str sep: *Default: os.sep* - the path separator to use
 
     :returns: (iter)able of strings
 
@@ -942,7 +950,7 @@ def walktree(localpath, fcallback, dcallback, ucallback, recurse=True):
     :param callable ucallback:
         callback function to invoke for an unknown file type.
         (form: ``func(str)``)
-    :param bool recurse: (default: True) should it recurse
+    :param bool recurse: *Default: True* -  should it recurse
 
     :returns: None
 
