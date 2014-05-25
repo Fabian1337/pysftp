@@ -110,9 +110,11 @@ class Connection(object):
         path and filename, pysftp logs to that.  The name of the logfile can
         be found at  ``.logfile``
     :returns: (obj) connection to the requested host
-    :raises:
-        ConnectionException, CredentialException, SSHException,
-        AuthenticationException, PasswordRequiredException
+    :raises ConnectionException:
+    :raises CredentialException:
+    :raises SSHException:
+    :raises AuthenticationException:
+    :raises PasswordRequiredException:
 
     """
 
@@ -999,9 +1001,9 @@ def reparent(newparent, oldpath):
 
 
 def walktree(localpath, fcallback, dcallback, ucallback, recurse=True):
-    '''recursively descend, depth first, the directory tree rooted at
-    localpath, calling discreet callback functions for each regular file,
-    directory and unknown file type.
+    '''on the local file system, recursively descend, depth first, the
+    directory tree rooted at localpath, calling discreet callback functions
+    for each regular file, directory and unknown file type.
 
     :param str localpath:
         root of remote directory to descend, use '.' to start at
@@ -1018,7 +1020,7 @@ def walktree(localpath, fcallback, dcallback, ucallback, recurse=True):
 
     :returns: None
 
-    :raises:
+    :raises: OSError, if localpath doesn't exist
 
     '''
 

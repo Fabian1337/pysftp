@@ -121,3 +121,13 @@ def test_walktree_local_no_recurse():
     for fname in ['./release.sh', './MANIFEST.in']:
         assert fname in wtcb.flist
     assert './tests/test_execute.py' not in wtcb.flist
+
+def test_walktree_local_bad():
+    '''test pysftp.walktree on a non-existing directory'''
+    wtcb = pysftp.WTCallbacks()
+    with pytest.raises(OSError):
+        pysftp.walktree('/non-existing',
+                        fcallback=wtcb.file_cb,
+                        dcallback=wtcb.dir_cb,
+                        ucallback=wtcb.unk_cb)
+
