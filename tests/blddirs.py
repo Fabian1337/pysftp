@@ -23,7 +23,6 @@ def build_dir_struct(local_path):
 def remove_dir_struct(local_path):
     '''clean up directory struct'''
     for fparts in FILE_LIST:
-        print os.path.join(local_path, *fparts), '**'
         os.remove(os.path.join(local_path, *fparts))
     for dparts in reversed(DIR_LIST):
         os.rmdir(os.path.join(local_path, *dparts))
