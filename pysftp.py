@@ -349,6 +349,67 @@ class Connection(object):
 
         return sftpattrs
 
+    def put_d(self, localpath, remotepath, confirm=True, preserve_mtime=False):
+        """Copies a local directory's contents to a remotepath
+
+        :param str localpath: the local path to copy (source)
+        :param str remotepath:
+            the remote path to copy to (target)
+        :param bool confirm:
+            whether to do a stat() on the file afterwards to confirm the file
+            size
+        :param bool preserve_mtime:
+            *Default: False* - make the modification time(st_mtime) on the
+            remote file match the time on the local. (st_atime can differ
+            because stat'ing the localfile can/does update it's st_atime)
+
+        :returns: None
+
+        :raises: IOError, OSError
+        """
+        self._sftp_connect()
+        wtcb = WTCallbacks()
+        cur_local_dir = os.getcwd()
+        os.chdir(localpath)
+        walktree('.', wtcb.file_cb, wtcb.dir_cb, wtcb.unk_cb,
+                 recurse=False)
+        for fname in wtcb.flist:
+            src = os.path.join(localpath, fname)
+            dest = reparent(remotepath, fname)
+            # print 'put', src, dest
+            self.put(src, dest, confirm=confirm, preserve_mtime=preserve_mtime)
+
+        # restore local directory
+        os.chdir(cur_local_dir)
+
+    def put_r(self, localpath, remotepath, confirm=True, preserve_mtime=False):
+        """Recursively copies a local directory's contents to a remotepath
+
+        :param str localpath: the local path to copy (source)
+        :param str remotepath:
+            the remote path to copy to (target)
+        :param bool confirm:
+            whether to do a stat() on the file afterwards to confirm the file
+            size
+        :param bool preserve_mtime:
+            *Default: False* - make the modification time(st_mtime) on the
+            remote file match the time on the local. (st_atime can differ
+            because stat'ing the localfile can/does update it's st_atime)
+
+        :returns: None
+
+        :raises: IOError, OSError
+        """
+        self._sftp_connect()
+        wtcb = WTCallbacks()
+        cur_local_dir = os.getcwd()
+        os.chdir(localpath)
+        walktree('.', wtcb.file_cb, wtcb.dir_cb, wtcb.unk_cb)
+
+        # restore local directory
+        os.chdir(cur_local_dir)
+
+
     def putfo(self, flo, remotepath=None, file_size=0, callback=None,
               confirm=True):
 
