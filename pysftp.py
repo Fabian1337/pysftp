@@ -746,7 +746,7 @@ class Connection(object):
         self._sftp.truncate(remotepath, size)
         return self._sftp.stat(remotepath).st_size
 
-    def walktree(self, remotepath, fcallback, dcallback, ucallback):
+    def walktree(self, remotepath, fcallback, dcallback, ucallback, recurse=True):
         '''recursively descend, depth first, the directory tree rooted at
         remotepath, calling discreet callback functions for each regular file,
         directory and unknown file type.
@@ -762,6 +762,7 @@ class Connection(object):
         :param callable ucallback:
             callback function to invoke for an unknown file type.
             (form: ``func(str)``)
+        :param bool recurse: (default: True) should it recurse
 
         :returns: None
 
@@ -775,8 +776,9 @@ class Connection(object):
             if S_ISDIR(mode):
                 # It's a directory, call the dcallback function
                 dcallback(pathname)
-                # now, recurse into it
-                self.walktree(pathname, fcallback, dcallback, ucallback)
+                if recurse:
+                    # now, recurse into it
+                    self.walktree(pathname, fcallback, dcallback, ucallback)
             elif S_ISREG(mode):
                 # It's a file, call the fcallback function
                 fcallback(pathname)
@@ -940,6 +942,7 @@ def walktree(localpath, fcallback, dcallback, ucallback, recurse=True):
     :param callable ucallback:
         callback function to invoke for an unknown file type.
         (form: ``func(str)``)
+    :param bool recurse: (default: True) should it recurse
 
     :returns: None
 
