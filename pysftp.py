@@ -922,3 +922,42 @@ def reparent(newparent, oldpath):
     if oldpath[0] == os.sep:
         oldpath = '.' + oldpath
     return os.path.join(newparent, oldpath)
+
+
+def walktree(localpath, fcallback, dcallback, ucallback):
+    '''recursively descend, depth first, the directory tree rooted at
+    localpath, calling discreet callback functions for each regular file,
+    directory and unknown file type.
+
+    :param str localpath:
+        root of remote directory to descend, use '.' to start at
+        :attr:`.pwd`
+    :param callable fcallback:
+        callback function to invoke for a regular file.
+        (form: ``func(str)``)
+    :param callable dcallback:
+        callback function to invoke for a directory. (form: ``func(str)``)
+    :param callable ucallback:
+        callback function to invoke for an unknown file type.
+        (form: ``func(str)``)
+
+    :returns: None
+
+    :raises:
+
+    '''
+
+    for entry in os.listdir(localpath):
+        pathname = os.path.join(localpath, entry)
+        mode = os.stat(pathname).st_mode
+        if S_ISDIR(mode):
+            # It's a directory, call the dcallback function
+            dcallback(pathname)
+            # now, recurse into it
+            walktree(pathname, fcallback, dcallback, ucallback)
+        elif S_ISREG(mode):
+            # It's a file, call the fcallback function
+            fcallback(pathname)
+        else:
+            # Unknown file type
+            ucallback(pathname)

@@ -1,4 +1,5 @@
-'''test pysftp.Connection.open - uses py.test'''
+'''test pysftp.Connection.walktree and pysftp.walktree - uses py.test'''
+from __future__ import print_function
 
 # pylint: disable = W0142
 from common import *
@@ -58,3 +59,21 @@ def test_walktree_cbmock():
             call('./pub/src/tests')] == dir_cb.mock_calls
     # check calls to the unknown callback
     assert [] == unk_cb.mock_calls
+
+def test_walktree_local():
+    '''test the capability of walktree to walk a local directory structure'''
+    wtcb = pysftp.WTCallbacks()
+    pysftp.walktree('.',
+                    fcallback=wtcb.file_cb,
+                    dcallback=wtcb.dir_cb,
+                    ucallback=wtcb.unk_cb)
+    print(wtcb.dlist)
+    for dname in ['./docs', './dist', './tests']:
+        assert dname in wtcb.dlist
+
+    print(wtcb.ulist)
+    assert wtcb.ulist == []
+
+    print(wtcb.flist)
+    for fname in ['./release.sh', './MANIFEST.in', './tests/test_execute.py']:
+        assert fname in wtcb.flist

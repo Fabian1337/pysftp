@@ -5,8 +5,6 @@ import sys, os
 MYPATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, MYPATH + '/../')
 
-# from io import BytesIO
-
 import pysftp
 
 import pytest

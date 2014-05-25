@@ -4,12 +4,12 @@ Change Log
 
 * 0.2.8 (dev)
 
-  * in progress
+  * created :func:`pysftp.walktree`
 
 
 * 0.2.7 (current, released 2014-05-24)
 
-  * created :meth:`.walktree`, recursively walk, depth first, a remote directory structure.  Used as the base of :meth:`.get_r`. See tests/test_walktree.py for examples.
+  * created :meth:`pysftp.Connection.walktree`, recursively walk, depth first, a remote directory structure.  Used as the base of :meth:`.get_r`. See tests/test_walktree.py for examples.
   * added :meth:`.unlink` as synonym for :meth:`.remove`
   * added :meth:`.normalize`
   * created :meth:`.get_r` to recursively copy remote directories to a local path
