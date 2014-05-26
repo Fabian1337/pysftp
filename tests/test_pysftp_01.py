@@ -268,14 +268,6 @@ def test_put_not_allowed():
             with pytest.raises(IOError):
                 sftp.put(fname)
 
-def test_get_bad_remote():
-    '''download a file'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        with tempfile_containing('') as fname:
-            with pytest.raises(IOError):
-                sftp.get('readme-not-there.txt', fname)
-            assert open(fname, 'rb').read()[0:7] != b'Welcome'
-
 def test_connection_with():
     '''connect to a public sftp server'''
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
@@ -312,23 +304,4 @@ def test_getcwd():
     assert sftp.getcwd() == '/home/test/pub'
     sftp.close()
 
-def test_get():
-    '''download a file'''
-    sftp = pysftp.Connection(**SFTP_PUBLIC)
-    with tempfile_containing('') as fname:
-        sftp.get('readme.txt', fname)
-        sftp.close()
-        assert open(fname, 'rb').read()[0:9] == b'This SFTP'
-
-def test_get_callback():
-    '''test .get callback'''
-    cback = Mock(return_value=None)
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        with tempfile_containing('') as fname:
-            result = sftp.get('readme.txt', fname, callback=cback)
-            assert open(fname, 'rb').read()[0:9] == b'This SFTP'
-    # verify callback was called more than once - usually a min of 2
-    assert cback.call_count >= 2
-    # unlike .put() nothing is returned from the operation
-    assert result == None
 
