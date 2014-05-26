@@ -5,15 +5,16 @@ A simple interface to sftp.  based on zeth's ssh.py
 
 Example
 -------
-.. code-block:: python
+
+::
 
     import pysftp
 
     with pysftp.Connection('my.example.server') as sftp:
-        with sftp.cd('public')              #temporarily chdir to public
-            sftp.put('/my/local/filename')  #upload file to public/ on remote
+        with sftp.cd('public')              # temporarily chdir to public
+            sftp.put('/my/local/filename')  # upload file to public/ on remote
 
-        sftp.get_r('myfiles', '/backup')    #recursively copy myfiles/ to local
+        sftp.get_r('myfiles', '/backup')    # recursively copy myfiles/ to local
 
 
 Supports
