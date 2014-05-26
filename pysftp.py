@@ -1,4 +1,5 @@
 """A friendly Python SFTP interface."""
+from __future__ import print_function
 
 import os
 from contextlib import contextmanager
@@ -7,11 +8,12 @@ from stat import S_IMODE, S_ISDIR, S_ISREG
 import tempfile
 
 import paramiko
-from paramiko import SSHException   # make available
+from paramiko import SSHException              # make available
 from paramiko import AuthenticationException   # make available
 from paramiko import AgentKey
 
 __version__ = "0.2.8"
+# pylint: disable = R0913
 
 
 def st_mode_to_int(val):
@@ -379,7 +381,7 @@ class Connection(object):
         for fname in wtcb.flist:
             src = os.path.join(localpath, fname)
             dest = reparent(remotepath, fname)
-            # print 'put', src, dest
+            # print('put', src, dest)
             self.put(src, dest, confirm=confirm, preserve_mtime=preserve_mtime)
 
         # restore local directory
@@ -409,9 +411,25 @@ class Connection(object):
         cur_local_dir = os.getcwd()
         os.chdir(localpath)
         walktree('.', wtcb.file_cb, wtcb.dir_cb, wtcb.unk_cb)
-
         # restore local directory
         os.chdir(cur_local_dir)
+        for dname in wtcb.dlist:
+            #for subdir in path_advance(dname):
+            if dname != '.':
+                self.mkdir(reparent(remotepath, dname))
+
+        for fname in wtcb.flist:
+            head, _ = os.path.split(fname)
+            if head not in wtcb.dlist:
+                for subdir in path_advance(head):
+                    if subdir not in wtcb.dlist and subdir != '.':
+                        self.mkdir(reparent(remotepath, subdir))
+                        wtcb.dlist.append(subdir)
+            src = os.path.join(localpath, fname)
+            dest = reparent(remotepath, fname)
+            # print('put', src, dest)
+            self.put(src, dest, confirm=confirm, preserve_mtime=preserve_mtime)
+
 
 
     def putfo(self, flo, remotepath=None, file_size=0, callback=None,

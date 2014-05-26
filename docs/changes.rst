@@ -8,6 +8,7 @@ Change Log
   * added param recurse to :meth:`.pysftp.Connection.walktree` to allow it to do another trick
   * created :meth:`.put_d` to put the contents of a local directory to a remote one
   * created a context manager chdir method, :meth:`.cd`
+  * created :meth:`.put_r` to recursively put the contents of a local directory to a remote one
 
 * 0.2.7 (current, released 2014-05-24)
 
