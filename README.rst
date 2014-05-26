@@ -5,7 +5,7 @@ A simple interface to sftp.  based on zeth's ssh.py
 
 Example
 -------
-::
+.. code-block:: python
 
     import pysftp
 
