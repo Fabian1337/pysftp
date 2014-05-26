@@ -10,8 +10,10 @@ Example
     import pysftp
 
     with pysftp.Connection('my.example.server') as sftp:
-        sftp.put('/my/local/filename', '/my/remote/filename')
-        sftp.get('the-file.txt')
+        with sftp.cd('public')              #temporarily chdir to public
+            sftp.put('/my/local/filename')  #upload file to public/ on remote
+
+        sftp.get_r('myfiles', '/backup')    #recursively copy myfiles/ to local
 
 
 Supports
