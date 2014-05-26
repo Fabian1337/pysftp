@@ -50,6 +50,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   cookbook
    pysftp
    changes
    contributing
