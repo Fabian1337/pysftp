@@ -1,4 +1,4 @@
-pysftp
+API
 ======
 
 .. automodule:: pysftp

@@ -4,7 +4,8 @@ Cook Book
 While in many ways, pysftp is just a thin wrapper over paramiko's SFTPClient,
 there are a number of ways that we make it more productive and easier to
 accomplish common, higher-level tasks.  The following snippets show where we
-add value to this great module.
+add value to this great module.  See the :doc:`pysftp` docs for a complete
+listing.
 
 :meth:`pysftp.Connection`
 -------------------------
@@ -165,9 +166,21 @@ want to return to later.
 takes an integer representation of the octal mode.  No leading 0 or 0o
 wanted.  We know it's suppose to be an octal, but who really remembers that?
 
-This way it is just like a command line
+This way it is just like a command line ``chmod 644 readme.txt``
+::
 
-  chmod 744 filename
+    user group other
+    rwx  rwx   rwx
+    421  421   421
+
+    user  - read/write = 4+2 = 6
+    group - read       = 4   = 4
+    other - read       = 4   = 4
+
+.. code-block:: python
+
+    sftp.chmod('readme.txt', 644)
+
 
 :func:`pysftp.st_mode_to_int`
 ------------------------------
@@ -177,12 +190,25 @@ extra things you probably don't care about, in a form that has been converted
 from octal to int so you won't recognize it at first.  This function clips the
 extra bits and hands you the file mode bits in a way you'll recognize.
 
+.. code-block:: python
+
+    >>> attr = sftp.stat('readme.txt')
+    >>> attr.st_mode
+    33188
+    >>> pysftp.st_mode_to_int(attr.st_mode)
+    644
+
 :meth:`pysftp.Connection.chown`
 -------------------------------
 pysftp's method allows you to specify just, gid or the uid or both.  If either
 gid or uid is None *(default)*, then pysftp does a stat to get the current ids
-and uses that to fill in the missing method because the underlying paramiko
+and uses that to fill in the missing parameter because the underlying paramiko
 method requires that you explicitly set both.
+
+**NOTE** uid and gid are integers and relative to each system.  Just because you
+are uid 102 on your local system, a uid of 102 on the remote system most likely
+won't be your login.  You will need to do some homework to make sure that you
+are setting these values as you intended.
 
 :meth:`pysftp.Connection.cwd`
 -----------------------------
@@ -223,12 +249,12 @@ paramiko's arbitrary order. Sorted by filename.
 ----------------------------------
 A common scenario where you need to create all directories in a path as
 needed, setting their mode, if created. Takes a mode argument, just like
-``chmod`` and ``mkdir`, that is an integer representation of the mode you want.
+:meth:`.chmod`, that is an integer representation of the mode you want.
 
 :meth:`pysftp.Connection.mkdir`
 -------------------------------
-Just like :meth:`.chown`, the mode is an integer representation of the octal
-number to use.  Just like the unix cmd, `chown` you use 744 not 0744 or 0o744.
+Just like :meth:`.chmod`, the mode is an integer representation of the octal
+number to use.  Just like the unix cmd, `chmod` you use 744 not 0744 or 0o744.
 
 :meth:`pysftp.Connection.isdir`
 -------------------------------
@@ -297,7 +323,7 @@ generator to iterate over a file path in reverse
 -----------------------
 Pythons ``os.path.join('backup', '/home/test/pub')`` returns '/home/test/pub',
 but if you want to copy a directory structure to a new path this won't do what
-you want.
+you want.  But, reparent will.
 
 .. code-block:: python
 
