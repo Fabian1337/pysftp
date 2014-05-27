@@ -171,6 +171,22 @@ to do.
 
 :meth:`pysftp.Connection.chmod`
 -------------------------------
+:meth:`.chmod` is a wrapper around paramiko's except for the fact it will
+takes an integer representation of the octal mode.  No leading 0 or 0o
+wanted.  We know it's suppose to be an octal, but who really remembers that?
+
+This way it is just like a command line
+
+  chmod 744 filename
+
+:func:`pysftp.st_mode_to_int`
+------------------------------
+converts an octal mode result back to an integer representation.  The information
+returned by .stat().st_mode and .lstat().st_mode contains extra things you
+probably don't care about, in a form that has been converted from octal to int
+so you won't recognize it at first.  This function clips the extra bits and
+hands you something you'll recognize.
+
 
 Remarks
 -------
