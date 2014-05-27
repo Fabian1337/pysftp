@@ -41,3 +41,16 @@ def test_cd_bad_path():
             with sftp.cd('not-there'):
                 pass
         assert home == sftp.pwd
+
+def test_cd_local():
+    '''test pysftp.cd on local directories'''
+    original = os.getcwd()
+    with pysftp.cd('docs'):
+        assert os.getcwd() == os.path.join(original, 'docs')
+    assert os.getcwd() == original
+
+def test_cd_local_bad():
+    '''test pysftp.cd on non-existing directory'''
+    with pytest.raises(OSError):
+        with pysftp.cd('not-there'):
+            pass

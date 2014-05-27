@@ -1075,3 +1075,21 @@ def walktree(localpath, fcallback, dcallback, ucallback, recurse=True):
         else:
             # Unknown file type
             ucallback(pathname)
+
+@contextmanager
+def cd(localpath=None):
+    """context manager that can change to a optionally specified local
+    directory and restores the old pwd on exit.
+
+    :param str|None localpath: *Default: None* -
+        local path to temporarily make the current directory
+    :returns: None
+    :raises: OSError, if local path doesn't exist
+    """
+    try:
+        original_path = os.getcwd()
+        if localpath is not None:
+            os.chdir(localpath)
+        yield
+    finally:
+        os.chdir(original_path)

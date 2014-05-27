@@ -7,10 +7,11 @@ Change Log
   * created :func:`pysftp.walktree` for walking local directories
   * added param recurse to :meth:`.pysftp.Connection.walktree` to allow it to do another trick
   * created :meth:`.put_d` to put the contents of a local directory to a remote one
-  * created a context manager chdir method, :meth:`.cd`
+  * created a context manager chdir method, :meth:`pysftp.Connection.cd`
   * created :meth:`.put_r` to recursively put the contents of a local directory to a remote one
   * fixed a bug with :func:`.st_mode_to_int` on py3 (#52)
   * :meth:`.listdir_attr` now returns a sorted list, sorted on filename
+  * created :meth:`pysftp.cd` with-context version of ``os.chdir`` for local directories
 
 * 0.2.7 (current, released 2014-05-24)
 
