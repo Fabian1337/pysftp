@@ -29,7 +29,7 @@ def test_chmod_simple():
 
 def test_chmod_fail_ro():
     '''test chmod against read-only server'''
-    new_mode = 740
+    new_mode = 440
     fname = 'readme.txt'
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         sftp.chmod(fname, 744)      #make sure we start from a known mode
@@ -43,5 +43,5 @@ def test_chmod_fail_ro():
     assert pysftp.st_mode_to_int(new_attrs.st_mode) == new_mode
     # that we actually changed something
     assert new_attrs.st_mode != org_attrs.st_mode
-    assert pysftp.st_mode_to_int(org_attrs.st_mode) == 744
+    assert pysftp.st_mode_to_int(org_attrs.st_mode) == 444
 
