@@ -288,7 +288,7 @@ after the operation.
 :meth:`pysftp.Connection.walktree`
 ----------------------------------
 Is a powerful method that can recursively (*default*) walk a **remote** directory
-structure and calls a user-supplied callback function for each file, directory
+structure and calls a user-supplied callback functions for each file, directory
 or unknown entity it encounters.  It is used in the get_x methods of pysftp
 and can be used with great effect to do your own bidding.  Each callback is
 supplied the pathname of the entity. (form: ``func(str)``)
