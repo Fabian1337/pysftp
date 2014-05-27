@@ -27,7 +27,7 @@ def st_mode_to_int(val):
     :returns int: integer representation of octal mode
 
     '''
-    return int(str(oct(S_IMODE(val))))
+    return int(str(oct(S_IMODE(val)))[-3:])
 
 
 class ConnectionException(Exception):
