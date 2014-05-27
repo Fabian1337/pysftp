@@ -15,8 +15,12 @@ def test_listdir_attr():
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         attrs = sftp.listdir_attr()
         assert len(attrs) == 3
+        # test they are in filename order
+        assert attrs[0].filename == 'pub'
+        assert attrs[1].filename == 'readme.sym'
+        assert attrs[2].filename == 'readme.txt'
+        # test that longname is there
         for attr in attrs:
-            assert attr.filename in ['pub', 'readme.sym', 'readme.txt']
             assert attr.longname is not None
 
 

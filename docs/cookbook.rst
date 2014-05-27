@@ -90,7 +90,7 @@ all the files in a remote directory to a local path.
 .. code-block:: python
 
     # copy all files under public to a local path, preserving modification time
-    sftp.get_d('public', 'local-backup`, preserve_mtime=True)
+    sftp.get_d('public', 'local-backup', preserve_mtime=True)
 
 :meth:`pysftp.Connection.get_r`
 -------------------------------
@@ -100,7 +100,7 @@ directories from the remote to a local path.
 .. code-block:: python
 
     # copy all files AND directories under public to a local path
-    sftp.get_r('public', 'local-backup`)
+    sftp.get_r('public', 'local-backup', preserve_mtime=True)
 
 :meth:`pysftp.Connection.put`
 -----------------------------
@@ -159,16 +159,6 @@ want to return to later.
         sftp.chdir('here')      # now in ./static/here
     # now back to the original current working directory
 
-:meth:`pysftp.Connection.cwd`
------------------------------
-:meth:`.cwd` is a synonym for :meth:`.chdir`.  Its purpose is to make transposing
-hand typed commands at an sftp command line into those used by pysftp, easier
-to do.
-
-.. code-block:: python
-
-    sftp.cwd('public')  # is equivalent to sftp.chdir('public')
-
 :meth:`pysftp.Connection.chmod`
 -------------------------------
 :meth:`.chmod` is a wrapper around paramiko's except for the fact it will
@@ -181,11 +171,48 @@ This way it is just like a command line
 
 :func:`pysftp.st_mode_to_int`
 ------------------------------
-converts an octal mode result back to an integer representation.  The information
-returned by .stat().st_mode and .lstat().st_mode contains extra things you
-probably don't care about, in a form that has been converted from octal to int
-so you won't recognize it at first.  This function clips the extra bits and
-hands you something you'll recognize.
+converts an octal mode result back to an integer representation.  The .st_mode
+information returned in SFTPAttribute object .stat(*fname*).st_mode contains
+extra things you probably don't care about, in a form that has been converted
+from octal to int so you won't recognize it at first.  This function clips the
+extra bits and hands you the file mode bits in a way you'll recognize.
+
+:meth:`pysftp.Connection.chown`
+-------------------------------
+pysftp's method allows you to specify just, gid or the uid or both.  If either
+gid or uid is None *(default)*, then pysftp does a stat to get the current ids
+and uses that to fill in the missing method because the underlying paramiko
+method requires that you explicitly set both.
+
+:meth:`pysftp.Connection.cwd`
+-----------------------------
+:meth:`.cwd` is a synonym for :meth:`.chdir`.  Its purpose is to make transposing
+hand typed commands at an sftp command line into those used by pysftp, easier
+to do.
+
+.. code-block:: python
+
+    ...
+    sftp.cwd('public')  # is equivalent to sftp.chdir('public')
+
+:attr:`pysftp.Connection.pwd`
+-------------
+Returns the current working directory.  It returns the result of
+`.normalize('.')` but makes your code and intention easier to read. Paramiko
+has a method, :meth:`.getcwd()`, that we expose, but that method returns
+``None`` if :meth:`.chdir` has
+not been called prior.
+
+.. code-block:: python
+
+    ...
+    >>> sftp.pwd
+    '\home\test'
+
+:meth:`pysftp.Connection.listdir`
+---------------------------------
+The difference here, is that pysftp's version returns a sorted list instead of
+paramiko's arbitrary order.
 
 
 Remarks

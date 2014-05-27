@@ -591,7 +591,8 @@ class Connection(object):
 
         """
         self._sftp_connect()
-        return self._sftp.listdir_attr(remotepath)
+        return sorted(self._sftp.listdir_attr(remotepath),
+                      key=lambda attr: attr.filename)
 
     def mkdir(self, remotepath, mode=777):
         """Create a directory named remotepath with mode. On some systems,
