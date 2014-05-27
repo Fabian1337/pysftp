@@ -32,7 +32,7 @@ def test_chmod_fail_ro():
     new_mode = 440
     fname = 'readme.txt'
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        sftp.chmod(fname, 744)      #make sure we start from a known mode
+        sftp.chmod(fname, 444)      #make sure we start from a known mode
         org_attrs = sftp.stat(fname)
         sftp.chmod(fname, new_mode)
         new_attrs = sftp.stat(fname)
