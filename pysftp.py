@@ -12,7 +12,7 @@ from paramiko import SSHException              # make available
 from paramiko import AuthenticationException   # make available
 from paramiko import AgentKey
 
-__version__ = "0.2.8"
+__version__ = "0.2.9"
 # pylint: disable = R0913
 
 
