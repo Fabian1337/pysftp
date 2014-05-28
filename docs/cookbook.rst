@@ -122,7 +122,7 @@ local directory to a remote one via SFTP.
 .. code-block:: python
 
     # copy files from images, to remote static/images directory, preserving modification time
-    sftp.put_d('images', 'static/images' preserve_mtime=True)
+    sftp.put_d('images', 'static/images', preserve_mtime=True)
 
 
 :meth:`pysftp.Connection.put_r`
@@ -134,7 +134,7 @@ It creates directories, and happily succeeds even if the target directories alre
 
     # recursively copy files and directories from local static, to remote static,
     # preserving modification times on the files
-    sftp.put_r('static', 'static' preserve_mtime=True)
+    sftp.put_r('static', 'static', preserve_mtime=True)
 
 
 :meth:`pysftp.Connection.cd`
@@ -232,18 +232,36 @@ not been called prior.
 .. code-block:: python
 
     ...
+    >>> print(sftp.getcwd())
+    None
     >>> sftp.pwd
-    '/home/test'
+    u'/home/test'
 
 :meth:`pysftp.Connection.listdir`
 ---------------------------------
 The difference here, is that pysftp's version returns a sorted list instead of
 paramiko's arbitrary order. Sorted by filename.
 
+.. code-block:: python
+
+    ...
+    >>> sftp.listdir()
+    [u'pub', u'readme.sym', u'readme.txt']
+
 :meth:`pysftp.Connection.listdir_attr`
 --------------------------------------
 The difference here, is that pysftp's version returns a sorted list instead of
-paramiko's arbitrary order. Sorted by filename.
+paramiko's arbitrary order. Sorted by SFTPAttribute.filename.
+
+.. code-block:: python
+
+    ...
+    >>> for attr in sftp.listdir_attr():
+    ...     print attr.filename, attr
+    ...
+    pub dr-xrwxr-x   1 501      502             5 19 May 23:22 pub
+    readme.sym lrwxr-xr-x   1 501      502            10 21 May 23:29 readme.sym
+    readme.txt -r--r--r--   1 501      502          8192 26 May 23:32 readme.txt
 
 :meth:`pysftp.Connection.makedirs`
 ----------------------------------
@@ -251,20 +269,42 @@ A common scenario where you need to create all directories in a path as
 needed, setting their mode, if created. Takes a mode argument, just like
 :meth:`.chmod`, that is an integer representation of the mode you want.
 
+.. code-block:: python
+
+    ...
+    sftp.makdirs('pub/show/off')  # will happily make all non-existing directories
+
 :meth:`pysftp.Connection.mkdir`
 -------------------------------
 Just like :meth:`.chmod`, the mode is an integer representation of the octal
 number to use.  Just like the unix cmd, `chmod` you use 744 not 0744 or 0o744.
+
+.. code-block:: python
+
+    ...
+    sftp.mkdir('show', mode=644)  # user r/w, group and other read-only
 
 :meth:`pysftp.Connection.isdir`
 -------------------------------
 Does all the busy work of stat'ing and dealing with the stat module returning
 a simple True/False.
 
+.. code-block:: python
+
+    ...
+    >>> sftp.isdir('pub')
+    True
+
 :meth:`pysftp.Connection.isfile`
 --------------------------------
 Does all the busy work of stat'ing and dealing with the stat module returning
 a simple True/False.
+
+.. code-block:: python
+
+    ...
+    >>> sftp.isfile('pub')
+    False
 
 :meth:`pysftp.Connection.readlink`
 ----------------------------------
@@ -272,9 +312,24 @@ The underlying paramiko method can return either an absolute or a relative path.
 pysftp forces this to always be an absolute path by laundering the result with
 a `.normalize` before returning.
 
+.. code-block:: python
+
+    ...
+    >>> sftp.readlink('readme.sym')
+    u'/home/test/readme.txt'
+
+
 :meth:`pysftp.Connection.exists`
 --------------------------------
 Returns True if a remote entity exists
+
+.. code-block:: python
+
+    ...
+    >>> sftp.exists('readme.txt')   # a file
+    True
+    >>> sftp.exists('pub')          # a dir
+    True
 
 :meth:`pysftp.Connection.lexists`
 ----------------------------------
@@ -284,6 +339,9 @@ Like :meth:`.exists`, but returns True for a broken symbolic link
 ----------------------------------
 Like the underlying .truncate method, by pysftp returns the file's new size
 after the operation.
+
+    >>> sftp.truncate('readme.txt', 4096)
+    4096
 
 :meth:`pysftp.Connection.walktree`
 ----------------------------------
@@ -306,7 +364,7 @@ generator to iterate over a file path
 .. code-block:: python
 
     ...
-    >>> list(sftp.path_advance('./pub/example/example01')
+    >>> list(sftp.path_advance('./pub/example/example01'))
     ['./pub', './pub/example', './pub/example/example01']
 
 :attr:`pysftp.path_retreat`
@@ -316,7 +374,7 @@ generator to iterate over a file path in reverse
 .. code-block:: python
 
     ...
-    >>> list(sftp.path_retreat('./pub/example/example01')
+    >>> list(sftp.path_retreat('./pub/example/example01'))
     ['./pub/example/example01', './pub/example', './pub']
 
 :attr:`pysftp.reparent`
@@ -350,7 +408,7 @@ interacting with SFTP.  Instead of writing your own code to walk directories
 and call get and put, dealing with not only paramiko but Python's own ``os``
 and ``stat`` modules and writing tests *(many code snippets on the net are
 incomplete and don't account for edge cases)* pysftp supplies a complete
-library for dealing with all 3.  Leaving you to focus on your primary task.
+library for dealing with all three.  Leaving you to focus on your primary task.
 
 Paramiko also tries very hard to stay true to Python's ``os`` module, which
 means sometimes, things are weird or a bit too low level.  We think paramiko's

@@ -12,6 +12,7 @@ Change Log
   * fixed a bug with :func:`.st_mode_to_int` on py3 (#52)
   * :meth:`.listdir_attr` now returns a sorted list, sorted on filename
   * created :meth:`pysftp.cd` with-context version of ``os.chdir`` for local directories
+  * created docs, cookbook to show off some of the notable features of pysftp
 
 * 0.2.7 (current, released 2014-05-24)
 

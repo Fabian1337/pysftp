@@ -1,7 +1,9 @@
 pysftp
 ======
 
-A simple interface to sftp.  based on zeth's ssh.py
+A simple interface to SFTP.  The module offers high level abstractions and
+task based routines to handle your SFTP needs.  Checkout the Cook Book, in the
+docs, to see what pysftp can do for you.
 
 Example
 -------
