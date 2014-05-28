@@ -38,7 +38,7 @@ Want to use an RSA or DSA key pair, that is simple too.
 .. code-block:: python
 
     import pysftp
-    with pysftp.Connection('hostname', private_key='/path/to/keyfile') as sftp:
+    with pysftp.Connection('hostname', username='me', private_key='/path/to/keyfile') as sftp:
         #
         # ... do sftp operations
         #
@@ -50,7 +50,7 @@ How about a ``paramiko.AgentKey`` ? no problem, just set the private_key equal t
 .. code-block:: python
 
     import pysftp
-    with pysftp.Connection('hostname', private_key=my_agentkey) as sftp:
+    with pysftp.Connection('hostname', username='me', private_key=my_agentkey) as sftp:
         #
         # ... do sftp operations
         #

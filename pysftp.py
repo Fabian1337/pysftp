@@ -68,21 +68,21 @@ class WTCallbacks(object):
         self.ulist = []
 
     def file_cb(self, pathname):
-        '''called for regular files
+        '''called for regular files, appends pathname to .flist
 
         :param str pathname: file path
         '''
         self.flist.append(pathname)
 
     def dir_cb(self, pathname):
-        '''called for directories
+        '''called for directories, appends pathname to .dlist
 
         :param str pathname: directory path
         '''
         self.dlist.append(pathname)
 
     def unk_cb(self, pathname):
-        '''called for unknown file types
+        '''called for unknown file types, appends pathname to .ulist
 
         :param str pathname: unknown entity path
         '''
@@ -569,7 +569,7 @@ class Connection(object):
 
         :param str remotepath: path to list on the server
 
-        :returns: (list) directory entries, sorted
+        :returns: (list of str) directory entries, sorted
 
         """
         self._sftp_connect()
@@ -587,7 +587,7 @@ class Connection(object):
 
         :param str remotepath: path to list on the server
 
-        :returns: (list of SFTPAttributes)
+        :returns: (list of SFTPAttributes), sorted
 
         """
         self._sftp_connect()
