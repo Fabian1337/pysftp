@@ -2,6 +2,10 @@ Change Log
 ----------
 
 
+* 0.2.9 (dev)
+
+  * in progress
+
 * 0.2.8 (current, released 2014-05-28)
 
   * created :func:`pysftp.walktree` for walking local directories
@@ -14,7 +18,7 @@ Change Log
   * created :meth:`pysftp.cd` with-context version of ``os.chdir`` for local directories
   * created docs, cookbook to show off some of the notable features of pysftp
 
-* 0.2.7 (current, released 2014-05-24)
+* 0.2.7 (released 2014-05-24)
 
   * created :meth:`pysftp.Connection.walktree`, recursively walk, depth first, a remote directory structure.  Used as the base of :meth:`.get_r`. See tests/test_walktree.py for examples.
   * added :meth:`.unlink` as synonym for :meth:`.remove`
