@@ -2,7 +2,7 @@ Change Log
 ----------
 
 
-* 0.2.8 (dev)
+* 0.2.8 (current, released 2014-05-28)
 
   * created :func:`pysftp.walktree` for walking local directories
   * added param recurse to :meth:`.pysftp.Connection.walktree` to allow it to do another trick

@@ -364,8 +364,8 @@ generator to iterate over a file path
 .. code-block:: python
 
     ...
-    >>> list(sftp.path_advance('./pub/example/example01'))
-    ['./pub', './pub/example', './pub/example/example01']
+    >>> list(pysftp.path_advance('./pub/example/example01'))
+    ['.', './pub', './pub/example', './pub/example/example01']
 
 :attr:`pysftp.path_retreat`
 ----------------------------
@@ -374,8 +374,8 @@ generator to iterate over a file path in reverse
 .. code-block:: python
 
     ...
-    >>> list(sftp.path_retreat('./pub/example/example01'))
-    ['./pub/example/example01', './pub/example', './pub']
+    >>> list(pysftp.path_retreat('./pub/example/example01'))
+    ['./pub/example/example01', './pub/example', './pub', '.']
 
 :attr:`pysftp.reparent`
 -----------------------
@@ -386,7 +386,7 @@ you want.  But, reparent will.
 .. code-block:: python
 
     ...
-    >>> reparent('backup', '/home/test/pub')
+     >>> pysftp.reparent('backup', '/home/test/pub')
     'backup/./home/test/pub'
 
 :attr:`pysftp.walktree`
@@ -398,6 +398,20 @@ directory structure.  It has the same callback mechanism.
 -----------------------
 A with-context aware version of ``os.chdir`` for use on the **local** file
 system.  The yin to :meth:`pysftp.Connection.cd` yang.
+
+.. code-block:: python
+
+    ...
+    >>> import os
+    >>> os.getcwd()
+    '/home/jlh/Projects/pysftp/src'
+    >>> with pysftp.cd('docs'):
+    ...     print os.getcwd()
+    ...
+    /home/jlh/Projects/pysftp/src/docs
+    >>> os.getcwd()
+    '/home/jlh/Projects/pysftp/src'
+
 
 Remarks
 -------
