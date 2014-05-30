@@ -112,6 +112,8 @@ class Connection(object):
         pysftp creates a temporary file and logs to that.  If set to a valid
         path and filename, pysftp logs to that.  The name of the logfile can
         be found at  ``.logfile``
+    :param bool compression: *Default: False* -
+        Enables compression on the transport, if set to True.
     :returns: (obj) connection to the requested host
     :raises ConnectionException:
     :raises CredentialException:
@@ -130,6 +132,7 @@ class Connection(object):
                  private_key_pass=None,
                  ciphers=None,
                  log=False,
+                 compression=False
                 ):
         self._sftp_live = False
         self._sftp = None
@@ -155,6 +158,9 @@ class Connection(object):
         except (AttributeError, socket.gaierror):
             # couldn't connect
             raise ConnectionException(host, port)
+
+        # Toggle compression
+        self._transport.use_compression(compression)
 
         # Authenticate the transport. prefer password if given
         if password is not None:
