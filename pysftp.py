@@ -885,7 +885,7 @@ class Connection(object):
 
         '''
         self._sftp_connect()
-        for entry in self._sftp.listdir(remotepath):
+        for entry in self.listdir(remotepath):
             pathname = os.path.join(remotepath, entry)
             mode = self._sftp.stat(pathname).st_mode
             if S_ISDIR(mode):
