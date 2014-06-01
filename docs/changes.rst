@@ -4,7 +4,7 @@ Change Log
 
 * 0.2.9 (dev)
 
-  * in progress
+  * added support for enabling compression (J. Kruth)
 
 * 0.2.8 (current, released 2014-05-28)
 
@@ -47,7 +47,7 @@ Change Log
 
 * 0.2.5 (released 2014-05-15)
 
-  * added ``ciphers`` parameter to :class:`.Connection` object
+  * added ``ciphers`` parameter to :class:`.Connection` object (D. Reilly)
   * added :attr:`.active_ciphers` to return local and remote cipher in use
   * added :attr:`.security_options`, where you can get available ciphers, among other information
   * enhanced logging, and added documentation and tests
