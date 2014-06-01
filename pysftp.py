@@ -55,41 +55,75 @@ class CredentialException(Exception):
         self.message = message
 
 class WTCallbacks(object):
-    '''an object to house the callbacks, used internally
-
-    :ivar flist: list of files currently traversed
-    :ivar dlist: list of directories currently traversed
-    :ivar ulist: list of unknown entities currently traversed
-    '''
+    '''an object to house the callbacks, used internally'''
     def __init__(self):
         '''set instance vars'''
-        self.flist = []
-        self.dlist = []
-        self.ulist = []
+        self._flist = []
+        self._dlist = []
+        self._ulist = []
 
     def file_cb(self, pathname):
         '''called for regular files, appends pathname to .flist
 
         :param str pathname: file path
         '''
-        self.flist.append(pathname)
-        self.flist.sort()
+        self._flist.append(pathname)
 
     def dir_cb(self, pathname):
         '''called for directories, appends pathname to .dlist
 
         :param str pathname: directory path
         '''
-        self.dlist.append(pathname)
-        self.dlist.sort()
+        self._dlist.append(pathname)
 
     def unk_cb(self, pathname):
         '''called for unknown file types, appends pathname to .ulist
 
         :param str pathname: unknown entity path
         '''
-        self.ulist.append(pathname)
-        self.ulist.sort()
+        self._ulist.append(pathname)
+
+    @property
+    def flist(self):
+        '''return a sorted list of files currently traversed
+
+        :getter: returns the list
+        :setter: sets the list
+        :type: list
+        '''
+        return sorted(self._flist)
+    @flist.setter
+    def flist(self, val):
+        '''setter for _flist '''
+        self._flist = val
+
+    @property
+    def dlist(self):
+        '''return a sorted list of directories currently traversed
+
+        :getter: returns the list
+        :setter: sets the list
+        :type: list
+        '''
+        return sorted(self._dlist)
+    @dlist.setter
+    def dlist(self, val):
+        '''setter for _dlist '''
+        self._dlist = val
+
+    @property
+    def ulist(self):
+        '''return a sorted list of unknown entities currently traversed
+
+        :getter: returns the list
+        :setter: sets the list
+        :type: list
+        '''
+        return sorted(self._ulist)
+    @ulist.setter
+    def ulist(self, val):
+        '''setter for _ulist '''
+        self._ulist = val
 
 
 class Connection(object):
@@ -284,7 +318,8 @@ class Connection(object):
             for subdir in path_advance(dname):
                 try:
                     os.mkdir(reparent(localdir, subdir))
-                    wtcb.dlist.append(subdir)
+                    # force result to a list for setter,
+                    wtcb.dlist = wtcb.dlist + [subdir,]
                 except OSError:     # dir exists
                     pass
 
@@ -296,7 +331,7 @@ class Connection(object):
                 for subdir in path_advance(head):
                     if subdir not in wtcb.dlist and subdir != '.':
                         os.mkdir(reparent(localdir, subdir))
-                        wtcb.dlist.append(subdir)
+                        wtcb.dlist = wtcb.dlist + [subdir,]
 
             self.get(fname,
                      reparent(localdir, fname),
@@ -433,7 +468,7 @@ class Connection(object):
                 for subdir in path_advance(head):
                     if subdir not in wtcb.dlist and subdir != '.':
                         self.mkdir(reparent(remotepath, subdir))
-                        wtcb.dlist.append(subdir)
+                        wtcb.dlist = wtcb.dlist + [subdir,]
             src = os.path.join(localpath, fname)
             dest = reparent(remotepath, fname)
             # print('put', src, dest)
