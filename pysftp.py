@@ -929,6 +929,17 @@ class Connection(object):
         return self._transport.local_cipher, self._transport.remote_cipher
 
     @property
+    def active_compression(self):
+        """Get tuple of currently used local and remote compression.
+
+        :returns:
+            (tuple of  str) currently used compression (local_compression,
+            remote_compression)
+
+        """
+        return self._transport.local_compression, self._transport.remote_compression
+
+    @property
     def security_options(self):
         """return the available security options recognized by paramiko.
 

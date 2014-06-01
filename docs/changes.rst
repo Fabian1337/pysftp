@@ -4,7 +4,8 @@ Change Log
 
 * 0.2.9 (dev)
 
-  * added support for enabling compression (J. Kruth)
+  * added support for enabling compression, ``compression`` (J. Kruth)
+  * added :attr:`.active_compression`, to return the active local and remote compression settings as a tuple
 
 * 0.2.8 (current, released 2014-05-28)
 
