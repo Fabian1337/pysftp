@@ -73,6 +73,7 @@ class WTCallbacks(object):
         :param str pathname: file path
         '''
         self.flist.append(pathname)
+        self.flist.sort()
 
     def dir_cb(self, pathname):
         '''called for directories, appends pathname to .dlist
@@ -80,6 +81,7 @@ class WTCallbacks(object):
         :param str pathname: directory path
         '''
         self.dlist.append(pathname)
+        self.dlist.sort()
 
     def unk_cb(self, pathname):
         '''called for unknown file types, appends pathname to .ulist
@@ -87,6 +89,7 @@ class WTCallbacks(object):
         :param str pathname: unknown entity path
         '''
         self.ulist.append(pathname)
+        self.ulist.sort()
 
 
 class Connection(object):
