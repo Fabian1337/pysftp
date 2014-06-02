@@ -206,13 +206,11 @@ class Connection(object):
             username = os.environ['LOGNAME']
 
         self._logfile = self._cnopts.log
-        print(self._cnopts.log)
         if self._cnopts.log:
             if isinstance(self._cnopts.log, bool):
                 # Log to a temporary file.
                 fhnd, self._logfile = tempfile.mkstemp('.txt', 'ssh-')
                 os.close(fhnd)  # don't want os file descriptors open
-            print('logging to:', self._logfile)
             paramiko.util.log_to_file(self._logfile)
 
         # Begin the SSH transport.

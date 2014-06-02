@@ -14,7 +14,6 @@ def test_log_cnopt_user_file():
         sftp.listdir()
         print(sftp.logfile, cnopts.log)
         assert sftp.logfile == cnopts.log
-        print('os.path.exists(sftp.logfile)', os.path.exists(sftp.logfile))
         assert os.path.exists(sftp.logfile)
         logfile = sftp.logfile
     # cleanup
