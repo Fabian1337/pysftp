@@ -142,6 +142,7 @@ class CnOpts(object):
         # self.ciphers = None
         # self.compression = False
         self.log = False
+        self.compression = False
 
 class Connection(object):
     """Connects and logs into the specified hostname.
@@ -163,8 +164,6 @@ class Connection(object):
         List of ciphers to use in order.
     :param bool|str log: *Deprecated* -
         see ``pysftp.CnOpts`` and ``cnopts`` parameter
-    :param bool compression: *Default: False* -
-        Enables compression on the transport, if set to True.
     :param None|CnOpts cnopts: *Default: None* - extra connection options
         set in a CnOpts object.
     :returns: (obj) connection to the requested host
@@ -185,7 +184,6 @@ class Connection(object):
                  private_key_pass=None,
                  ciphers=None,
                  log=False,
-                 compression=False,
                  cnopts=None
                 ):
         if cnopts is None:
@@ -226,7 +224,7 @@ class Connection(object):
             raise ConnectionException(host, port)
 
         # Toggle compression
-        self._transport.use_compression(compression)
+        self._transport.use_compression(self._cnopts.compression)
 
         # Authenticate the transport. prefer password if given
         if password is not None:

@@ -15,7 +15,9 @@ def test_compression_enabled():
     '''test that compression=True results in compression enabled, assuming
     that the server supports compression'''
     copts = SFTP_PUBLIC.copy()
-    copts['compression'] = True
+    cnopts = pysftp.CnOpts()
+    cnopts.compression = True
+    copts['cnopts'] = cnopts
     with pysftp.Connection(**copts) as sftp:
         lcompress, rcompress = sftp.active_compression
         assert lcompress != 'none'
