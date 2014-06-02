@@ -6,6 +6,7 @@ from contextlib import contextmanager
 import socket
 from stat import S_IMODE, S_ISDIR, S_ISREG
 import tempfile
+import warnings
 
 import paramiko
 from paramiko import SSHException              # make available
@@ -126,6 +127,22 @@ class WTCallbacks(object):
         self._ulist = val
 
 
+class CnOpts(object):
+    '''additional connection options beyond authentication
+
+    :ivar bool|str log: initial value: False -
+        log connection/handshake details? If set to True,
+        pysftp creates a temporary file and logs to that.  If set to a valid
+        path and filename, pysftp logs to that.  The name of the logfile can
+        be found at  ``.logfile``
+    :ivar bool compression: initial value: False - Enables compression on the
+        transport, if set to True.
+    '''
+    def __init__(self):
+        # self.ciphers = None
+        # self.compression = False
+        self.log = False
+
 class Connection(object):
     """Connects and logs into the specified hostname.
     Arguments that are not given are guessed from the environment.
@@ -144,13 +161,12 @@ class Connection(object):
         password to use, if private_key is encrypted.
     :param list|None ciphers: *Default: None* -
         List of ciphers to use in order.
-    :param bool|str log: *Default: False* -
-        log connection/handshake details? If set to True,
-        pysftp creates a temporary file and logs to that.  If set to a valid
-        path and filename, pysftp logs to that.  The name of the logfile can
-        be found at  ``.logfile``
+    :param bool|str log: *Deprecated* -
+        see ``pysftp.CnOpts`` and ``cnopts`` parameter
     :param bool compression: *Default: False* -
         Enables compression on the transport, if set to True.
+    :param None|CnOpts cnopts: *Default: None* - extra connection options
+        set in a CnOpts object.
     :returns: (obj) connection to the requested host
     :raises ConnectionException:
     :raises CredentialException:
@@ -169,19 +185,34 @@ class Connection(object):
                  private_key_pass=None,
                  ciphers=None,
                  log=False,
-                 compression=False
+                 compression=False,
+                 cnopts=None
                 ):
+        if cnopts is None:
+            self._cnopts = CnOpts()
+        else:
+            self._cnopts = cnopts
+
+        #TODO: remove this if block and log param above in v0.3.0
+        if log != False:
+            wmsg = "log parameter is deprecated and will be remove in 0.3.0. "\
+                   "Use cnopts param."
+            warnings.warn(wmsg, DeprecationWarning)
+            self._cnopts.log = log
+
         self._sftp_live = False
         self._sftp = None
         if not username:
             username = os.environ['LOGNAME']
 
-        self._logfile = log
-        if log:
-            if isinstance(log, bool):
+        self._logfile = self._cnopts.log
+        print(self._cnopts.log)
+        if self._cnopts.log:
+            if isinstance(self._cnopts.log, bool):
                 # Log to a temporary file.
                 fhnd, self._logfile = tempfile.mkstemp('.txt', 'ssh-')
                 os.close(fhnd)  # don't want os file descriptors open
+            print('logging to:', self._logfile)
             paramiko.util.log_to_file(self._logfile)
 
         # Begin the SSH transport.
@@ -816,6 +847,14 @@ class Connection(object):
         if self._transport_live:
             self._transport.close()
             self._transport_live = False
+        # clean up any loggers
+        if self._cnopts.log:
+            # if handlers are active they hang around until the app exits
+            # this closes and removes the handlers if in use at close
+            import logging
+            lgr = logging.getLogger("paramiko")
+            lgr.handlers = []
+
 
     def open(self, remote_file, mode='r', bufsize=-1):
         """Open a file on the remote server.

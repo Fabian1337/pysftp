@@ -6,6 +6,8 @@ Change Log
 
   * added support for enabling compression, ``compression`` (J. Kruth)
   * added :attr:`.active_compression`, to return the active local and remote compression settings as a tuple
+  * fixed an unwanted logging side-effect, after you set logging, it would remain, even if you closed the .Connection and couldn't be changed to something else. Now when Connection closes, any logging handlers are closed and can be changed to something else upon the next .Connection
+  * moved ``log`` parameter of Connection to the new CnOpts connection options object, deprecated the existing ``log`` parameter, will be removed in 0.3.0
 
 * 0.2.8 (current, released 2014-05-28)
 
