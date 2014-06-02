@@ -137,12 +137,16 @@ class CnOpts(object):
         be found at  ``.logfile``
     :ivar bool compression: initial value: False - Enables compression on the
         transport, if set to True.
+    :ivar list|None ciphers: initial value: None -
+        List of ciphers to use in order.
+
     '''
     def __init__(self):
         # self.ciphers = None
         # self.compression = False
         self.log = False
         self.compression = False
+        self.ciphers = None
 
 class Connection(object):
     """Connects and logs into the specified hostname.
@@ -160,8 +164,8 @@ class Connection(object):
         The SSH port of the remote machine.
     :param str|None private_key_pass: *Default: None* -
         password to use, if private_key is encrypted.
-    :param list|None ciphers: *Default: None* -
-        List of ciphers to use in order.
+    :param list|None ciphers: *Deprecated* -
+        see ``pysftp.CnOpts`` and ``cnopts`` parameter
     :param bool|str log: *Deprecated* -
         see ``pysftp.CnOpts`` and ``cnopts`` parameter
     :param None|CnOpts cnopts: *Default: None* - extra connection options
@@ -197,6 +201,12 @@ class Connection(object):
                    "Use cnopts param."
             warnings.warn(wmsg, DeprecationWarning)
             self._cnopts.log = log
+        #TODO: remove this if block and log param above in v0.3.0
+        if ciphers is not None:
+            wmsg = "ciphers parameter is deprecated and will be remove in "\
+                   "0.3.0. Use cnopts param."
+            warnings.warn(wmsg, DeprecationWarning)
+            self._cnopts.ciphers = ciphers
 
         self._sftp_live = False
         self._sftp = None
@@ -216,7 +226,8 @@ class Connection(object):
         try:
             self._transport = paramiko.Transport((host, port))
             # Set security ciphers if set
-            if ciphers is not None:
+            if self._cnopts.ciphers is not None:
+                ciphers = self._cnopts.ciphers
                 self._transport.get_security_options().ciphers = ciphers
             self._transport_live = True
         except (AttributeError, socket.gaierror):
@@ -849,7 +860,8 @@ class Connection(object):
             # this closes and removes the handlers if in use at close
             import logging
             lgr = logging.getLogger("paramiko")
-            lgr.handlers = []
+            if lgr:
+                lgr.handlers = []
 
 
     def open(self, remote_file, mode='r', bufsize=-1):

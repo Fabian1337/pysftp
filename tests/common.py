@@ -4,6 +4,7 @@
 import sys, os
 MYPATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, MYPATH + '/../')
+import warnings
 
 import pysftp
 
@@ -26,3 +27,8 @@ SFTP_LOCAL = {'host':'localhost', 'username':'test', 'password':'test1357'}
  # the CI env var is set to true by both drone-io and travis
 skip_if_ci = pytest.mark.skipif(os.getenv('CI', '')>'', reason='Not Local')
 
+@pytest.fixture
+def warnings_as_errors(request):
+    warnings.simplefilter('error')
+
+    request.addfinalizer(lambda *args: warnings.resetwarnings())

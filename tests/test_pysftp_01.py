@@ -7,35 +7,6 @@ from io import BytesIO
 from mock import Mock, call
 
 
-def test_security_options():
-    '''test the security_options property has expected attributes and that
-    they are tuples'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        secopts = sftp.security_options
-    for attr in ['ciphers', 'compression', 'digests', 'kex', 'key_types']:
-        assert hasattr(secopts, attr)
-        assert isinstance(getattr(secopts, attr), tuple)
-
-def test_active_ciphers():
-    '''test that method returns a tuple of strings, that show ciphers used'''
-    ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')
-    copts = SFTP_PUBLIC.copy()  # don't sully the module level variable
-    copts['ciphers'] = ciphers
-    with pysftp.Connection(**copts) as sftp:
-        local_cipher, remote_cipher = sftp.active_ciphers
-    assert local_cipher in ciphers
-    assert remote_cipher in ciphers
-
-def test_connection_ciphers():
-    '''test the ciphers portion of the Connection'''
-    ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')
-    copts = SFTP_PUBLIC.copy()  # don't sully the module level variable
-    copts['ciphers'] = ciphers
-    assert copts != SFTP_PUBLIC
-    with pysftp.Connection(**copts) as sftp:
-        rslt = sftp.listdir()
-        assert len(rslt) > 1
-
 @skip_if_ci
 def test_putfo_callback_fsize():
     '''test putfo with callback and file_size'''

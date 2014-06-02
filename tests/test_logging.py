@@ -1,8 +1,17 @@
-'''test pysftp.Connection logging param - uses py.test'''
+'''test pysftp.Connection logging param and CnOpts.log - uses py.test'''
 from __future__ import print_function
 
 # pylint: disable = W0142
 from common import *
+import pytest
+
+def test_depr_log_param(warnings_as_errors):
+    '''test deprecation warning for Connection log parameter'''
+    copts = SFTP_PUBLIC.copy()
+    copts['log'] = True
+    with pytest.raises(DeprecationWarning):
+        with pysftp.Connection(**copts) as sftp:
+            pass
 
 def test_log_cnopt_user_file():
     '''test .logfile returns temp filename when CnOpts.log is set to True'''
