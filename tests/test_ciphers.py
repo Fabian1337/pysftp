@@ -1,6 +1,8 @@
 '''test pysftp.Connection ciphers param and CnOpts.ciphers - uses py.test'''
 from __future__ import print_function
 
+# these can not use fixtures as we need to set ciphers prior to the connection
+# being made and fixtures are already active connections.
 # pylint: disable = W0142
 from common import *
 import pytest
