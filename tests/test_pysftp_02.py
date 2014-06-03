@@ -1,5 +1,5 @@
 '''test pysftp module - set 2 - uses py.test'''
-
+# psftp and lsftp fixtures are from conftest.py
 # pylint: disable = W0142
 # pylint: disable=E1101
 from common import *
@@ -7,37 +7,57 @@ from stat import S_ISLNK
 from time import sleep
 
 
-def test_sftp_client():
+def test_sftp_client(psftp):
     '''test for access to the underlying, active sftpclient'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert 'normalize' in dir(sftp.sftp_client)
-        assert 'readlink' in dir(sftp.sftp_client)
+    # with pysftp.Connection(**SFTP_PUBLIC) as sftp:
+    #     assert 'normalize' in dir(sftp.sftp_client)
+    #     assert 'readlink' in dir(sftp.sftp_client)
+    assert 'normalize' in dir(psftp.sftp_client)
+    assert 'readlink' in dir(psftp.sftp_client)
 
 @skip_if_ci
-def test_chown_uid():
+def test_chown_uid(lsftp):
     '''test changing just the uid'''
+    # with tempfile_containing('contents') as fname:
+    #     base_fname = base_fname = os.path.split(fname)[1]
+    #     with pysftp.Connection(**SFTP_LOCAL) as sftp:
+    #         org_attrs = sftp.put(fname)
+    #         uid = org_attrs.st_uid  # - 1
+    #         sftp.chown(base_fname, uid=uid)
+    #         new_attrs = sftp.stat(base_fname)
+    #         sftp.remove(base_fname)
+    # assert new_attrs.st_uid == uid
+    # assert new_attrs.st_gid == org_attrs.st_gid  # confirm no change to gid
     with tempfile_containing('contents') as fname:
         base_fname = base_fname = os.path.split(fname)[1]
-        with pysftp.Connection(**SFTP_LOCAL) as sftp:
-            org_attrs = sftp.put(fname)
-            uid = org_attrs.st_uid  # - 1
-            sftp.chown(base_fname, uid=uid)
-            new_attrs = sftp.stat(base_fname)
-            sftp.remove(base_fname)
+        org_attrs = lsftp.put(fname)
+        uid = org_attrs.st_uid  # - 1
+        lsftp.chown(base_fname, uid=uid)
+        new_attrs = lsftp.stat(base_fname)
+        lsftp.remove(base_fname)
     assert new_attrs.st_uid == uid
     assert new_attrs.st_gid == org_attrs.st_gid  # confirm no change to gid
 
 @skip_if_ci
-def test_chown_gid():
+def test_chown_gid(lsftp):
     '''test changing just the gid'''
+    # with tempfile_containing('contents') as fname:
+    #     base_fname = base_fname = os.path.split(fname)[1]
+    #     with pysftp.Connection(**SFTP_LOCAL) as sftp:
+    #         org_attrs = sftp.put(fname)
+    #         gid = org_attrs.st_gid  # - 1
+    #         sftp.chown(base_fname, gid=gid)
+    #         new_attrs = sftp.stat(base_fname)
+    #         sftp.remove(base_fname)
+    # assert new_attrs.st_gid == gid
+    # assert new_attrs.st_uid == org_attrs.st_uid  # confirm no change to uid
     with tempfile_containing('contents') as fname:
         base_fname = base_fname = os.path.split(fname)[1]
-        with pysftp.Connection(**SFTP_LOCAL) as sftp:
-            org_attrs = sftp.put(fname)
-            gid = org_attrs.st_gid  # - 1
-            sftp.chown(base_fname, gid=gid)
-            new_attrs = sftp.stat(base_fname)
-            sftp.remove(base_fname)
+        org_attrs = lsftp.put(fname)
+        gid = org_attrs.st_gid  # - 1
+        lsftp.chown(base_fname, gid=gid)
+        new_attrs = lsftp.stat(base_fname)
+        lsftp.remove(base_fname)
     assert new_attrs.st_gid == gid
     assert new_attrs.st_uid == org_attrs.st_uid  # confirm no change to uid
 
