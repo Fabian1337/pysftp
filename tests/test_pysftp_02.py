@@ -203,17 +203,17 @@ def test_get_preserve_mtime():
             assert r_stat.st_mtime == os.stat(localfile).st_mtime
 
 @skip_if_ci
-def test_put_preserve_mtime():
+def test_put_preserve_mtime(lsftp):
     '''test that m_time is preserved from local to remote, when put'''
     with tempfile_containing(contents=8192*'*') as fname:
         base_fname = os.path.split(fname)[1]
         base = os.stat(fname)
-        with pysftp.Connection(**SFTP_LOCAL) as sftp:
-            result1 = sftp.put(fname, preserve_mtime=True)
-            sleep(2)
-            result2 = sftp.put(fname, preserve_mtime=True)
-            # clean up
-            sftp.remove(base_fname)
+        # with pysftp.Connection(**SFTP_LOCAL) as sftp:
+        result1 = lsftp.put(fname, preserve_mtime=True)
+        sleep(2)
+        result2 = lsftp.put(fname, preserve_mtime=True)
+        # clean up
+        lsftp.remove(base_fname)
     # see if times are modified
     # assert base.st_atime == result1.st_atime
     assert base.st_mtime == result1.st_mtime
