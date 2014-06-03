@@ -6,11 +6,11 @@ from tempfile import mkdtemp
 import shutil
 
 
-def test_get_r():
+def test_get_r(psftp):
     '''test the get_r for remotepath is pwd '.' '''
+    psftp.cd('~')
     localpath = mkdtemp()
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        sftp.get_r('.', localpath)
+    psftp.get_r('.', localpath)
 
     checks = [([''], ['pub', 'readme.sym', 'readme.txt']),
               (['', 'pub'], ['build', 'example', 'src']),
@@ -38,11 +38,11 @@ def test_get_r():
     shutil.rmtree(localpath)
 
 
-def test_get_r_pwd():
+def test_get_r_pwd(psftp):
     '''test the get_r for remotepath is pwd '/home/test' '''
+    psftp.cd('~')
     localpath = mkdtemp()
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        sftp.get_r('/home/test', localpath)
+    psftp.get_r('/home/test', localpath)
 
     checks = [(['',], ['home', ]),
               (['', 'home',], ['test',]),
@@ -74,11 +74,11 @@ def test_get_r_pwd():
     shutil.rmtree(localpath)
 
 
-def test_get_r_pathed():
+def test_get_r_pathed(psftp):
     '''test the get_r for localpath, starting deeper then pwd '''
+    psftp.cd('~')
     localpath = mkdtemp()
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        sftp.get_r('./pub/example', localpath)
+    psftp.get_r('./pub/example', localpath)
 
     checks = [(['',], ['pub', ]),
               (['', 'pub'], ['example',]),
@@ -91,12 +91,12 @@ def test_get_r_pathed():
     # cleanup local
     shutil.rmtree(localpath)
 
-def test_get_r_cdd():
+def test_get_r_cdd(psftp):
     '''test the get_r for chdir('pub/example')'''
+    psftp.cd('~')
     localpath = mkdtemp()
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        sftp.chdir('pub/example')
-        sftp.get_r('.', localpath)
+    psftp.chdir('pub/example')
+    psftp.get_r('.', localpath)
 
     checks = [(['',],
                ['image01.jpg', 'image02.png', 'image03.gif', 'worksheet.xls']),

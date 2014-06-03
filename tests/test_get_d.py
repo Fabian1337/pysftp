@@ -6,11 +6,11 @@ from tempfile import mkdtemp
 import shutil
 
 
-def test_get_d():
+def test_get_d(psftp):
     '''test the get_d for remotepath is pwd '.' '''
+    psftp.cd('~')
     localpath = mkdtemp()
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        sftp.get_d('.', localpath)
+    psftp.get_d('.', localpath)
 
     checks = [([''], ['readme.txt',]),
              ]
@@ -20,11 +20,11 @@ def test_get_d():
     # cleanup local
     shutil.rmtree(localpath)
 
-def test_get_d_pathed():
+def test_get_d_pathed(psftp):
     '''test the get_d for localpath, starting deeper then pwd '''
+    psftp.cd('~')
     localpath = mkdtemp()
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        sftp.get_d('./pub/example', localpath)
+    psftp.get_d('./pub/example', localpath)
 
     checks = [(['',],
                ['image01.jpg', 'image02.png', 'image03.gif', 'worksheet.xls']),

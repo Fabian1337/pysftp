@@ -31,6 +31,14 @@ def test_get_bad_remote(psftp):
             psftp.get('readme-not-there.txt', fname)
         assert open(fname, 'rb').read()[0:7] != b'Welcome'
 
+def test_get_preserve_mtime(psftp):
+    '''test that m_time is preserved from local to remote, when get'''
+    rfile = 'readme.txt'
+    with tempfile_containing('') as localfile:
+        r_stat = psftp.stat(rfile)
+        psftp.get(rfile, localfile, preserve_mtime=True)
+        assert r_stat.st_mtime == os.stat(localfile).st_mtime
+
 def test_get_glob_fails(psftp):
     '''try and use get a file with a pattern - Fails'''
     with tempfile_containing('') as fname:

@@ -173,15 +173,6 @@ def test_lexists():
         assert sftp.lexists(rbad) == False
         assert sftp.lexists('pub') == True
 
-def test_get_preserve_mtime():
-    '''test that m_time is preserved from local to remote, when get'''
-    rfile = 'readme.txt'
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        with tempfile_containing('') as localfile:
-            r_stat = sftp.stat(rfile)
-            sftp.get(rfile, localfile, preserve_mtime=True)
-            assert r_stat.st_mtime == os.stat(localfile).st_mtime
-
 @skip_if_ci
 def test_put_preserve_mtime(lsftp):
     '''test that m_time is preserved from local to remote, when put'''
