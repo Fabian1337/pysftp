@@ -5,42 +5,38 @@ from __future__ import print_function
 from common import *
 
 
-def test_cd_none():
+def test_cd_none(psftp):
     '''test .cd with None'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        home = sftp.pwd
-        with sftp.cd():
-            sftp.chdir('pub')
-            assert sftp.pwd == '/home/test/pub'
-        assert home == sftp.pwd
+    home = psftp.pwd
+    with psftp.cd():
+        psftp.chdir('pub')
+        assert psftp.pwd == '/home/test/pub'
+    assert home == psftp.pwd
 
-def test_cd_path():
+def test_cd_path(psftp):
     '''test .cd with a path'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        home = sftp.pwd
-        with sftp.cd('pub'):
-            assert sftp.pwd == '/home/test/pub'
-        assert home == sftp.pwd
+    home = psftp.pwd
+    with psftp.cd('pub'):
+        assert psftp.pwd == '/home/test/pub'
+    assert home == psftp.pwd
 
-def test_cd_nested():
+def test_cd_nested(psftp):
     '''test nested cd's'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        home = sftp.pwd
-        with sftp.cd('pub'):
-            assert sftp.pwd == '/home/test/pub'
-            with sftp.cd('example'):
-                assert sftp.pwd == '/home/test/pub/example'
-            assert sftp.pwd == '/home/test/pub'
-        assert home == sftp.pwd
+    home = psftp.pwd
+    with psftp.cd('pub'):
+        assert psftp.pwd == '/home/test/pub'
+        with psftp.cd('example'):
+            assert psftp.pwd == '/home/test/pub/example'
+        assert psftp.pwd == '/home/test/pub'
+    assert home == psftp.pwd
 
-def test_cd_bad_path():
+def test_cd_bad_path(psftp):
     '''test .cd with a bad path'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        home = sftp.pwd
-        with pytest.raises(IOError):
-            with sftp.cd('not-there'):
-                pass
-        assert home == sftp.pwd
+    home = psftp.pwd
+    with pytest.raises(IOError):
+        with psftp.cd('not-there'):
+            pass
+    assert home == psftp.pwd
 
 def test_cd_local():
     '''test pysftp.cd on local directories'''
