@@ -8,7 +8,7 @@ import shutil
 
 def test_get_r(psftp):
     '''test the get_r for remotepath is pwd '.' '''
-    psftp.cd('~')
+    psftp.cwd('/home/test')
     localpath = mkdtemp()
     psftp.get_r('.', localpath)
 
@@ -40,7 +40,7 @@ def test_get_r(psftp):
 
 def test_get_r_pwd(psftp):
     '''test the get_r for remotepath is pwd '/home/test' '''
-    psftp.cd('~')
+    psftp.cwd('/home/test')
     localpath = mkdtemp()
     psftp.get_r('/home/test', localpath)
 
@@ -76,7 +76,7 @@ def test_get_r_pwd(psftp):
 
 def test_get_r_pathed(psftp):
     '''test the get_r for localpath, starting deeper then pwd '''
-    psftp.cd('~')
+    psftp.cwd('/home/test')
     localpath = mkdtemp()
     psftp.get_r('./pub/example', localpath)
 
@@ -93,7 +93,7 @@ def test_get_r_pathed(psftp):
 
 def test_get_r_cdd(psftp):
     '''test the get_r for chdir('pub/example')'''
-    psftp.cd('~')
+    psftp.cwd('/home/test')
     localpath = mkdtemp()
     psftp.chdir('pub/example')
     psftp.get_r('.', localpath)

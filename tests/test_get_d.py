@@ -8,7 +8,7 @@ import shutil
 
 def test_get_d(psftp):
     '''test the get_d for remotepath is pwd '.' '''
-    psftp.cd('~')
+    psftp.cwd('/home/test')
     localpath = mkdtemp()
     psftp.get_d('.', localpath)
 
@@ -22,7 +22,7 @@ def test_get_d(psftp):
 
 def test_get_d_pathed(psftp):
     '''test the get_d for localpath, starting deeper then pwd '''
-    psftp.cd('~')
+    psftp.cwd('/home/test')
     localpath = mkdtemp()
     psftp.get_d('./pub/example', localpath)
 

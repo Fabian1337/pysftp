@@ -6,14 +6,14 @@ from mock import Mock
 
 def test_get(psftp):
     '''download a file'''
-    psftp.cd('~')
+    psftp.cwd('/home/test')
     with tempfile_containing('') as fname:
         psftp.get('/home/test/readme.txt', fname)
         assert open(fname, 'rb').read()[0:9] == b'This SFTP'
 
 def test_get_callback(psftp):
     '''test .get callback'''
-    psftp.cd('~')
+    psftp.cwd('/home/test')
     cback = Mock(return_value=None)
     with tempfile_containing('') as fname:
         result = psftp.get('readme.txt', fname, callback=cback)
@@ -25,7 +25,7 @@ def test_get_callback(psftp):
 
 def test_get_bad_remote(psftp):
     '''download a file'''
-    psftp.cd('~')
+    psftp.cwd('/home/test')
     with tempfile_containing('') as fname:
         with pytest.raises(IOError):
             psftp.get('readme-not-there.txt', fname)
@@ -33,6 +33,7 @@ def test_get_bad_remote(psftp):
 
 def test_get_preserve_mtime(psftp):
     '''test that m_time is preserved from local to remote, when get'''
+    psftp.cwd('/home/test')
     rfile = 'readme.txt'
     with tempfile_containing('') as localfile:
         r_stat = psftp.stat(rfile)
@@ -41,6 +42,7 @@ def test_get_preserve_mtime(psftp):
 
 def test_get_glob_fails(psftp):
     '''try and use get a file with a pattern - Fails'''
+    psftp.cwd('/home/test')
     with tempfile_containing('') as fname:
         with pytest.raises(IOError):
             psftp.get('*', fname)
