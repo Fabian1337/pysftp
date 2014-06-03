@@ -4,37 +4,35 @@
 from common import *
 from mock import Mock
 
-def test_get():
+def test_get(psftp):
     '''download a file'''
-    sftp = pysftp.Connection(**SFTP_PUBLIC)
+    psftp.cd('~')
     with tempfile_containing('') as fname:
-        sftp.get('readme.txt', fname)
-        sftp.close()
+        psftp.get('/home/test/readme.txt', fname)
         assert open(fname, 'rb').read()[0:9] == b'This SFTP'
 
-def test_get_callback():
+def test_get_callback(psftp):
     '''test .get callback'''
+    psftp.cd('~')
     cback = Mock(return_value=None)
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        with tempfile_containing('') as fname:
-            result = sftp.get('readme.txt', fname, callback=cback)
-            assert open(fname, 'rb').read()[0:9] == b'This SFTP'
+    with tempfile_containing('') as fname:
+        result = psftp.get('readme.txt', fname, callback=cback)
+        assert open(fname, 'rb').read()[0:9] == b'This SFTP'
     # verify callback was called more than once - usually a min of 2
     assert cback.call_count >= 2
     # unlike .put() nothing is returned from the operation
     assert result == None
 
-def test_get_bad_remote():
+def test_get_bad_remote(psftp):
     '''download a file'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        with tempfile_containing('') as fname:
-            with pytest.raises(IOError):
-                sftp.get('readme-not-there.txt', fname)
-            assert open(fname, 'rb').read()[0:7] != b'Welcome'
+    psftp.cd('~')
+    with tempfile_containing('') as fname:
+        with pytest.raises(IOError):
+            psftp.get('readme-not-there.txt', fname)
+        assert open(fname, 'rb').read()[0:7] != b'Welcome'
 
-# def test_get_glob():
-#     '''try and use get a file with a pattern - Fails'''
-#     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-#         with tempfile_containing('') as fname:
-#             with pytest.raises(IOError):
-#                 sftp.get('*', fname)
+def test_get_glob_fails(psftp):
+    '''try and use get a file with a pattern - Fails'''
+    with tempfile_containing('') as fname:
+        with pytest.raises(IOError):
+            psftp.get('*', fname)
