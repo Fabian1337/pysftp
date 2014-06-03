@@ -3,28 +3,28 @@
 # pylint: disable = W0142
 from common import *
 
-def test_normalize():
+def test_normalize(psftp):
     '''test the normalize function'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert sftp.normalize('readme.txt') == '/home/test/readme.txt'
-        assert sftp.normalize('.') == '/home/test'
-        assert sftp.normalize('pub') == '/home/test/pub'
-        sftp.chdir('pub')
-        assert sftp.normalize('.') == '/home/test/pub'
+    psftp.chdir('/home/test')
+    assert psftp.normalize('readme.txt') == '/home/test/readme.txt'
+    assert psftp.normalize('.') == '/home/test'
+    assert psftp.normalize('pub') == '/home/test/pub'
+    psftp.chdir('pub')
+    assert psftp.normalize('.') == '/home/test/pub'
 
 
-def test_normalize_symlink():
+def test_normalize_symlink(psftp):
     '''test normalize against a symlink'''
+    psftp.chdir('/home/test')
     rsym = 'readme.sym'
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert sftp.normalize(rsym) == '/home/test/readme.txt'
+    assert psftp.normalize(rsym) == '/home/test/readme.txt'
 
 
-def test_pwd():
+def test_pwd(psftp):
     '''test the pwd property'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert sftp.pwd == '/home/test'
-        sftp.chdir('pub')
-        assert sftp.pwd == '/home/test/pub'
-        sftp.chdir('src/tests')
-        assert sftp.pwd == '/home/test/pub/src/tests'
+    psftp.chdir('/home/test')
+    assert psftp.pwd == '/home/test'
+    psftp.chdir('pub')
+    assert psftp.pwd == '/home/test/pub'
+    psftp.chdir('src/tests')
+    assert psftp.pwd == '/home/test/pub/src/tests'

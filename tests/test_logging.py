@@ -1,6 +1,8 @@
 '''test pysftp.Connection logging param and CnOpts.log - uses py.test'''
 from __future__ import print_function
 
+# can't use fixtures here, as we need to get .close() to fire to clear the
+# logging handlers while we are testing.
 # pylint: disable = W0142
 from common import *
 import pytest
