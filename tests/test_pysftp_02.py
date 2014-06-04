@@ -37,59 +37,54 @@ def test_path_advance():
                                               '/foo/bar/baz']
 
 @skip_if_ci
-def test_makedirs():
+def test_makedirs(lsftp):
     '''test makedirs simple, testing 2 things, oh well'''
     rdir = 'foo/bar/baz'
     rdir2 = 'foo/bar'
-    with pysftp.Connection(**SFTP_LOCAL) as sftp:
-        assert sftp.exists(rdir) == False
-        sftp.makedirs(rdir)
-        is_dir = sftp.isdir(rdir)
-        sftp.rmdir(rdir)
-        sftp.rmdir(rdir2)
-        sftp.makedirs(rdir)     # try partially existing path
-        is_dir_partial = sftp.isdir(rdir)
-        for rpath in pysftp.path_retreat(rdir):
-            sftp.rmdir(rpath)
+    assert lsftp.exists(rdir) == False
+    lsftp.makedirs(rdir)
+    is_dir = lsftp.isdir(rdir)
+    lsftp.rmdir(rdir)
+    lsftp.rmdir(rdir2)
+    lsftp.makedirs(rdir)     # try partially existing path
+    is_dir_partial = lsftp.isdir(rdir)
+    for rpath in pysftp.path_retreat(rdir):
+        lsftp.rmdir(rpath)
     assert is_dir
     assert is_dir_partial
 
-def test_lexists_symbolic():
+def test_lexists_symbolic(psftp):
     '''test .lexists() vs. symbolic link'''
     rsym = 'readme.sym'
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert sftp.lexists(rsym)
+    assert psftp.lexists(rsym)
 
 @skip_if_ci
-def test_symlink():
+def test_symlink(lsftp):
     '''test symlink creation'''
-    rdest = 'honey-boo-boo'
+    rdest = '/home/test/honey-boo-boo'
     with tempfile_containing(contents=8192*'*') as fname:
-        with pysftp.Connection(**SFTP_LOCAL) as sftp:
-            sftp.put(fname)
-            sftp.symlink(fname, rdest)
-            rslt = sftp.lstat(rdest)
-            is_link = S_ISLNK(rslt.st_mode) == True
-            sftp.remove(rdest)
-            sftp.remove(os.path.split(fname)[1])
+        lsftp.put(fname)
+        lsftp.symlink(fname, rdest)
+        rslt = lsftp.lstat(rdest)
+        is_link = S_ISLNK(rslt.st_mode) == True
+        lsftp.remove(rdest)
+        lsftp.remove(os.path.split(fname)[1])
     assert is_link
 
-def test_exists():
+def test_exists(psftp):
     '''test .exists() fuctionality'''
-    rfile = 'readme.txt'
-    rbad = 'pee-a-boo.txt'
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert sftp.exists(rfile) == True
-        assert sftp.exists(rbad) == False
-        assert sftp.exists('pub') == True
+    rfile = '/home/test/readme.txt'
+    rbad = '/home/test/peek-a-boo.txt'
+    assert psftp.exists(rfile) == True
+    assert psftp.exists(rbad) == False
+    assert psftp.exists('pub') == True
 
-def test_lexists():
+def test_lexists(psftp):
     '''test .lexists() functionality'''
-    rfile = 'readme.txt'
-    rbad = 'pee-a-boo.txt'
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert sftp.lexists(rfile) == True
-        assert sftp.lexists(rbad) == False
-        assert sftp.lexists('pub') == True
+    rfile = '/home/test/readme.txt'
+    rbad = '/home/test/peek-a-boo.txt'
+    assert psftp.lexists(rfile) == True
+    assert psftp.lexists(rbad) == False
+    assert psftp.lexists('pub') == True
 
 
