@@ -3,26 +3,6 @@
 # pylint: disable = W0142
 # pylint: disable=E1101
 from common import *
-from mock import Mock
-
-@skip_if_ci
-def test_put_callback_confirm():
-    '''test the callback and confirm feature of put'''
-    cback = Mock(return_value=None)
-    with tempfile_containing(contents=8192*'*') as fname:
-        base_fname = os.path.split(fname)[1]
-        with pysftp.Connection(**SFTP_LOCAL) as sftp:
-            result = sftp.put(fname, callback=cback)
-            # clean up
-            sftp.remove(base_fname)
-    # verify callback was called more than once - usually a min of 2
-    assert cback.call_count >= 2
-    # verify that an SFTPAttribute like os.stat was returned
-    assert result.st_size == 8192
-    assert result.st_uid
-    assert result.st_gid
-    assert result.st_atime
-    assert result.st_mtime
 
 @skip_if_ci
 def test_rename():
@@ -41,46 +21,11 @@ def test_rename():
             assert base_fname not in rdirs
             sftp.remove('bob')
 
-@skip_if_ci
-def test_put():
-    '''run test on localhost'''
-    contents = 'now is the time\nfor all good...'
-    with tempfile_containing(contents=contents) as fname:
-        base_fname = os.path.split(fname)[1]
-        with pysftp.Connection(**SFTP_LOCAL) as sftp:
-            if base_fname in sftp.listdir():
-                sftp.remove(base_fname)
-            assert base_fname not in sftp.listdir()
-            sftp.put(fname)
-            assert base_fname in sftp.listdir()
-            with tempfile_containing('') as tfile:
-                sftp.get(base_fname, tfile)
-                assert open(tfile).read() == contents
-            # clean up
-            sftp.remove(base_fname)
-
-
 def test_chdir_bad_dir():
     '''try to chdir() to a non-existing remote dir'''
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         with pytest.raises(IOError):
             sftp.chdir('i-dont-exist')
-
-def test_put_bad_local():
-    '''try to put a non-existing file to a read-only server'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        with tempfile_containing('should fail') as fname:
-            pass
-        # tempfile has been removed
-        with pytest.raises(OSError):
-            sftp.put(fname)
-
-def test_put_not_allowed():
-    '''try to put a file to a read-only server'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        with tempfile_containing('should fail') as fname:
-            with pytest.raises(IOError):
-                sftp.put(fname)
 
 def test_connection_with():
     '''connect to a public sftp server'''
