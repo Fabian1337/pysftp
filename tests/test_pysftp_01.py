@@ -6,25 +6,6 @@ from common import *
 from io import BytesIO
 from mock import Mock
 
-
-def test_getfo_flo():
-    '''test getfo to a file-like object'''
-    flo = BytesIO()
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        num_bytes = sftp.getfo('readme.txt', flo)
-
-    assert flo.getvalue()[0:9] == b'This SFTP'
-    assert num_bytes == len(flo.getvalue())
-
-def test_getfo_callback():
-    '''test getfo callback'''
-    flo = BytesIO()
-    cback = Mock(return_value=None)
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        sftp.getfo('readme.txt', flo, callback=cback)
-
-    assert cback.call_count >= 2
-
 @skip_if_ci
 def test_mkdir_mode():
     '''test mkdir with mode set to 711'''
