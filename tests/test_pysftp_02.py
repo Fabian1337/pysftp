@@ -54,34 +54,6 @@ def test_makedirs():
     assert is_dir
     assert is_dir_partial
 
-def test_isfile():
-    '''test .isfile() functionality'''
-    rfile = 'readme.txt'
-    rdir = 'pub'
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert sftp.isfile(rfile) == True
-        assert sftp.isfile(rdir) == False
-
-def test_isfile_2():
-    '''test .isfile() functionality against a symlink'''
-    rsym = 'readme.sym'
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert sftp.isfile(rsym)
-
-def test_isdir():
-    '''test .isdir() functionality'''
-    rfile = 'readme.txt'
-    rdir = 'pub'
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert sftp.isdir(rfile) == False
-        assert sftp.isdir(rdir) == True
-
-def test_isdir_2():
-    '''test .isdir() functionality against a symlink'''
-    rsym = 'readme.sym'
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert sftp.isdir(rsym) == False
-
 def test_lexists_symbolic():
     '''test .lexists() vs. symbolic link'''
     rsym = 'readme.sym'
