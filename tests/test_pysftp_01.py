@@ -3,31 +3,7 @@
 # pylint: disable = W0142
 # pylint: disable=E1101
 from common import *
-from io import BytesIO
 from mock import Mock
-
-@skip_if_ci
-def test_mkdir_mode():
-    '''test mkdir with mode set to 711'''
-    dirname = 'test-dir'
-    mode = 711
-    with pysftp.Connection(**SFTP_LOCAL) as sftp:
-        assert dirname not in sftp.listdir()
-        sftp.mkdir(dirname, mode=mode)
-        attrs = sftp.stat(dirname)
-        sftp.rmdir(dirname)
-        assert pysftp.st_mode_to_int(attrs.st_mode) == mode
-
-@skip_if_ci
-def test_mkdir():
-    '''test mkdir'''
-    dirname = 'test-dir'
-    with pysftp.Connection(**SFTP_LOCAL) as sftp:
-        assert dirname not in sftp.listdir()
-        sftp.mkdir(dirname)
-        assert dirname in sftp.listdir()
-        # clean up
-        sftp.rmdir(dirname)
 
 @skip_if_ci
 def test_rmdir():
