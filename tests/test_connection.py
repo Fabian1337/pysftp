@@ -1,4 +1,4 @@
-'''test pysftp module - uses py.test'''
+'''test pysftp.Connection - uses py.test'''
 
 # pylint: disable = W0142
 # pylint: disable=E1101
@@ -20,9 +20,9 @@ def test_connection_bad_host():
 
 def test_connection_bad_credentials():
     '''attempt connection to a non-existing server'''
+    copts = SFTP_PUBLIC.copy()
+    copts['password'] = 'badword'
     with pytest.raises(pysftp.SSHException):
-        copts = SFTP_PUBLIC.copy()
-        copts['password'] = 'badword'
         with pysftp.Connection(**copts) as sftp:
             pass
 
