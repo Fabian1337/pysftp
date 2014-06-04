@@ -4,7 +4,6 @@
 # pylint: disable=E1101
 from common import *
 from stat import S_ISLNK
-from time import sleep
 
 
 def test_sftp_client(psftp):
@@ -14,58 +13,6 @@ def test_sftp_client(psftp):
     #     assert 'readlink' in dir(sftp.sftp_client)
     assert 'normalize' in dir(psftp.sftp_client)
     assert 'readlink' in dir(psftp.sftp_client)
-
-@skip_if_ci
-def test_chown_uid(lsftp):
-    '''test changing just the uid'''
-    with tempfile_containing('contents') as fname:
-        base_fname = base_fname = os.path.split(fname)[1]
-        org_attrs = lsftp.put(fname)
-        uid = org_attrs.st_uid  # - 1
-        lsftp.chown(base_fname, uid=uid)
-        new_attrs = lsftp.stat(base_fname)
-        lsftp.remove(base_fname)
-    assert new_attrs.st_uid == uid
-    assert new_attrs.st_gid == org_attrs.st_gid  # confirm no change to gid
-
-@skip_if_ci
-def test_chown_gid(lsftp):
-    '''test changing just the gid'''
-    with tempfile_containing('contents') as fname:
-        base_fname = base_fname = os.path.split(fname)[1]
-        org_attrs = lsftp.put(fname)
-        gid = org_attrs.st_gid  # - 1
-        lsftp.chown(base_fname, gid=gid)
-        new_attrs = lsftp.stat(base_fname)
-        lsftp.remove(base_fname)
-    assert new_attrs.st_gid == gid
-    assert new_attrs.st_uid == org_attrs.st_uid  # confirm no change to uid
-
-@skip_if_ci
-def test_chown_none():
-    '''call .chown with no gid or uid specified'''
-    with tempfile_containing('contents') as fname:
-        base_fname = base_fname = os.path.split(fname)[1]
-        with pysftp.Connection(**SFTP_LOCAL) as sftp:
-            org_attrs = sftp.put(fname)
-            sftp.chown(base_fname)
-            new_attrs = sftp.stat(base_fname)
-            sftp.remove(base_fname)
-    assert new_attrs.st_gid == org_attrs.st_gid
-    assert new_attrs.st_uid == org_attrs.st_uid  # confirm no change to uid
-
-@skip_if_ci
-def test_chown_not_exist():
-    '''call .chown on a non-existing path'''
-    with pytest.raises(IOError):
-        with pysftp.Connection(**SFTP_LOCAL) as sftp:
-            sftp.chown('i-do-not-exist.txt', 666)
-
-def test_chown_ro_server():
-    '''call .chown against path on read-only server'''
-    with pytest.raises(IOError):
-        with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-            sftp.chown('readme.txt', gid=1000, uid=1000)
 
 def test_path_retreat():
     '''test path_retreat generator'''
@@ -173,21 +120,4 @@ def test_lexists():
         assert sftp.lexists(rbad) == False
         assert sftp.lexists('pub') == True
 
-@skip_if_ci
-def test_put_preserve_mtime(lsftp):
-    '''test that m_time is preserved from local to remote, when put'''
-    with tempfile_containing(contents=8192*'*') as fname:
-        base_fname = os.path.split(fname)[1]
-        base = os.stat(fname)
-        # with pysftp.Connection(**SFTP_LOCAL) as sftp:
-        result1 = lsftp.put(fname, preserve_mtime=True)
-        sleep(2)
-        result2 = lsftp.put(fname, preserve_mtime=True)
-        # clean up
-        lsftp.remove(base_fname)
-    # see if times are modified
-    # assert base.st_atime == result1.st_atime
-    assert base.st_mtime == result1.st_mtime
-    # assert result1.st_atime == result2.st_atime
-    assert result1.st_mtime == result2.st_mtime
 
