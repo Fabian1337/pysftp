@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 # pylint: disable = W0142
+# pylint: disable=E1101
 from common import *
 import pytest
 
@@ -30,5 +31,5 @@ def test_chmod_fail_ro(psftp):
     new_mode = 440
     fname = 'readme.txt'
     with pytest.raises(IOError):
-        psftp.chmod(fname, 444)      #make sure we start from a known mode
+        psftp.chmod(fname, new_mode)      #make sure we start from a known mode
 
