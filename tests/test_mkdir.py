@@ -1,9 +1,8 @@
-'''test pysftp module - uses py.test'''
+'''test pysftp.Connection.mkdir - uses py.test'''
 
 # pylint: disable = W0142
 # pylint: disable=E1101
 from common import *
-from mock import Mock
 
 @skip_if_ci
 def test_mkdir_mode(lsftp):
