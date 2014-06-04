@@ -11,7 +11,7 @@ def test_putfo_callback_fsize(lsftp):
     '''test putfo with callback and file_size'''
     rfile = 'a-test-file'
     buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
-    ' is full of eels.'
+    b' is full of eels.'
     fsize = len(buf)
     bwrote = fsize
     flo = BytesIO(buf)
@@ -27,7 +27,7 @@ def test_putfo_callback(lsftp):
     '''test putfo with callback'''
     rfile = 'a-test-file'
     buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
-    ' is full of eels.'
+    b' is full of eels.'
     flo = BytesIO(buf)
     cback = Mock(return_value=None)
     lsftp.putfo(flo, rfile, callback=cback)
@@ -41,7 +41,7 @@ def test_putfo_flo(lsftp):
     '''test putfo in simple form'''
     rfile = 'a-test-file'
     buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
-    ' is full of eels.'
+    b' is full of eels.'
     flo = BytesIO(buf)
     assert rfile not in lsftp.listdir()
     rslt = lsftp.putfo(flo, rfile)
@@ -53,7 +53,7 @@ def test_putfo_flo(lsftp):
 def test_putfo_no_remotepath(lsftp):
     '''test putfo raises TypeError when not specifying a remotepath'''
     buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
-    ' is full of eels.'
+    b' is full of eels.'
     flo = BytesIO(buf)
     with pytest.raises(TypeError):
         lsftp.putfo(flo)
@@ -61,7 +61,7 @@ def test_putfo_no_remotepath(lsftp):
 def test_putfo_ro_srv(psftp):
     '''test error returned from attempting to putfo to a read-only server'''
     buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
-    ' is full of eels.'
+    b' is full of eels.'
     flo = BytesIO(buf)
     with pytest.raises(TypeError):
         psftp.putfo(flo)
