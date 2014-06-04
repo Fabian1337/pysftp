@@ -4,7 +4,6 @@
 from common import *
 
 
-def test_readlink():
+def test_readlink(psftp):
     '''test the readlink method'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert sftp.readlink('readme.sym') == '/home/test/readme.txt'
+    assert psftp.readlink('readme.sym') == '/home/test/readme.txt'
