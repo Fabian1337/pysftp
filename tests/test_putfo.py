@@ -1,4 +1,4 @@
-'''test pysftp.Connection.listdir - uses py.test'''
+'''test pysftp.Connection.putfo - uses py.test'''
 
 # pylint: disable = W0142
 # pylint: disable=E1101
