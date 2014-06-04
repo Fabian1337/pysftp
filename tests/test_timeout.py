@@ -4,17 +4,15 @@
 from common import *
 
 
-def test_timeout_getter():
+def test_timeout_getter(psftp):
     '''test getting the timeout value'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        # always starts at no timeout,
-        assert sftp.timeout is None
+    # always starts at no timeout,
+    assert psftp.timeout is None
 
 
-def test_timeout_setter():
+def test_timeout_setter(psftp):
     '''test setting the timeout value'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        sftp.timeout = 10.5
-        assert sftp.timeout == 10.5
-        sftp.timeout = None
-        assert sftp.timeout is None
+    psftp.timeout = 10.5
+    assert psftp.timeout == 10.5
+    psftp.timeout = None
+    assert psftp.timeout is None
