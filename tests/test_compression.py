@@ -24,5 +24,3 @@ def test_compression_enabled():
         lcompress, rcompress = sftp.active_compression
         assert lcompress != 'none'
         assert rcompress != 'none'
-
-

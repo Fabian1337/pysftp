@@ -4,6 +4,7 @@
 # pylint: disable=E1101
 from common import *
 
+
 @skip_if_ci
 def test_chown_uid(lsftp):
     '''test changing just the uid'''
@@ -16,6 +17,7 @@ def test_chown_uid(lsftp):
         lsftp.remove(base_fname)
     assert new_attrs.st_uid == uid
     assert new_attrs.st_gid == org_attrs.st_gid  # confirm no change to gid
+
 
 @skip_if_ci
 def test_chown_gid(lsftp):
@@ -30,6 +32,7 @@ def test_chown_gid(lsftp):
     assert new_attrs.st_gid == gid
     assert new_attrs.st_uid == org_attrs.st_uid  # confirm no change to uid
 
+
 @skip_if_ci
 def test_chown_none(lsftp):
     '''call .chown with no gid or uid specified'''
@@ -42,14 +45,15 @@ def test_chown_none(lsftp):
     assert new_attrs.st_gid == org_attrs.st_gid
     assert new_attrs.st_uid == org_attrs.st_uid  # confirm no change to uid
 
+
 @skip_if_ci
 def test_chown_not_exist(lsftp):
     '''call .chown on a non-existing path'''
     with pytest.raises(IOError):
         lsftp.chown('i-do-not-exist.txt', 666)
 
+
 def test_chown_ro_server(psftp):
     '''call .chown against path on read-only server'''
     with pytest.raises(IOError):
         psftp.chown('readme.txt', gid=1000, uid=1000)
-

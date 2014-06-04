@@ -4,6 +4,7 @@
 # pylint: disable=E1101
 from common import *
 
+
 def test_issue_15(psftp):
     '''chdir followed by execute doesn't occur in expected directory.'''
     hresults = psftp.execute('pwd')

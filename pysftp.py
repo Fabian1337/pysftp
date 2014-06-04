@@ -43,6 +43,7 @@ class ConnectionException(Exception):
         Exception.__init__(self, host, port)
         self.message = 'Could not connect to host:port.  %s:%s'
 
+
 class CredentialException(Exception):
     """Exception raised for credential problems
 
@@ -54,6 +55,7 @@ class CredentialException(Exception):
         # Call the base class constructor with the parameters it needs
         Exception.__init__(self, message)
         self.message = message
+
 
 class WTCallbacks(object):
     '''an object to house the callbacks, used internally'''
@@ -93,6 +95,7 @@ class WTCallbacks(object):
         :type: list
         '''
         return sorted(self._flist)
+
     @flist.setter
     def flist(self, val):
         '''setter for _flist '''
@@ -107,6 +110,7 @@ class WTCallbacks(object):
         :type: list
         '''
         return sorted(self._dlist)
+
     @dlist.setter
     def dlist(self, val):
         '''setter for _dlist '''
@@ -121,6 +125,7 @@ class WTCallbacks(object):
         :type: list
         '''
         return sorted(self._ulist)
+
     @ulist.setter
     def ulist(self, val):
         '''setter for _ulist '''
@@ -147,6 +152,7 @@ class CnOpts(object):
         self.log = False
         self.compression = False
         self.ciphers = None
+
 
 class Connection(object):
     """Connects and logs into the specified hostname.
@@ -189,19 +195,19 @@ class Connection(object):
                  ciphers=None,
                  log=False,
                  cnopts=None
-                ):
+                 ):
         if cnopts is None:
             self._cnopts = CnOpts()
         else:
             self._cnopts = cnopts
 
-        #TODO: remove this if block and log param above in v0.3.0
-        if log != False:
+        # TODO: remove this if block and log param above in v0.3.0
+        if log:
             wmsg = "log parameter is deprecated and will be remove in 0.3.0. "\
                    "Use cnopts param."
             warnings.warn(wmsg, DeprecationWarning)
             self._cnopts.log = log
-        #TODO: remove this if block and log param above in v0.3.0
+        # TODO: remove this if block and log param above in v0.3.0
         if ciphers is not None:
             wmsg = "ciphers parameter is deprecated and will be remove in "\
                    "0.3.0. Use cnopts param."
@@ -250,15 +256,15 @@ class Connection(object):
                 elif os.path.exists(os.path.expanduser('~/.ssh/id_dsa')):
                     private_key = '~/.ssh/id_dsa'
                 else:
-                    raise CredentialException("You have not specified a "\
+                    raise CredentialException("You have not specified a "
                                               "password or key.")
             if not isinstance(private_key, AgentKey):
                 private_key_file = os.path.expanduser(private_key)
-                try:  #try rsa
+                try:  # try rsa
                     rsakey = paramiko.RSAKey
                     prv_key = rsakey.from_private_key_file(private_key_file,
                                                            private_key_pass)
-                except paramiko.SSHException:   #if it fails, try dss
+                except paramiko.SSHException:   # if it fails, try dss
                     dsskey = paramiko.DSSKey
                     prv_key = dsskey.from_private_key_file(private_key_file,
                                                            private_key_pass)
@@ -357,7 +363,7 @@ class Connection(object):
                 try:
                     os.mkdir(reparent(localdir, subdir))
                     # force result to a list for setter,
-                    wtcb.dlist = wtcb.dlist + [subdir,]
+                    wtcb.dlist = wtcb.dlist + [subdir, ]
                 except OSError:     # dir exists
                     pass
 
@@ -369,13 +375,11 @@ class Connection(object):
                 for subdir in path_advance(head):
                     if subdir not in wtcb.dlist and subdir != '.':
                         os.mkdir(reparent(localdir, subdir))
-                        wtcb.dlist = wtcb.dlist + [subdir,]
+                        wtcb.dlist = wtcb.dlist + [subdir, ]
 
             self.get(fname,
                      reparent(localdir, fname),
-                     preserve_mtime=preserve_mtime
-                    )
-
+                     preserve_mtime=preserve_mtime)
 
     def getfo(self, remotepath, flo, callback=None):
         """Copy a remote file (remotepath) to a file-like object, flo.
@@ -403,7 +407,7 @@ class Connection(object):
             the remote path, else the remote :attr:`.pwd` and filename is used.
         :param callable callback:
             optional callback function (form: ``func(int, int``)) that accepts
-            the bytes transferred so far and the total bytes to be transferred..
+            the bytes transferred so far and the total bytes to be transferred.
         :param bool confirm:
             whether to do a stat() on the file afterwards to confirm the file
             size
@@ -496,7 +500,6 @@ class Connection(object):
         # restore local directory
         os.chdir(cur_local_dir)
         for dname in wtcb.dlist:
-            #for subdir in path_advance(dname):
             if dname != '.':
                 self.mkdir(reparent(remotepath, dname))
 
@@ -506,13 +509,11 @@ class Connection(object):
                 for subdir in path_advance(head):
                     if subdir not in wtcb.dlist and subdir != '.':
                         self.mkdir(reparent(remotepath, subdir))
-                        wtcb.dlist = wtcb.dlist + [subdir,]
+                        wtcb.dlist = wtcb.dlist + [subdir, ]
             src = os.path.join(localpath, fname)
             dest = reparent(remotepath, fname)
             # print('put', src, dest)
             self.put(src, dest, confirm=confirm, preserve_mtime=preserve_mtime)
-
-
 
     def putfo(self, flo, remotepath=None, file_size=0, callback=None,
               confirm=True):
@@ -526,7 +527,7 @@ class Connection(object):
             callback function will always be 0.
         :param callable callback:
             optional callback function (form: ``func(int, int``)) that accepts
-            the bytes transferred so far and the total bytes to be transferred..
+            the bytes transferred so far and the total bytes to be transferred.
         :param bool confirm:
             whether to do a stat() on the file afterwards to confirm the file
             size
@@ -611,8 +612,8 @@ class Connection(object):
 
     def chown(self, remotepath, uid=None, gid=None):
         """ set uid and/or gid on a remotepath, you may specify either or both.
-        Unless you have **permission** to do this on the remote server, you will
-        raise an IOError: 13 - permission denied
+        Unless you have **permission** to do this on the remote server, you
+        will raise an IOError: 13 - permission denied
 
         :param str remotepath: the remote path/file to modify
         :param int uid: the user id to set on the remotepath
@@ -620,7 +621,8 @@ class Connection(object):
 
         :returns: None
 
-        :raises: IOError, if you don't have permission or the file doesn't exist
+        :raises:
+            IOError, if you don't have permission or the file doesn't exist
 
         """
         self._sftp_connect()
@@ -637,7 +639,8 @@ class Connection(object):
 
     def getcwd(self):
         """return the current working directory on the remote. This is a wrapper
-        for paramiko's method and not to be confused with the SFTP command, cwd.
+        for paramiko's method and not to be confused with the SFTP command,
+        cwd.
 
         :returns: (str) the current remote path. None, if not set.
 
@@ -756,7 +759,7 @@ class Connection(object):
             pass
 
         elif self.isfile(remotedir):
-            raise OSError("a file with the same name as the remotedir, " \
+            raise OSError("a file with the same name as the remotedir, "
                           "'%s', already exists." % remotedir)
         else:
 
@@ -863,11 +866,11 @@ class Connection(object):
             if lgr:
                 lgr.handlers = []
 
-
     def open(self, remote_file, mode='r', bufsize=-1):
         """Open a file on the remote server.
 
-        See http://paramiko-docs.readthedocs.org/en/latest/api/sftp.html?highlight=open#paramiko.sftp_client.SFTPClient.open for details.
+        See http://paramiko-docs.readthedocs.org/en/latest/api/sftp.html for
+        details.
 
         :param str remote_file: name of the file to open.
         :param str mode:
@@ -946,7 +949,8 @@ class Connection(object):
         self._sftp.truncate(remotepath, size)
         return self._sftp.stat(remotepath).st_size
 
-    def walktree(self, remotepath, fcallback, dcallback, ucallback, recurse=True):
+    def walktree(self, remotepath, fcallback, dcallback, ucallback,
+                 recurse=True):
         '''recursively descend, depth first, the directory tree rooted at
         remotepath, calling discreet callback functions for each regular file,
         directory and unknown file type.
@@ -990,7 +994,7 @@ class Connection(object):
     def sftp_client(self):
         """give access to the underlying, connected paramiko SFTPClient object
 
-        see http://paramiko-docs.readthedocs.org/en/latest/api/sftp.html?highlight=sftpclient
+        see http://paramiko-docs.readthedocs.org/en/latest/api/sftp.html
 
         :params: None
 
@@ -1005,7 +1009,8 @@ class Connection(object):
         """Get tuple of currently used local and remote ciphers.
 
         :returns:
-            (tuple of  str) currently used ciphers (local_cipher, remote_cipher)
+            (tuple of  str) currently used ciphers (local_cipher,
+            remote_cipher)
 
         """
         return self._transport.local_cipher, self._transport.remote_cipher
@@ -1019,7 +1024,9 @@ class Connection(object):
             remote_compression)
 
         """
-        return self._transport.local_compression, self._transport.remote_compression
+        localc = self._transport.local_compression
+        remotec = self._transport.remote_compression
+        return localc, remotec
 
     @property
     def security_options(self):
@@ -1027,8 +1034,8 @@ class Connection(object):
 
         :returns:
             (obj) security preferences of the ssh transport. These are tuples
-            of acceptable `.ciphers`, `.digests`, `.key_types`, and key exchange
-            algorithms `.kex`, listed in order of preference.
+            of acceptable `.ciphers`, `.digests`, `.key_types`, and key
+            exchange algorithms `.kex`, listed in order of preference.
 
         """
 
@@ -1120,6 +1127,7 @@ def path_retreat(thepath, sep=os.sep):
             yield '%s%s' % (pre, os.path.join(*parts))
         parts = parts[:-1]
 
+
 def reparent(newparent, oldpath):
     '''when copying or moving a directory structure, you need to re-parent the
     oldpath.  When using os.path.join to calculate this new path, the
@@ -1177,6 +1185,7 @@ def walktree(localpath, fcallback, dcallback, ucallback, recurse=True):
         else:
             # Unknown file type
             ucallback(pathname)
+
 
 @contextmanager
 def cd(localpath=None):

@@ -8,7 +8,7 @@ from common import *
 @skip_if_ci
 def test_remove(lsftp):
     '''test the remove method'''
-    with tempfile_containing('*'* 8192) as fname:
+    with tempfile_containing('*' * 8192) as fname:
         base_fname = os.path.split(fname)[1]
         lsftp.chdir('/home/test')
         lsftp.put(fname)
@@ -19,10 +19,11 @@ def test_remove(lsftp):
     assert is_there
     assert not_there
 
+
 @skip_if_ci
 def test_unlink(lsftp):
     '''test the unlink function'''
-    with tempfile_containing('*'* 8192) as fname:
+    with tempfile_containing('*' * 8192) as fname:
         base_fname = os.path.split(fname)[1]
         lsftp.chdir('/home/test')
         lsftp.put(fname)
@@ -33,11 +34,13 @@ def test_unlink(lsftp):
     assert is_there
     assert not_there
 
+
 def test_remove_roserver(psftp):
     '''test reaction of attempting remove on read-only server'''
     psftp.chdir('/home/test')
     with pytest.raises(IOError):
         psftp.remove('readme.txt')
+
 
 @skip_if_ci
 def test_remove_does_not_exist(psftp):

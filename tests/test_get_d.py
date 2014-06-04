@@ -12,13 +12,13 @@ def test_get_d(psftp):
     localpath = mkdtemp()
     psftp.get_d('.', localpath)
 
-    checks = [([''], ['readme.txt',]),
-             ]
+    checks = [(['', ], ['readme.txt', ]), ]
     for pth, fls in checks:
         assert sorted(os.listdir(os.path.join(localpath, *pth))) == fls
 
     # cleanup local
     shutil.rmtree(localpath)
+
 
 def test_get_d_pathed(psftp):
     '''test the get_d for localpath, starting deeper then pwd '''
@@ -26,10 +26,9 @@ def test_get_d_pathed(psftp):
     localpath = mkdtemp()
     psftp.get_d('./pub/example', localpath)
 
-    checks = [(['',],
-               ['image01.jpg', 'image02.png', 'image03.gif', 'worksheet.xls']),
-             ]
-    for pth, fls in checks:
+    chex = [(['', ],
+             ['image01.jpg', 'image02.png', 'image03.gif', 'worksheet.xls']), ]
+    for pth, fls in chex:
         assert sorted(os.listdir(os.path.join(localpath, *pth))) == fls
 
     # cleanup local

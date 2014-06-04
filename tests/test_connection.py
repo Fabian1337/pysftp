@@ -4,6 +4,7 @@
 # pylint: disable=E1101
 from common import *
 
+
 def test_connection_with():
     '''connect to a public sftp server'''
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
@@ -18,6 +19,7 @@ def test_connection_bad_host():
                                  password='password')
         sftp.close()
 
+
 def test_connection_bad_credentials():
     '''attempt connection to a non-existing server'''
     copts = SFTP_PUBLIC.copy()
@@ -26,9 +28,8 @@ def test_connection_bad_credentials():
         with pysftp.Connection(**copts) as sftp:
             pass
 
+
 def test_connection_good():
     '''connect to a public sftp server'''
     sftp = pysftp.Connection(**SFTP_PUBLIC)
     sftp.close()
-
-

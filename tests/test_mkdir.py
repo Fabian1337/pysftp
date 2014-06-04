@@ -4,6 +4,7 @@
 # pylint: disable=E1101
 from common import *
 
+
 @skip_if_ci
 def test_mkdir_mode(lsftp):
     '''test mkdir with mode set to 711'''
@@ -15,6 +16,7 @@ def test_mkdir_mode(lsftp):
     lsftp.rmdir(dirname)
     assert pysftp.st_mode_to_int(attrs.st_mode) == mode
 
+
 @skip_if_ci
 def test_mkdir(lsftp):
     '''test mkdir'''
@@ -24,6 +26,7 @@ def test_mkdir(lsftp):
     assert dirname in lsftp.listdir()
     # clean up
     lsftp.rmdir(dirname)
+
 
 def test_mkdir_ro(psftp):
     '''test mkdir on a read-only server'''

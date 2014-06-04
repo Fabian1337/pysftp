@@ -14,6 +14,7 @@ def test_sftp_client(psftp):
     assert 'normalize' in dir(psftp.sftp_client)
     assert 'readlink' in dir(psftp.sftp_client)
 
+
 def test_path_retreat():
     '''test path_retreat generator'''
     pth = 'foo/bar/baz'
@@ -24,6 +25,7 @@ def test_path_retreat():
     assert list(pysftp.path_retreat(pth)) == ['/foo/bar/baz',
                                               '/foo/bar',
                                               '/foo']
+
 
 def test_path_advance():
     '''test path_advance generator'''
@@ -36,12 +38,13 @@ def test_path_advance():
                                               '/foo/bar',
                                               '/foo/bar/baz']
 
+
 @skip_if_ci
 def test_makedirs(lsftp):
     '''test makedirs simple, testing 2 things, oh well'''
     rdir = 'foo/bar/baz'
     rdir2 = 'foo/bar'
-    assert lsftp.exists(rdir) == False
+    assert lsftp.exists(rdir) is False
     lsftp.makedirs(rdir)
     is_dir = lsftp.isdir(rdir)
     lsftp.rmdir(rdir)
@@ -53,10 +56,12 @@ def test_makedirs(lsftp):
     assert is_dir
     assert is_dir_partial
 
+
 def test_lexists_symbolic(psftp):
     '''test .lexists() vs. symbolic link'''
     rsym = 'readme.sym'
     assert psftp.lexists(rsym)
+
 
 @skip_if_ci
 def test_symlink(lsftp):
@@ -66,25 +71,25 @@ def test_symlink(lsftp):
         lsftp.put(fname)
         lsftp.symlink(fname, rdest)
         rslt = lsftp.lstat(rdest)
-        is_link = S_ISLNK(rslt.st_mode) == True
+        is_link = S_ISLNK(rslt.st_mode)
         lsftp.remove(rdest)
         lsftp.remove(os.path.split(fname)[1])
     assert is_link
+
 
 def test_exists(psftp):
     '''test .exists() fuctionality'''
     rfile = '/home/test/readme.txt'
     rbad = '/home/test/peek-a-boo.txt'
-    assert psftp.exists(rfile) == True
-    assert psftp.exists(rbad) == False
-    assert psftp.exists('pub') == True
+    assert psftp.exists(rfile)
+    assert psftp.exists(rbad) is False
+    assert psftp.exists('pub')
+
 
 def test_lexists(psftp):
     '''test .lexists() functionality'''
     rfile = '/home/test/readme.txt'
     rbad = '/home/test/peek-a-boo.txt'
-    assert psftp.lexists(rfile) == True
-    assert psftp.lexists(rbad) == False
-    assert psftp.lexists('pub') == True
-
-
+    assert psftp.lexists(rfile)
+    assert psftp.lexists(rbad) is False
+    assert psftp.lexists('pub')

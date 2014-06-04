@@ -3,6 +3,7 @@
 # pylint: disable = W0142
 from common import *
 
+
 def test_listdir(psftp):
     '''test listdir'''
     psftp.cwd('/home/test')
@@ -21,5 +22,3 @@ def test_listdir_attr(psftp):
     # test that longname is there
     for attr in attrs:
         assert attr.longname is not None
-
-

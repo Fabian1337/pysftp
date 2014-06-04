@@ -7,6 +7,7 @@ from __future__ import print_function
 from common import *
 import pytest
 
+
 def test_depr_log_param(warnings_as_errors):
     '''test deprecation warning for Connection log parameter'''
     copts = SFTP_PUBLIC.copy()
@@ -14,6 +15,7 @@ def test_depr_log_param(warnings_as_errors):
     with pytest.raises(DeprecationWarning):
         with pysftp.Connection(**copts) as sftp:
             pass
+
 
 def test_log_cnopt_user_file():
     '''test .logfile returns temp filename when CnOpts.log is set to True'''
@@ -30,6 +32,7 @@ def test_log_cnopt_user_file():
     # cleanup
     os.unlink(logfile)
 
+
 def test_log_param_user_file():
     '''test .logfile returns temp filename when log param is set to True'''
     copts = SFTP_PUBLIC.copy()  # don't sully the module level variable
@@ -42,11 +45,13 @@ def test_log_param_user_file():
     # cleanup
     os.unlink(logfile)
 
+
 def test_log_param_false():
     '''test .logfile returns false when logging is set to false'''
     with pysftp.Connection(**SFTP_PUBLIC) as sftp:
         print(SFTP_PUBLIC)
-        assert sftp.logfile == False
+        assert sftp.logfile is False
+
 
 def test_log_cnopts_explicit_false():
     '''test .logfile returns false when CnOpts.log is set to false'''
@@ -55,7 +60,8 @@ def test_log_cnopts_explicit_false():
     copts['cnopts'] = cnopts
     with pysftp.Connection(**copts) as sftp:
         print(SFTP_PUBLIC)
-        assert sftp.logfile == False
+        assert sftp.logfile is False
+
 
 def test_log_param_true():
     '''test .logfile returns temp filename when log param is set to True'''
@@ -68,6 +74,7 @@ def test_log_param_true():
         logfile = sftp.logfile
     # cleanup
     os.unlink(logfile)
+
 
 def test_log_cnopts_true():
     '''test .logfile returns temp filename when CnOpts.log is set to True'''

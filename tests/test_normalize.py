@@ -3,6 +3,7 @@
 # pylint: disable = W0142
 from common import *
 
+
 def test_normalize(psftp):
     '''test the normalize function'''
     psftp.chdir('/home/test')

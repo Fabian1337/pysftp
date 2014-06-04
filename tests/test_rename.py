@@ -4,6 +4,7 @@
 # pylint: disable=E1101
 from common import *
 
+
 @skip_if_ci
 def test_rename(lsftp):
     '''test rename on remote'''
@@ -19,6 +20,7 @@ def test_rename(lsftp):
         assert 'bob' in rdirs
         assert base_fname not in rdirs
         lsftp.remove('bob')
+
 
 def test_rename_ro(psftp):
     '''test rename on a read-only server'''

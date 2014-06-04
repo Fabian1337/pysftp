@@ -18,7 +18,6 @@ def test_walktree_cbclass(psftp):
     assert './readme.txt' in wtcb.flist
     assert len(wtcb.flist) > 3
 
-
     dlist = ['./pub', './pub/build', './pub/build/build01',
              './pub/build/build01/build01a', './pub/build/build01/build01b',
              './pub/build/build01/build01c', './pub/example', './pub/src',
@@ -26,6 +25,7 @@ def test_walktree_cbclass(psftp):
     assert wtcb.dlist == dlist
 
     assert wtcb.ulist == []
+
 
 def test_walktree_cbmock(psftp):
     '''test the walktree function, with mocked callbacks (standalone functions)
@@ -58,6 +58,7 @@ def test_walktree_cbmock(psftp):
     # check calls to the unknown callback
     assert [] == unk_cb.mock_calls
 
+
 def test_walktree_no_recurse(psftp):
     '''test the walktree function, with mocked callbacks (standalone functions)
     '''
@@ -76,9 +77,10 @@ def test_walktree_no_recurse(psftp):
     assert thecall in file_cb.mock_calls
     assert file_cb.call_count == 2
     # check calls to the directory callback
-    assert [call('./pub'),] == dir_cb.mock_calls
+    assert [call('./pub'), ] == dir_cb.mock_calls
     # check calls to the unknown callback
     assert [] == unk_cb.mock_calls
+
 
 def test_walktree_local():
     '''test the capability of walktree to walk a local directory structure'''
@@ -97,6 +99,7 @@ def test_walktree_local():
     print(wtcb.flist)
     for fname in ['./release.sh', './MANIFEST.in', './tests/test_execute.py']:
         assert fname in wtcb.flist
+
 
 def test_walktree_local_no_recurse():
     '''test the capability of walktree with recurse=False to walk a local
@@ -119,6 +122,7 @@ def test_walktree_local_no_recurse():
         assert fname in wtcb.flist
     assert './tests/test_execute.py' not in wtcb.flist
 
+
 def test_walktree_local_bad():
     '''test pysftp.walktree on a non-existing directory'''
     wtcb = pysftp.WTCallbacks()
@@ -127,4 +131,3 @@ def test_walktree_local_bad():
                         fcallback=wtcb.file_cb,
                         dcallback=wtcb.dir_cb,
                         ucallback=wtcb.unk_cb)
-

@@ -6,6 +6,7 @@ from common import *
 from mock import Mock
 from time import sleep
 
+
 @skip_if_ci
 def test_put_callback(lsftp):
     '''test the callback feature of put'''
@@ -18,6 +19,7 @@ def test_put_callback(lsftp):
         lsftp.remove(base_fname)
     # verify callback was called more than once - usually a min of 2
     assert cback.call_count >= 2
+
 
 @skip_if_ci
 def test_put_confirm(lsftp):
@@ -34,6 +36,7 @@ def test_put_confirm(lsftp):
     assert result.st_gid
     assert result.st_atime
     assert result.st_mtime
+
 
 @skip_if_ci
 def test_put(lsftp):
@@ -52,6 +55,7 @@ def test_put(lsftp):
         # clean up
         lsftp.remove(base_fname)
 
+
 def test_put_bad_local(psftp):
     '''try to put a non-existing file to a read-only server'''
     with tempfile_containing('should fail') as fname:
@@ -60,11 +64,13 @@ def test_put_bad_local(psftp):
     with pytest.raises(OSError):
         psftp.put(fname)
 
+
 def test_put_not_allowed(psftp):
     '''try to put a file to a read-only server'''
     with tempfile_containing('should fail') as fname:
         with pytest.raises(IOError):
             psftp.put(fname)
+
 
 @skip_if_ci
 def test_put_preserve_mtime(lsftp):

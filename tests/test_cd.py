@@ -13,12 +13,14 @@ def test_cd_none(psftp):
         assert psftp.pwd == '/home/test/pub'
     assert home == psftp.pwd
 
+
 def test_cd_path(psftp):
     '''test .cd with a path'''
     home = psftp.pwd
     with psftp.cd('pub'):
         assert psftp.pwd == '/home/test/pub'
     assert home == psftp.pwd
+
 
 def test_cd_nested(psftp):
     '''test nested cd's'''
@@ -30,6 +32,7 @@ def test_cd_nested(psftp):
         assert psftp.pwd == '/home/test/pub'
     assert home == psftp.pwd
 
+
 def test_cd_bad_path(psftp):
     '''test .cd with a bad path'''
     home = psftp.pwd
@@ -38,12 +41,14 @@ def test_cd_bad_path(psftp):
             pass
     assert home == psftp.pwd
 
+
 def test_cd_local():
     '''test pysftp.cd on local directories'''
     original = os.getcwd()
     with pysftp.cd('docs'):
         assert os.getcwd() == os.path.join(original, 'docs')
     assert os.getcwd() == original
+
 
 def test_cd_local_bad():
     '''test pysftp.cd on non-existing directory'''

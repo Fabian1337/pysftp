@@ -17,6 +17,7 @@ def test_depr_ciphers_param(warnings_as_errors):
         with pysftp.Connection(**copts) as sftp:
             pass
 
+
 def test_connection_ciphers_param():
     '''test the ciphers parameter portion of the Connection'''
     ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')
@@ -26,6 +27,7 @@ def test_connection_ciphers_param():
     with pysftp.Connection(**copts) as sftp:
         rslt = sftp.listdir()
         assert len(rslt) > 1
+
 
 def test_connection_ciphers_cnopts():
     '''test the CnOpts.ciphers portion of the Connection'''
@@ -39,6 +41,7 @@ def test_connection_ciphers_cnopts():
         rslt = sftp.listdir()
         assert len(rslt) > 1
 
+
 def test_active_ciphers():
     '''test that method returns a tuple of strings, that show ciphers used'''
     ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')
@@ -50,4 +53,3 @@ def test_active_ciphers():
         local_cipher, remote_cipher = sftp.active_ciphers
     assert local_cipher in ciphers
     assert remote_cipher in ciphers
-

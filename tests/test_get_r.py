@@ -18,19 +18,18 @@ def test_get_r(psftp):
               (['', 'pub', 'build', 'build01'],
                ['build01a', 'build01b', 'build01c']),
               (['', 'pub', 'build', 'build01', 'build01a'],
-               ['build-results.txt',]),
+               ['build-results.txt', ]),
               (['', 'pub', 'build', 'build01', 'build01b'], []),
               (['', 'pub', 'build', 'build01', 'build01c'],
-               ['build-results.txt',]),
+               ['build-results.txt', ]),
               (['', 'pub', 'example'],
                ['image01.jpg', 'image02.png', 'image03.gif', 'worksheet.xls']),
               (['', 'pub', 'src'],
                ['helpers.py', 'libs', 'main.py', 'media', 'tests']),
-              (['', 'pub', 'src', 'libs'], ['do-nothing.library',]),
+              (['', 'pub', 'src', 'libs'], ['do-nothing.library', ]),
               (['', 'pub', 'src', 'media'], ['favicon.ico', 'logo.jpg']),
               (['', 'pub', 'src', 'tests'],
-               ['test01.py', 'test02.py', 'test03.py']),
-             ]
+               ['test01.py', 'test02.py', 'test03.py']), ]
     for pth, fls in checks:
         assert sorted(os.listdir(os.path.join(localpath, *pth))) == fls
 
@@ -44,29 +43,29 @@ def test_get_r_pwd(psftp):
     localpath = mkdtemp()
     psftp.get_r('/home/test', localpath)
 
-    checks = [(['',], ['home', ]),
-              (['', 'home',], ['test',]),
+    checks = [(['', ], ['home', ]),
+              (['', 'home', ], ['test', ]),
               (['', 'home', 'test'], ['pub', 'readme.sym', 'readme.txt']),
               (['', 'home', 'test', 'pub'], ['build', 'example', 'src']),
-              (['', 'home', 'test', 'pub', 'build'], ['build01']),
+              (['', 'home', 'test', 'pub', 'build'], ['build01', ]),
               (['', 'home', 'test', 'pub', 'build', 'build01'],
                ['build01a', 'build01b', 'build01c']),
               (['', 'home', 'test', 'pub', 'build', 'build01', 'build01a'],
-               ['build-results.txt',]),
-              (['', 'home', 'test', 'pub', 'build', 'build01', 'build01b'], []),
+               ['build-results.txt', ]),
+              (['', 'home', 'test', 'pub', 'build', 'build01', 'build01b'],
+               []),
               (['', 'home', 'test', 'pub', 'build', 'build01', 'build01c'],
-               ['build-results.txt',]),
+               ['build-results.txt', ]),
               (['', 'home', 'test', 'pub', 'example'],
                ['image01.jpg', 'image02.png', 'image03.gif', 'worksheet.xls']),
               (['', 'home', 'test', 'pub', 'src'],
                ['helpers.py', 'libs', 'main.py', 'media', 'tests']),
               (['', 'home', 'test', 'pub', 'src', 'libs'],
-               ['do-nothing.library',]),
+               ['do-nothing.library', ]),
               (['', 'home', 'test', 'pub', 'src', 'media'],
                ['favicon.ico', 'logo.jpg']),
               (['', 'home', 'test', 'pub', 'src', 'tests'],
-               ['test01.py', 'test02.py', 'test03.py']),
-             ]
+               ['test01.py', 'test02.py', 'test03.py']), ]
     for pth, fls in checks:
         assert sorted(os.listdir(os.path.join(localpath, *pth))) == fls
 
@@ -80,16 +79,17 @@ def test_get_r_pathed(psftp):
     localpath = mkdtemp()
     psftp.get_r('./pub/example', localpath)
 
-    checks = [(['',], ['pub', ]),
-              (['', 'pub'], ['example',]),
+    checks = [(['', ], ['pub', ]),
+              (['', 'pub'], ['example', ]),
               (['', 'pub', 'example'],
-               ['image01.jpg', 'image02.png', 'image03.gif', 'worksheet.xls']),
-             ]
+               ['image01.jpg', 'image02.png', 'image03.gif',
+               'worksheet.xls']), ]
     for pth, fls in checks:
         assert sorted(os.listdir(os.path.join(localpath, *pth))) == fls
 
     # cleanup local
     shutil.rmtree(localpath)
+
 
 def test_get_r_cdd(psftp):
     '''test the get_r for chdir('pub/example')'''
@@ -98,9 +98,9 @@ def test_get_r_cdd(psftp):
     psftp.chdir('pub/example')
     psftp.get_r('.', localpath)
 
-    checks = [(['',],
-               ['image01.jpg', 'image02.png', 'image03.gif', 'worksheet.xls']),
-             ]
+    checks = [(['', ],
+               ['image01.jpg', 'image02.png', 'image03.gif',
+               'worksheet.xls']), ]
     for pth, fls in checks:
         assert sorted(os.listdir(os.path.join(localpath, *pth))) == fls
 

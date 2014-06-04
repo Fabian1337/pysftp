@@ -6,6 +6,7 @@ from common import *
 from io import BytesIO
 from mock import Mock
 
+
 def test_getfo_flo(psftp):
     '''test getfo to a file-like object'''
     flo = BytesIO()
@@ -15,6 +16,7 @@ def test_getfo_flo(psftp):
     assert flo.getvalue()[0:9] == b'This SFTP'
     assert num_bytes == len(flo.getvalue())
 
+
 def test_getfo_callback(psftp):
     '''test getfo callback'''
     flo = BytesIO()
@@ -23,4 +25,3 @@ def test_getfo_callback(psftp):
     psftp.getfo('readme.txt', flo, callback=cback)
 
     assert cback.call_count >= 2
-
