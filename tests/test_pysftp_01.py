@@ -5,16 +5,6 @@
 from common import *
 from mock import Mock
 
-@skip_if_ci
-def test_rmdir():
-    '''test mkdir'''
-    dirname = 'test-rm'
-    with pysftp.Connection(**SFTP_LOCAL) as sftp:
-        sftp.mkdir(dirname)
-        assert dirname in sftp.listdir()
-        sftp.rmdir(dirname)
-        assert dirname not in sftp.listdir()
-
 def test_stat():
     '''test stat'''
     dirname = 'pub'
