@@ -32,12 +32,3 @@ def test_connection_good():
     sftp.close()
 
 
-def test_getcwd():
-    '''test .getcwd'''
-    sftp = pysftp.Connection(**SFTP_PUBLIC)
-    assert sftp.getcwd() == None
-    sftp.chdir('pub')
-    assert sftp.getcwd() == '/home/test/pub'
-    sftp.close()
-
-
