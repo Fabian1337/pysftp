@@ -5,27 +5,6 @@
 from common import *
 from mock import Mock
 
-def test_stat():
-    '''test stat'''
-    dirname = 'pub'
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        rslt = sftp.stat(dirname)
-    assert rslt.st_size >= 0
-
-def test_lstat():
-    '''test lstat  minimal'''
-    dirname = 'pub'
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        rslt = sftp.lstat(dirname)
-    assert rslt.st_size >= 0
-
-def test_issue_15():
-    '''chdir followed by execute doesn't occur in expected directory.'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        hresults = sftp.execute('pwd')
-        sftp.chdir('pub')
-        assert hresults == sftp.execute('pwd')
-
 @skip_if_ci
 def test_put_callback_confirm():
     '''test the callback and confirm feature of put'''
