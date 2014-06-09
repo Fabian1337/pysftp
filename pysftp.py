@@ -3,6 +3,7 @@ from __future__ import print_function
 
 import os
 from contextlib import contextmanager
+import posixpath
 import socket
 from stat import S_IMODE, S_ISDIR, S_ISREG
 import tempfile
@@ -975,7 +976,7 @@ class Connection(object):
         '''
         self._sftp_connect()
         for entry in self.listdir(remotepath):
-            pathname = os.path.join(remotepath, entry)
+            pathname = posixpath.join(remotepath, entry)
             mode = self._sftp.stat(pathname).st_mode
             if S_ISDIR(mode):
                 # It's a directory, call the dcallback function
