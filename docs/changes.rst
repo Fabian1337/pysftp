@@ -9,6 +9,7 @@ Change Log
   * fixed an unwanted logging side-effect, after you set logging, it would remain, even if you closed the .Connection and couldn't be changed to something else. Now when Connection closes, any logging handlers are closed and can be changed to something else upon the next .Connection
   * moved ``log`` parameter of Connection to the new CnOpts connection options object, deprecated the existing ``log`` parameter, will be removed in 0.3.0
   * modified :meth:`pysftp.Conection.walktree` to always use posixpath conventions when walking a remote directory per the latest draft-ietf-secsh-filexfer-13.txt. Issue encountered with windows clients (#60)
+  * modified :func:`pysftp.reparent` to handle mis-matched pathing, i.e. windows -> posix, better (#61)
 
 * 0.2.8 (current, released 2014-05-28)
 

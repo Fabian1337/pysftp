@@ -3,6 +3,7 @@ from __future__ import print_function
 
 import os
 from contextlib import contextmanager
+import ntpath
 import posixpath
 import socket
 from stat import S_IMODE, S_ISDIR, S_ISREG
@@ -1142,7 +1143,7 @@ def reparent(newparent, oldpath):
     :returns: (str) resulting adoptive path
     '''
 
-    if oldpath[0] == os.sep:
+    if oldpath[0] in (posixpath.sep, ntpath.sep):
         oldpath = '.' + oldpath
     return os.path.join(newparent, oldpath)
 
