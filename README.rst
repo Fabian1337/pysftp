@@ -13,7 +13,7 @@ Example
     import pysftp
 
     with pysftp.Connection('hostname', username='me', password='secret') as sftp:
-        with sftp.cd('public')              # temporarily chdir to public
+        with sftp.cd('public'):             # temporarily chdir to public
             sftp.put('/my/local/filename')  # upload file to public/ on remote
 
         sftp.get_r('myfiles', '/backup')    # recursively copy myfiles/ to local
