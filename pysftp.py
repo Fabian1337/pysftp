@@ -260,7 +260,12 @@ class Connection(object):
                 else:
                     raise CredentialException("You have not specified a "
                                               "password or key.")
-            if not isinstance(private_key, AgentKey):
+
+            isagent = isinstance(private_key, AgentKey)
+            isrsakey = isinstance(private_key, paramiko.RSAKey)
+            if not (isagent or isrsakey):
+                # isn't a paramiko AgentKey or RSAKey, try to build a
+                # key from what we assume is a path to a key
                 private_key_file = os.path.expanduser(private_key)
                 try:  # try rsa
                     rsakey = paramiko.RSAKey
@@ -271,7 +276,7 @@ class Connection(object):
                     prv_key = dsskey.from_private_key_file(private_key_file,
                                                            private_key_pass)
             else:
-                # use the paramiko agent key
+                # use the paramiko agent or rsa key
                 prv_key = private_key
             self._transport.connect(username=username, pkey=prv_key)
 
