@@ -6,10 +6,18 @@ from common import *
 from io import BytesIO
 
 
+def makeflo():
+    try:
+        flo = BytesIO(stars8192)
+    except TypeError:
+        flo = BytesIO(bytes(stars8192, 'UTF-8'))
+    return flo
+
+
 @skip_if_ci
 def test_truncate_smaller(lsftp):
     '''test truncate, make file smaller'''
-    flo = BytesIO('*'*8192)
+    flo = makeflo()
     rname = 'truncate.txt'
     try:
         lsftp.remove(rname)
@@ -24,7 +32,7 @@ def test_truncate_smaller(lsftp):
 @skip_if_ci
 def test_truncate_larger(lsftp):
     '''test truncate, make file larger'''
-    flo = BytesIO('*'*8192)
+    flo = makeflo()
     rname = 'truncate.txt'
     try:
         lsftp.remove(rname)
@@ -39,7 +47,7 @@ def test_truncate_larger(lsftp):
 @skip_if_ci
 def test_truncate_same(lsftp):
     '''test truncate, make file same size'''
-    flo = BytesIO('*'*8192)
+    flo = makeflo()
     rname = 'truncate.txt'
     try:
         lsftp.remove(rname)
