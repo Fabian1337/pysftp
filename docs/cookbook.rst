@@ -272,7 +272,7 @@ needed, setting their mode, if created. Takes a mode argument, just like
 .. code-block:: python
 
     ...
-    sftp.makdirs('pub/show/off')  # will happily make all non-existing directories
+    sftp.makedirs('pub/show/off')  # will happily make all non-existing directories
 
 :meth:`pysftp.Connection.mkdir`
 -------------------------------
