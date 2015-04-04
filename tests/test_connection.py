@@ -9,7 +9,7 @@ def test_connection_with(sftpserver):
     '''connect to a public sftp server'''
     with sftpserver.serve_content(CONTENT):
         with pysftp.Connection(**conn(sftpserver)) as psftp:
-            assert psftp.listdir() == [u'pub', u'read.me']
+            assert psftp.listdir() == ['pub', 'read.me']
 
 
 def test_connection_bad_host():

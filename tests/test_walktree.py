@@ -20,8 +20,8 @@ def test_walktree_cbclass(sftpserver):
             assert './read.me' in wtcb.flist
             assert len(wtcb.flist) > 3
 
-            dlist = [u'./pub', u'./pub/foo1', u'./pub/foo2',
-                     u'./pub/foo2/bar1']
+            dlist = ['./pub', './pub/foo1', './pub/foo2',
+                     './pub/foo2/bar1']
             assert wtcb.dlist == dlist
 
             assert wtcb.ulist == []
@@ -46,10 +46,10 @@ def test_walktree_cbmock(sftpserver):
             assert thecall in file_cb.mock_calls
             assert file_cb.call_count > 3
             # check calls to the directory callback
-            assert [call(u'./pub'),
-                    call(u'./pub/foo1'),
-                    call(u'./pub/foo2'),
-                    call(u'./pub/foo2/bar1')] == dir_cb.mock_calls
+            assert [call('./pub'),
+                    call('./pub/foo1'),
+                    call('./pub/foo2'),
+                    call('./pub/foo2/bar1')] == dir_cb.mock_calls
             # check calls to the unknown callback
             assert [] == unk_cb.mock_calls
 
