@@ -5,10 +5,11 @@ from common import *
 from dhp.VI import py_ver
 
 
-def test_execute_simple_ro(psftp):
-    '''test execute simple on a read-only server '''
-    results = [b'This service allows sftp connections only.\n', ]
-    assert psftp.execute('ls') == results
+# TODO
+# def test_execute_simple_ro(psftp):
+#     '''test execute simple on a read-only server '''
+#     results = [b'This service allows sftp connections only.\n', ]
+#     assert psftp.execute('ls') == results
 
 
 @skip_if_ci

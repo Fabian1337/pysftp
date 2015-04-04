@@ -6,80 +6,76 @@ from common import *
 from mock import Mock, call
 
 
-def test_walktree_cbclass(psftp):
+def test_walktree_cbclass(sftpserver):
     '''test the walktree function with callbacks from a class'''
-    wtcb = pysftp.WTCallbacks()
-    psftp.walktree('.',
-                   fcallback=wtcb.file_cb,
-                   dcallback=wtcb.dir_cb,
-                   ucallback=wtcb.unk_cb)
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            wtcb = pysftp.WTCallbacks()
+            sftp.walktree('.',
+                          fcallback=wtcb.file_cb,
+                          dcallback=wtcb.dir_cb,
+                          ucallback=wtcb.unk_cb)
 
-    assert './pub/build/build01/build01a/build-results.txt' in wtcb.flist
-    assert './readme.txt' in wtcb.flist
-    assert len(wtcb.flist) > 3
+            assert './pub/foo2/bar1/bar1.txt' in wtcb.flist
+            assert './read.me' in wtcb.flist
+            assert len(wtcb.flist) > 3
 
-    dlist = ['./pub', './pub/build', './pub/build/build01',
-             './pub/build/build01/build01a', './pub/build/build01/build01b',
-             './pub/build/build01/build01c', './pub/example', './pub/src',
-             './pub/src/libs', './pub/src/media', './pub/src/tests']
-    assert wtcb.dlist == dlist
+            dlist = [u'./pub', u'./pub/foo1', u'./pub/foo2',
+                     u'./pub/foo2/bar1']
+            assert wtcb.dlist == dlist
 
-    assert wtcb.ulist == []
+            assert wtcb.ulist == []
 
 
-def test_walktree_cbmock(psftp):
+def test_walktree_cbmock(sftpserver):
     '''test the walktree function, with mocked callbacks (standalone functions)
     '''
     file_cb = Mock(return_value=None)
     dir_cb = Mock(return_value=None)
     unk_cb = Mock(return_value=None)
 
-    psftp.walktree('.',
-                   fcallback=file_cb,
-                   dcallback=dir_cb,
-                   ucallback=unk_cb)
-    # check calls to the file callback
-    file_cb.assert_called_with('./readme.txt')
-    thecall = call('./pub/build/build01/build01a/build-results.txt')
-    assert thecall in file_cb.mock_calls
-    assert file_cb.call_count > 3
-    # check calls to the directory callback
-    assert [call('./pub'),
-            call('./pub/build'),
-            call('./pub/build/build01'),
-            call('./pub/build/build01/build01a'),
-            call('./pub/build/build01/build01b'),
-            call('./pub/build/build01/build01c'),
-            call('./pub/example'),
-            call('./pub/src'),
-            call('./pub/src/libs'),
-            call('./pub/src/media'),
-            call('./pub/src/tests')] == dir_cb.mock_calls
-    # check calls to the unknown callback
-    assert [] == unk_cb.mock_calls
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            sftp.walktree('.',
+                          fcallback=file_cb,
+                          dcallback=dir_cb,
+                          ucallback=unk_cb)
+            # check calls to the file callback
+            file_cb.assert_called_with('./read.me')
+            thecall = call('./pub/foo2/bar1/bar1.txt')
+            assert thecall in file_cb.mock_calls
+            assert file_cb.call_count > 3
+            # check calls to the directory callback
+            assert [call(u'./pub'),
+                    call(u'./pub/foo1'),
+                    call(u'./pub/foo2'),
+                    call(u'./pub/foo2/bar1')] == dir_cb.mock_calls
+            # check calls to the unknown callback
+            assert [] == unk_cb.mock_calls
 
 
-def test_walktree_no_recurse(psftp):
+def test_walktree_no_recurse(sftpserver):
     '''test the walktree function, with mocked callbacks (standalone functions)
     '''
     file_cb = Mock(return_value=None)
     dir_cb = Mock(return_value=None)
     unk_cb = Mock(return_value=None)
 
-    psftp.walktree('.',
-                   fcallback=file_cb,
-                   dcallback=dir_cb,
-                   ucallback=unk_cb,
-                   recurse=False)
-    # check calls to the file callback
-    file_cb.assert_called_with('./readme.txt')
-    thecall = call('./readme.sym')
-    assert thecall in file_cb.mock_calls
-    assert file_cb.call_count == 2
-    # check calls to the directory callback
-    assert [call('./pub'), ] == dir_cb.mock_calls
-    # check calls to the unknown callback
-    assert [] == unk_cb.mock_calls
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            sftp.walktree('.',
+                          fcallback=file_cb,
+                          dcallback=dir_cb,
+                          ucallback=unk_cb,
+                          recurse=False)
+            # check calls to the file callback
+            thecall = call('./read.me')
+            assert thecall in file_cb.mock_calls
+            assert file_cb.call_count == 1
+            # check calls to the directory callback
+            assert [call('./pub'), ] == dir_cb.mock_calls
+            # check calls to the unknown callback
+            assert [] == unk_cb.mock_calls
 
 
 def test_walktree_local():

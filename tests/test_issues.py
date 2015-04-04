@@ -5,9 +5,10 @@
 from common import *
 
 
-def test_issue_15(psftp):
+@skip_if_ci
+def test_issue_15(lsftp):
     '''chdir followed by execute doesn't occur in expected directory.'''
-    hresults = psftp.execute('pwd')
-    psftp.chdir('pub')
-    assert hresults == psftp.execute('pwd')
+    hresults = lsftp.execute('pwd')
+    lsftp.chdir('/home/test')
+    assert hresults == lsftp.execute('pwd')
     # .exec operates independently of the current working directory .pwd

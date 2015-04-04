@@ -8,84 +8,89 @@ from common import *
 import pytest
 
 
-def test_depr_log_param(warnings_as_errors):
+def test_depr_log_param(warnings_as_errors, sftpserver):
     '''test deprecation warning for Connection log parameter'''
-    copts = SFTP_PUBLIC.copy()
+    copts = conn(sftpserver)
     copts['log'] = True
-    with pytest.raises(DeprecationWarning):
-        with pysftp.Connection(**copts) as sftp:
-            pass
+    with sftpserver.serve_content(CONTENT):
+        with pytest.raises(DeprecationWarning):
+            with pysftp.Connection(**copts) as sftp:
+                pass
 
 
-def test_log_cnopt_user_file():
+def test_log_cnopt_user_file(sftpserver):
     '''test .logfile returns temp filename when CnOpts.log is set to True'''
-    copts = SFTP_PUBLIC.copy()  # don't sully the module level variable
+    copts = conn(sftpserver)
     cnopts = pysftp.CnOpts()
     cnopts.log = os.path.expanduser('~/my-logfile1.txt')
     copts['cnopts'] = cnopts
-    with pysftp.Connection(**copts) as sftp:
-        sftp.listdir()
-        print(sftp.logfile, cnopts.log)
-        assert sftp.logfile == cnopts.log
-        assert os.path.exists(sftp.logfile)
-        logfile = sftp.logfile
-    # cleanup
-    os.unlink(logfile)
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**copts) as sftp:
+            sftp.listdir()
+            print(sftp.logfile, cnopts.log)
+            assert sftp.logfile == cnopts.log
+            assert os.path.exists(sftp.logfile)
+            logfile = sftp.logfile
+        # cleanup
+        os.unlink(logfile)
 
 
-def test_log_param_user_file():
+def test_log_param_user_file(sftpserver):
     '''test .logfile returns temp filename when log param is set to True'''
-    copts = SFTP_PUBLIC.copy()  # don't sully the module level variable
+    copts = conn(sftpserver)
     copts['log'] = os.path.expanduser('~/my-logfile.txt')
-    with pysftp.Connection(**copts) as sftp:
-        print(sftp.logfile, copts['log'])
-        assert sftp.logfile == copts['log']
-        assert os.path.exists(sftp.logfile)
-        logfile = sftp.logfile
-    # cleanup
-    os.unlink(logfile)
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**copts) as sftp:
+            print(sftp.logfile, copts['log'])
+            assert sftp.logfile == copts['log']
+            assert os.path.exists(sftp.logfile)
+            logfile = sftp.logfile
+        # cleanup
+        os.unlink(logfile)
 
 
-def test_log_param_false():
+def test_log_param_false(sftpserver):
     '''test .logfile returns false when logging is set to false'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        print(SFTP_PUBLIC)
-        assert sftp.logfile is False
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            assert sftp.logfile is False
 
 
-def test_log_cnopts_explicit_false():
+def test_log_cnopts_explicit_false(sftpserver):
     '''test .logfile returns false when CnOpts.log is set to false'''
-    copts = SFTP_PUBLIC.copy()  # don't sully the module level variable
+    copts = conn(sftpserver)
     cnopts = pysftp.CnOpts()
     copts['cnopts'] = cnopts
-    with pysftp.Connection(**copts) as sftp:
-        print(SFTP_PUBLIC)
-        assert sftp.logfile is False
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**copts) as sftp:
+            assert sftp.logfile is False
 
 
-def test_log_param_true():
+def test_log_param_true(sftpserver):
     '''test .logfile returns temp filename when log param is set to True'''
-    copts = SFTP_PUBLIC.copy()  # don't sully the module level variable
+    copts = conn(sftpserver)
     copts['log'] = True
-    with pysftp.Connection(**copts) as sftp:
-        assert os.path.exists(sftp.logfile)
-        # and we are not writing to a file named 'True'
-        assert sftp.logfile != copts['log']
-        logfile = sftp.logfile
-    # cleanup
-    os.unlink(logfile)
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**copts) as sftp:
+            assert os.path.exists(sftp.logfile)
+            # and we are not writing to a file named 'True'
+            assert sftp.logfile != copts['log']
+            logfile = sftp.logfile
+        # cleanup
+        os.unlink(logfile)
 
 
-def test_log_cnopts_true():
+def test_log_cnopts_true(sftpserver):
     '''test .logfile returns temp filename when CnOpts.log is set to True'''
-    copts = SFTP_PUBLIC.copy()  # don't sully the module level variable
+    copts = conn(sftpserver)
     cnopts = pysftp.CnOpts()
     cnopts.log = True
     copts['cnopts'] = cnopts
-    with pysftp.Connection(**copts) as sftp:
-        assert os.path.exists(sftp.logfile)
-        # and we are not writing to a file named 'True'
-        assert sftp.logfile != cnopts.log
-        logfile = sftp.logfile
-    # cleanup
-    os.unlink(logfile)
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**copts) as sftp:
+            assert os.path.exists(sftp.logfile)
+            # and we are not writing to a file named 'True'
+            assert sftp.logfile != cnopts.log
+            logfile = sftp.logfile
+        # cleanup
+        os.unlink(logfile)

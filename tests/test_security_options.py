@@ -5,10 +5,11 @@ from __future__ import print_function
 from common import *
 
 
-def test_security_options(psftp):
+@skip_if_ci
+def test_security_options(lsftp):
     '''test the security_options property has expected attributes and that
     they are tuples'''
-    secopts = psftp.security_options
+    secopts = lsftp.security_options
     for attr in ['ciphers', 'compression', 'digests', 'kex', 'key_types']:
         assert hasattr(secopts, attr)
         assert isinstance(getattr(secopts, attr), tuple)

@@ -1,30 +1,24 @@
 '''common setup code for tests'''
 
 # the following 3 lines let py.test find the module
-import sys
 import os
+import sys
+import warnings
+
+from dhp.test import tempfile_containing
+import pytest
+
 MYPATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, MYPATH + '/../')
-import warnings     # noqa
 
 import pysftp       # noqa
 
-import pytest       # noqa
-from dhp.test import tempfile_containing    # noqa
 
-
-# pylint: disable=E1101
-if os.path.exists('/home/jlh/projects/pysftp'):
-    SFTP_PUBLIC = {'host': 'srv01.dundeemt.pri', 'username': 'test',
-                   'password': 'test1357'}
-else:
-    SFTP_PUBLIC = {'host': '174.74.39.157', 'username': 'test',
-                   'password': 'test1357', 'port': 2222}
-# SFTP_PUBLIC = {'host':'test.rebex.net', 'username':'demo',
-#                'password':'password'}
+# pytest-sftpserver plugin information
+SFTP_INTERNAL = {'host': 'localhost', 'username': 'user', 'password': 'pw'}
+# used if ptest-sftpserver plugin does not support what we are testing
 SFTP_LOCAL = {'host': 'localhost', 'username': 'test', 'password': 'test1357'}
 
-SFTP_INTERNAL = {'host': 'localhost', 'username': 'user', 'password': 'pw'}
 # can only reach public, read-only server from CI platform, only test locally
 # if environment variable CI is set  to something to disable local tests
 # the CI env var is set to true by both drone-io and travis
@@ -40,10 +34,11 @@ def warnings_as_errors(request):
 
 
 def conn(sftpsrv):
-    """return a dictionary holding connection info for the pysftp client"""
+    """return a dictionary holding argument info for the pysftp client"""
     return {'host': sftpsrv.host, 'port': sftpsrv.port, 'username': 'user',
             'password': 'pw'}
 
+# filesystem served by pytest-sftpserver plugin
 CONTENT = {'pub': {
                         'make.txt': "content of make.txt",
                         'foo1': {

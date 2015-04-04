@@ -5,13 +5,16 @@
 from common import *
 
 
-def test_getcwd_none():
+def test_getcwd_none(sftpserver):
     '''test .getcwd as the first operation - need pristine connection'''
-    sftp = pysftp.Connection(**SFTP_PUBLIC)
-    assert sftp.getcwd() is None
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            assert psftp.getcwd() is None
 
 
-def test_getcwd_after_chdir(psftp):
+def test_getcwd_after_chdir(sftpserver):
     '''test getcwd after a chdir operation'''
-    psftp.chdir('/home/test/pub')
-    assert psftp.getcwd() == '/home/test/pub'
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            psftp.chdir('/pub/foo1')
+            assert psftp.getcwd() == '/pub/foo1'

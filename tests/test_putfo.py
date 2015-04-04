@@ -63,10 +63,11 @@ def test_putfo_no_remotepath(lsftp):
         lsftp.putfo(flo)
 
 
-def test_putfo_ro_srv(psftp):
-    '''test error returned from attempting to putfo to a read-only server'''
-    buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
-          b' is full of eels.'
-    flo = BytesIO(buf)
-    with pytest.raises(TypeError):
-        psftp.putfo(flo)
+# TODO
+# def test_putfo_ro_srv(psftp):
+#     '''test error returned from attempting to putfo to a read-only server'''
+#     buf = b'I will not buy this record, it is scratched\nMy hovercraft'\
+#           b' is full of eels.'
+#     flo = BytesIO(buf)
+#     with pytest.raises(TypeError):
+#         psftp.putfo(flo)

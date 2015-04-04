@@ -7,69 +7,76 @@ from mock import Mock
 from time import sleep
 
 
-@skip_if_ci
-def test_put_callback(lsftp):
+def test_put_callback(sftpserver):
     '''test the callback feature of put'''
-    cback = Mock(return_value=None)
-    with tempfile_containing(contents=8192*'*') as fname:
-        base_fname = os.path.split(fname)[1]
-        lsftp.chdir('/home/test')
-        lsftp.put(fname, callback=cback)
-        # clean up
-        lsftp.remove(base_fname)
-    # verify callback was called more than once - usually a min of 2
-    assert cback.call_count >= 2
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            cback = Mock(return_value=None)
+            with tempfile_containing(contents=8192*'*') as fname:
+                base_fname = os.path.split(fname)[1]
+                psftp.chdir('/pub/foo2/bar1')
+                psftp.put(fname, callback=cback)
+                # clean up
+                psftp.remove(base_fname)
+            # verify callback was called more than once - usually a min of 2
+            assert cback.call_count >= 2
 
 
-@skip_if_ci
-def test_put_confirm(lsftp):
+def test_put_confirm(sftpserver):
     '''test the confirm feature of put'''
-    with tempfile_containing(contents=8192*'*') as fname:
-        base_fname = os.path.split(fname)[1]
-        lsftp.chdir('/home/test')
-        result = lsftp.put(fname)
-        # clean up
-        lsftp.remove(base_fname)
-    # verify that an SFTPAttribute like os.stat was returned
-    assert result.st_size == 8192
-    assert result.st_uid
-    assert result.st_gid
-    assert result.st_atime
-    assert result.st_mtime
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            with tempfile_containing(contents=8192*'*') as fname:
+                base_fname = os.path.split(fname)[1]
+                psftp.chdir('/pub/foo2/bar1')
+                result = psftp.put(fname)
+                # clean up
+                psftp.remove(base_fname)
+            # verify that an SFTPAttribute like os.stat was returned
+            assert result.st_size == 8192
+            assert result.st_uid is not None
+            assert result.st_gid is not None
+            assert result.st_atime
+            assert result.st_mtime
 
 
 @skip_if_ci
-def test_put(lsftp):
+def test_put(sftpserver):
     '''run test on localhost'''
-    contents = 'now is the time\nfor all good...'
-    with tempfile_containing(contents=contents) as fname:
-        base_fname = os.path.split(fname)[1]
-        if base_fname in lsftp.listdir():
-            lsftp.remove(base_fname)
-        assert base_fname not in lsftp.listdir()
-        lsftp.put(fname)
-        assert base_fname in lsftp.listdir()
-        with tempfile_containing('') as tfile:
-            lsftp.get(base_fname, tfile)
-            assert open(tfile).read() == contents
-        # clean up
-        lsftp.remove(base_fname)
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            contents = 'now is the time\nfor all good...'
+            with tempfile_containing(contents=contents) as fname:
+                base_fname = os.path.split(fname)[1]
+                if base_fname in psftp.listdir():
+                    psftp.remove(base_fname)
+                assert base_fname not in psftp.listdir()
+                psftp.put(fname)
+                assert base_fname in psftp.listdir()
+                with tempfile_containing('') as tfile:
+                    psftp.get(base_fname, tfile)
+                    assert open(tfile).read() == contents
+                # clean up
+                psftp.remove(base_fname)
 
 
-def test_put_bad_local(psftp):
+def test_put_bad_local(sftpserver):
     '''try to put a non-existing file to a read-only server'''
-    with tempfile_containing('should fail') as fname:
-        pass
-    # tempfile has been removed
-    with pytest.raises(OSError):
-        psftp.put(fname)
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            with tempfile_containing('should fail') as fname:
+                pass
+            # tempfile has been removed
+            with pytest.raises(OSError):
+                psftp.put(fname)
 
 
-def test_put_not_allowed(psftp):
-    '''try to put a file to a read-only server'''
-    with tempfile_containing('should fail') as fname:
-        with pytest.raises(IOError):
-            psftp.put(fname)
+# TODO
+# def test_put_not_allowed(psftp):
+#     '''try to put a file to a read-only server'''
+#     with tempfile_containing('should fail') as fname:
+#         with pytest.raises(IOError):
+#             psftp.put(fname)
 
 
 @skip_if_ci
@@ -86,6 +93,6 @@ def test_put_preserve_mtime(lsftp):
         lsftp.remove(base_fname)
     # see if times are modified
     # assert base.st_atime == result1.st_atime
-    assert base.st_mtime == result1.st_mtime
+    assert int(base.st_mtime) == result1.st_mtime
     # assert result1.st_atime == result2.st_atime
-    assert result1.st_mtime == result2.st_mtime
+    assert int(result1.st_mtime) == result2.st_mtime

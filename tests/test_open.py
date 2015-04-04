@@ -4,18 +4,22 @@
 from common import *
 
 
-def test_open_read(psftp):
+def test_open_read(sftpserver):
     '''test the open function'''
-    psftp.chdir('/home/test')
-    rfile = psftp.open('readme.txt')
-    contents = rfile.read()
-    rfile.close()
-    assert contents[0:9] == b'This SFTP'
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            psftp.chdir('/pub')
+            rfile = psftp.open('make.txt')
+            contents = rfile.read()
+            rfile.close()
+            assert contents == b'content of make.txt'
 
 
-def test_open_read_with(psftp):
+def test_open_read_with(sftpserver):
     '''test the open function in a with statment'''
-    psftp.chdir('/home/test')
-    with psftp.open('readme.txt') as rfile:
-        contents = rfile.read()
-    assert contents[0:9] == b'This SFTP'
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            psftp.chdir('/pub')
+            with psftp.open('make.txt') as rfile:
+                contents = rfile.read()
+            assert contents == b'content of make.txt'

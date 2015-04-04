@@ -7,21 +7,25 @@ from io import BytesIO
 from mock import Mock
 
 
-def test_getfo_flo(psftp):
+def test_getfo_flo(sftpserver):
     '''test getfo to a file-like object'''
-    flo = BytesIO()
-    psftp.chdir('/home/test')
-    num_bytes = psftp.getfo('readme.txt', flo)
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            flo = BytesIO()
+            psftp.chdir('/pub')
+            num_bytes = psftp.getfo('make.txt', flo)
 
-    assert flo.getvalue()[0:9] == b'This SFTP'
-    assert num_bytes == len(flo.getvalue())
+            assert flo.getvalue() == b'content of make.txt'
+            assert num_bytes == len(flo.getvalue())
 
 
-def test_getfo_callback(psftp):
+def test_getfo_callback(sftpserver):
     '''test getfo callback'''
-    flo = BytesIO()
-    cback = Mock(return_value=None)
-    psftp.chdir('/home/test')
-    psftp.getfo('readme.txt', flo, callback=cback)
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            flo = BytesIO()
+            cback = Mock(return_value=None)
+            psftp.chdir('/pub')
+            psftp.getfo('make.txt', flo, callback=cback)
 
-    assert cback.call_count >= 2
+            assert cback.call_count >= 2

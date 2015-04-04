@@ -51,8 +51,9 @@ def test_truncate_same(lsftp):
     lsftp.remove(rname)
 
 
-def test_truncate_ro(psftp):
-    '''test truncate, against read-only server'''
-    rname = '/home/test/readme.txt'
-    with pytest.raises(IOError):
-        _ = psftp.truncate(rname, 8192)
+# TODO
+# def test_truncate_ro(psftp):
+#     '''test truncate, against read-only server'''
+#     rname = '/home/test/readme.txt'
+#     with pytest.raises(IOError):
+#         _ = psftp.truncate(rname, 8192)

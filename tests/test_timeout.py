@@ -4,15 +4,17 @@
 from common import *
 
 
-def test_timeout_getter(psftp):
+@skip_if_ci
+def test_timeout_getter(lsftp):
     '''test getting the timeout value'''
     # always starts at no timeout,
-    assert psftp.timeout is None
+    assert lsftp.timeout is None
 
 
-def test_timeout_setter(psftp):
+@skip_if_ci
+def test_timeout_setter(lsftp):
     '''test setting the timeout value'''
-    psftp.timeout = 10.5
-    assert psftp.timeout == 10.5
-    psftp.timeout = None
-    assert psftp.timeout is None
+    lsftp.timeout = 10.5
+    assert lsftp.timeout == 10.5
+    lsftp.timeout = None
+    assert lsftp.timeout is None

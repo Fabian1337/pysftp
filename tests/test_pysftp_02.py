@@ -6,13 +6,14 @@ from common import *
 from stat import S_ISLNK
 
 
-def test_sftp_client(psftp):
+@skip_if_ci
+def test_sftp_client(lsftp):
     '''test for access to the underlying, active sftpclient'''
     # with pysftp.Connection(**SFTP_PUBLIC) as sftp:
     #     assert 'normalize' in dir(sftp.sftp_client)
     #     assert 'readlink' in dir(sftp.sftp_client)
-    assert 'normalize' in dir(psftp.sftp_client)
-    assert 'readlink' in dir(psftp.sftp_client)
+    assert 'normalize' in dir(lsftp.sftp_client)
+    assert 'readlink' in dir(lsftp.sftp_client)
 
 
 def test_path_retreat():
@@ -57,10 +58,10 @@ def test_makedirs(lsftp):
     assert is_dir_partial
 
 
-def test_lexists_symbolic(psftp):
-    '''test .lexists() vs. symbolic link'''
-    rsym = 'readme.sym'
-    assert psftp.lexists(rsym)
+# def test_lexists_symbolic(psftp):
+#     '''test .lexists() vs. symbolic link'''
+#     rsym = 'readme.sym'
+#     assert psftp.lexists(rsym)
 
 
 @skip_if_ci
@@ -77,19 +78,25 @@ def test_symlink(lsftp):
     assert is_link
 
 
-def test_exists(psftp):
+def test_exists(sftpserver):
     '''test .exists() fuctionality'''
-    rfile = '/home/test/readme.txt'
-    rbad = '/home/test/peek-a-boo.txt'
-    assert psftp.exists(rfile)
-    assert psftp.exists(rbad) is False
-    assert psftp.exists('pub')
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            rfile = '/pub/foo2/bar1/bar1.txt'
+            rbad = '/pub/foo2/bar1/peek-a-boo.txt'
+            assert psftp.exists(rfile)
+            assert psftp.exists(rbad) is False
+            assert psftp.exists('pub')
 
 
-def test_lexists(psftp):
+@skip_if_ci
+def test_lexists(lsftp):
     '''test .lexists() functionality'''
-    rfile = '/home/test/readme.txt'
-    rbad = '/home/test/peek-a-boo.txt'
-    assert psftp.lexists(rfile)
-    assert psftp.lexists(rbad) is False
-    assert psftp.lexists('pub')
+    with tempfile_containing(contents='yup') as fname:
+        base_fname = os.path.split(fname)[1]
+        lsftp.put(fname)
+        # rfile = '/home/test/readme.txt'
+        rbad = '/home/test/peek-a-boo.txt'
+        assert lsftp.lexists(fname)
+        lsftp.remove(base_fname)
+        assert lsftp.lexists(rbad) is False

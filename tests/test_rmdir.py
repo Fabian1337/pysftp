@@ -14,9 +14,9 @@ def test_rmdir(lsftp):
     lsftp.rmdir(dirname)
     assert dirname not in lsftp.listdir()
 
-
-def test_rmdir_ro(psftp):
-    '''test rmdir against read-only server'''
-    psftp.chdir('/home/test')
-    with pytest.raises(IOError):
-        psftp.rmdir('pub')
+# TODO
+# def test_rmdir_ro(psftp):
+#     '''test rmdir against read-only server'''
+#     psftp.chdir('/home/test')
+#     with pytest.raises(IOError):
+#         psftp.rmdir('pub')

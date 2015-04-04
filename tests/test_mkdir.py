@@ -17,20 +17,22 @@ def test_mkdir_mode(lsftp):
     assert pysftp.st_mode_to_int(attrs.st_mode) == mode
 
 
-@skip_if_ci
-def test_mkdir(lsftp):
+def test_mkdir(sftpserver):
     '''test mkdir'''
-    dirname = 'test-dir'
-    assert dirname not in lsftp.listdir()
-    lsftp.mkdir(dirname)
-    assert dirname in lsftp.listdir()
-    # clean up
-    lsftp.rmdir(dirname)
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            dirname = 'test-dir'
+            assert dirname not in sftp.listdir()
+            sftp.mkdir(dirname)
+            assert dirname in sftp.listdir()
+            # clean up
+            sftp.rmdir(dirname)
 
 
-def test_mkdir_ro(psftp):
-    '''test mkdir on a read-only server'''
-    dirname = 'test-dir'
-    assert dirname not in psftp.listdir()
-    with pytest.raises(IOError):
-        psftp.mkdir(dirname)
+# TODO
+# def test_mkdir_ro(psftp):
+#     '''test mkdir on a read-only server'''
+#     dirname = 'test-dir'
+#     assert dirname not in psftp.listdir()
+#     with pytest.raises(IOError):
+#         psftp.mkdir(dirname)

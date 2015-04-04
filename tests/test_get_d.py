@@ -6,30 +6,34 @@ from tempfile import mkdtemp
 import shutil
 
 
-def test_get_d(psftp):
+def test_get_d(sftpserver):
     '''test the get_d for remotepath is pwd '.' '''
-    psftp.cwd('/home/test')
-    localpath = mkdtemp()
-    psftp.get_d('.', localpath)
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            psftp.cwd('/pub')
+            localpath = mkdtemp()
+            psftp.get_d('.', localpath)
 
-    checks = [(['', ], ['readme.txt', ]), ]
-    for pth, fls in checks:
-        assert sorted(os.listdir(os.path.join(localpath, *pth))) == fls
+            checks = [(['', ], ['make.txt', ]), ]
+            for pth, fls in checks:
+                assert sorted(os.listdir(os.path.join(localpath, *pth))) == fls
 
-    # cleanup local
-    shutil.rmtree(localpath)
+            # cleanup local
+            shutil.rmtree(localpath)
 
 
-def test_get_d_pathed(psftp):
+def test_get_d_pathed(sftpserver):
     '''test the get_d for localpath, starting deeper then pwd '''
-    psftp.cwd('/home/test')
-    localpath = mkdtemp()
-    psftp.get_d('./pub/example', localpath)
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            psftp.cwd('/pub')
+            localpath = mkdtemp()
+            psftp.get_d('/pub/foo1', localpath)
 
-    chex = [(['', ],
-             ['image01.jpg', 'image02.png', 'image03.gif', 'worksheet.xls']), ]
-    for pth, fls in chex:
-        assert sorted(os.listdir(os.path.join(localpath, *pth))) == fls
+            chex = [(['', ],
+                     ['foo1.txt', 'image01.jpg']), ]
+            for pth, fls in chex:
+                assert sorted(os.listdir(os.path.join(localpath, *pth))) == fls
 
-    # cleanup local
-    shutil.rmtree(localpath)
+            # cleanup local
+            shutil.rmtree(localpath)

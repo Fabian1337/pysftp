@@ -7,15 +7,16 @@ from common import *
 import pytest
 
 
-def test_chmod_not_exist(psftp):
+@skip_if_ci
+def test_chmod_not_exist(lsftp):
     '''verify error if trying to chmod something that isn't there'''
     with pytest.raises(IOError):
-        psftp.chmod('i-do-not-exist.txt', 666)
+        lsftp.chmod('i-do-not-exist.txt', 666)
 
 
 @skip_if_ci
 def test_chmod_simple(lsftp):
-    '''test basic chmod with octal mode represented by an int`'''
+    '''test basic chmod with octal mode represented by an int'''
     new_mode = 744      # user=rwx g=r o=r
     with tempfile_containing('') as fname:
         base_fname = os.path.split(fname)[1]
@@ -28,10 +29,10 @@ def test_chmod_simple(lsftp):
     # that we actually changed something
     assert new_attrs.st_mode != org_attrs.st_mode
 
-
-def test_chmod_fail_ro(psftp):
-    '''test chmod against read-only server'''
-    new_mode = 440
-    fname = 'readme.txt'
-    with pytest.raises(IOError):
-        psftp.chmod(fname, new_mode)
+# TODO
+# def test_chmod_fail_ro(psftp):
+#     '''test chmod against read-only server'''
+#     new_mode = 440
+#     fname = 'readme.txt'
+#     with pytest.raises(IOError):
+#         psftp.chmod(fname, new_mode)

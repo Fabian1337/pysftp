@@ -5,10 +5,11 @@
 from common import *
 
 
-def test_connection_with():
+def test_connection_with(sftpserver):
     '''connect to a public sftp server'''
-    with pysftp.Connection(**SFTP_PUBLIC) as sftp:
-        assert sftp.listdir() == ['pub', 'readme.sym', 'readme.txt']
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            assert psftp.listdir() == [u'pub', u'read.me']
 
 
 def test_connection_bad_host():
@@ -20,16 +21,18 @@ def test_connection_bad_host():
         sftp.close()
 
 
-def test_connection_bad_credentials():
+@skip_if_ci
+def test_connection_bad_credentials(lsftp):
     '''attempt connection to a non-existing server'''
-    copts = SFTP_PUBLIC.copy()
+    copts = SFTP_LOCAL.copy()
     copts['password'] = 'badword'
     with pytest.raises(pysftp.SSHException):
         with pysftp.Connection(**copts) as sftp:
             pass
 
 
-def test_connection_good():
+def test_connection_good(sftpserver):
     '''connect to a public sftp server'''
-    sftp = pysftp.Connection(**SFTP_PUBLIC)
-    sftp.close()
+    with sftpserver.serve_content(CONTENT):
+        sftp = pysftp.Connection(**conn(sftpserver))
+        sftp.close()

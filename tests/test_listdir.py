@@ -4,21 +4,25 @@
 from common import *
 
 
-def test_listdir(psftp):
+def test_listdir(sftpserver):
     '''test listdir'''
-    psftp.cwd('/home/test')
-    assert psftp.listdir() == ['pub', 'readme.sym', 'readme.txt']
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            psftp.cwd('/pub')
+            assert psftp.listdir() == ['foo1', 'foo2', 'make.txt']
 
 
-def test_listdir_attr(psftp):
+def test_listdir_attr(sftpserver):
     '''test listdir'''
-    psftp.cwd('/home/test')
-    attrs = psftp.listdir_attr()
-    assert len(attrs) == 3
-    # test they are in filename order
-    assert attrs[0].filename == 'pub'
-    assert attrs[1].filename == 'readme.sym'
-    assert attrs[2].filename == 'readme.txt'
-    # test that longname is there
-    for attr in attrs:
-        assert attr.longname is not None
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            psftp.cwd('/pub')
+            attrs = psftp.listdir_attr()
+            assert len(attrs) == 3
+            # test they are in filename order
+            assert attrs[0].filename == 'foo1'
+            assert attrs[1].filename == 'foo2'
+            assert attrs[2].filename == 'make.txt'
+            # test that longname is there
+            for attr in attrs:
+                assert attr.longname is not None

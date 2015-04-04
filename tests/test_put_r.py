@@ -61,15 +61,17 @@ def test_put_r(lsftp):
     assert rfs.ulist == []
 
 
-def test_put_r_ro(psftp):
-    '''test put_r failure on remote read-only srvr'''
-    # run the op
-    with pytest.raises(IOError):
-        psftp.put_r('.', '.')
+# TODO
+# def test_put_r_ro(psftp):
+#     '''test put_r failure on remote read-only srvr'''
+#     # run the op
+#     with pytest.raises(IOError):
+#         psftp.put_r('.', '.')
 
 
-def test_put_r_bad_local(psftp):
+@skip_if_ci
+def test_put_r_bad_local(lsftp):
     '''test put_r failure on non-existing local directory'''
     # run the op
     with pytest.raises(OSError):
-        psftp.put_r('/non-existing', '.')
+        lsftp.put_r('/non-existing', '.')

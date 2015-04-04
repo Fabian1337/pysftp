@@ -35,16 +35,17 @@ def test_unlink(lsftp):
     assert not_there
 
 
-def test_remove_roserver(psftp):
-    '''test reaction of attempting remove on read-only server'''
-    psftp.chdir('/home/test')
-    with pytest.raises(IOError):
-        psftp.remove('readme.txt')
+# TODO
+# def test_remove_roserver(psftp):
+#     '''test reaction of attempting remove on read-only server'''
+#     psftp.chdir('/home/test')
+#     with pytest.raises(IOError):
+#         psftp.remove('readme.txt')
 
 
 @skip_if_ci
-def test_remove_does_not_exist(psftp):
+def test_remove_does_not_exist(lsftp):
     '''test remove against a non-existant file'''
-    psftp.chdir('/home/test')
+    lsftp.chdir('/home/test')
     with pytest.raises(IOError):
-        psftp.remove('i-am-not-here.txt')
+        lsftp.remove('i-am-not-here.txt')

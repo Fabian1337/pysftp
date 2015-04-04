@@ -5,17 +5,22 @@
 from common import *
 
 
-def test_stat(psftp):
+def test_stat(sftpserver):
     '''test stat'''
-    dirname = 'pub'
-    psftp.chdir('/home/test')
-    rslt = psftp.stat(dirname)
-    assert rslt.st_size >= 0
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            dirname = 'pub'
+            sftp.chdir('/')
+            rslt = sftp.stat(dirname)
+            assert rslt.st_size >= 0
 
 
-def test_lstat(psftp):
+@skip_if_ci
+def test_lstat(lsftp):
     '''test lstat  minimal'''
     dirname = 'pub'
-    psftp.chdir('/home/test')
-    rslt = psftp.lstat(dirname)
+    lsftp.mkdir(dirname)
+    lsftp.chdir('/home/test')
+    rslt = lsftp.lstat(dirname)
+    lsftp.rmdir(dirname)
     assert rslt.st_size >= 0

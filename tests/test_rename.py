@@ -22,7 +22,8 @@ def test_rename(lsftp):
         lsftp.remove('bob')
 
 
-def test_rename_ro(psftp):
-    '''test rename on a read-only server'''
-    with pytest.raises(IOError):
-        psftp.rename('/home/test/readme.txt', 'bob')
+# TODO
+# def test_rename_ro(psftp):
+#     '''test rename on a read-only server'''
+#     with pytest.raises(IOError):
+#         psftp.rename('/home/test/readme.txt', 'bob')
