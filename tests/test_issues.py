@@ -12,3 +12,10 @@ def test_issue_15(lsftp):
     lsftp.chdir('/home/test')
     assert hresults == lsftp.execute('pwd')
     # .exec operates independently of the current working directory .pwd
+
+
+def test_issue_67(sftpserver):
+    """isdir fails if you don't specify a root path"""
+    with sftpserver.serve_content(CONTENT):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            assert sftp.isdir('pub')
