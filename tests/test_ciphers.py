@@ -8,6 +8,7 @@ from common import *
 import pytest
 
 
+@skip_if_ci
 def test_depr_ciphers_param(warnings_as_errors):
     '''test deprecation warning for Connection cipher parameter'''
     copts = SFTP_LOCAL.copy()
@@ -18,6 +19,7 @@ def test_depr_ciphers_param(warnings_as_errors):
             pass
 
 
+@skip_if_ci
 def test_connection_ciphers_param():
     '''test the ciphers parameter portion of the Connection'''
     ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')
@@ -29,6 +31,7 @@ def test_connection_ciphers_param():
         assert len(rslt) > 1
 
 
+@skip_if_ci
 def test_connection_ciphers_cnopts():
     '''test the CnOpts.ciphers portion of the Connection'''
     ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')
@@ -42,6 +45,7 @@ def test_connection_ciphers_cnopts():
         assert len(rslt) > 1
 
 
+@skip_if_ci
 def test_active_ciphers():
     '''test that method returns a tuple of strings, that show ciphers used'''
     ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')
