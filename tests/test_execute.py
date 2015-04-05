@@ -18,7 +18,7 @@ def test_execute_simple(lsftp):
     if py_ver() == 2:
         type_check = basestring
     else:
-        type_check = str
+        type_check = type(b'')
 
     results = lsftp.execute('ls')
     # confirm results are an iterable of strings (version dependent)
