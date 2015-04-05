@@ -2,7 +2,12 @@
 
 # pylint: disable = W0142
 # pylint: disable=E1101
+from tempfile import mkdtemp
+import shutil
+
 from common import *
+from blddirs import build_dir_struct
+from pysftp import reparent
 
 
 @skip_if_ci
@@ -19,3 +24,41 @@ def test_issue_67(sftpserver):
     with sftpserver.serve_content(CONTENT):
         with pysftp.Connection(**conn(sftpserver)) as sftp:
             assert sftp.isdir('pub')
+
+
+@skip_if_ci
+def test_issue_63(lsftp):
+    '''put_r-fails-when-overwriting-directory'''
+    localpath = mkdtemp()
+    print(localpath)
+    remote_dir = os.path.split(localpath)[1]
+    build_dir_struct(localpath)
+    localpath = os.path.join(localpath, 'pub')
+    print(localpath)
+    # make a tidy place to put them
+    lsftp.mkdir(remote_dir)
+    # run the op
+    lsftp.put_r(localpath, remote_dir)
+    try:
+        lsftp.put_r(localpath, remote_dir)
+        failed = False
+    except IOError:
+        failed = True
+
+    # inspect results
+    rfs = pysftp.WTCallbacks()
+    with lsftp.cd(remote_dir):
+        lsftp.walktree('.', rfs.file_cb, rfs.dir_cb, rfs.unk_cb)
+
+    # cleanup remote
+    for fname in rfs.flist:
+        lsftp.remove(reparent(remote_dir, fname))
+    for dname in reversed(rfs.dlist):
+        lsftp.rmdir(reparent(remote_dir, dname))
+    lsftp.rmdir(remote_dir)
+
+    # cleanup local
+    shutil.rmtree(os.path.split(localpath)[0])
+
+    # assert that it worked without throwing an error
+    assert not failed

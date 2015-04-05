@@ -503,7 +503,9 @@ class Connection(object):
         os.chdir(cur_local_dir)
         for dname in wtcb.dlist:
             if dname != '.':
-                self.mkdir(reparent(remotepath, dname))
+                pth = reparent(remotepath, dname)
+                if not self.isdir(pth):
+                    self.mkdir(pth)
 
         for fname in wtcb.flist:
             head, _ = os.path.split(fname)
