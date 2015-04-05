@@ -178,6 +178,8 @@ class Connection(object):
         see ``pysftp.CnOpts`` and ``cnopts`` parameter
     :param None|CnOpts cnopts: *Default: None* - extra connection options
         set in a CnOpts object.
+    :param str|None default_path: *Default: None* -
+        set a default path upon connection.
     :returns: (obj) connection to the requested host
     :raises ConnectionException:
     :raises CredentialException:
@@ -196,13 +198,14 @@ class Connection(object):
                  private_key_pass=None,
                  ciphers=None,
                  log=False,
-                 cnopts=None
+                 cnopts=None,
+                 default_path=None
                  ):
         if cnopts is None:
             self._cnopts = CnOpts()
         else:
             self._cnopts = cnopts
-
+        self._default_path = default_path
         # TODO: remove this if block and log param above in v0.3.0
         if log:
             wmsg = "log parameter is deprecated and will be remove in 0.3.0. "\
@@ -284,6 +287,8 @@ class Connection(object):
         """Establish the SFTP connection."""
         if not self._sftp_live:
             self._sftp = paramiko.SFTPClient.from_transport(self._transport)
+            if self._default_path is not None:
+                self._sftp.chdir(self._default_path)
             self._sftp_live = True
 
     @property
