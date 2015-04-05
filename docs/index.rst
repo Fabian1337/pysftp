@@ -23,13 +23,12 @@ Example
 
 Supports
 --------
-Tested on Python 2.7, 3.2, 3.3
+Tested on Python 2.7, 3.2, 3.3, 3.4
 
 .. image:: https://drone.io/bitbucket.org/dundeemt/pysftp/status.png
     :target: https://drone.io/bitbucket.org/dundeemt/pysftp/latest
     :alt: Build Status
 
-Believed to support Python 3.4
 
 Additional Information
 ----------------------
@@ -42,7 +41,7 @@ Additional Information
 requirements
 ------------
 
-  paramiko >= 1.7.7
+  paramiko >= 1.15.2
 
 
 Contents:
