@@ -2,6 +2,7 @@
 location"""
 
 from __future__ import print_function
+from sys import platform
 
 # pylint: disable = W0142
 from common import VFS, conn, pysftp
@@ -16,5 +17,9 @@ def test_issue_65(sftpserver):
         with pysftp.Connection(**cn) as sftp:
             assert sftp.getcwd() is None
             with sftp.cd('/home/test/pub'):
-                sftp.listdir('.')
-            assert sftp.getcwd() is None
+                pass
+
+            if platform.startswith('linux'):
+                assert sftp.getcwd() == '/'
+            elif platform.startswith('win32'):
+                assert sftp.getcwd() is None
