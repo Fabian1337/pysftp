@@ -6,31 +6,30 @@ from common import *
 
 def test_normalize(sftpserver):
     '''test the normalize function'''
-    with sftpserver.serve_content(CONTENT):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
-            psftp.chdir('/')
-            assert psftp.normalize('make.txt') == '/make.txt'
-            assert psftp.normalize('.') == '/'
-            assert psftp.normalize('pub') == '/pub'
-            psftp.chdir('pub')
-            assert psftp.normalize('.') == '/pub'
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            assert sftp.normalize('make.txt') == '/home/test/make.txt'
+            assert sftp.normalize('.') == '/home/test'
+            assert sftp.normalize('pub') == '/home/test/pub'
+            sftp.chdir('pub')
+            assert sftp.normalize('.') == '/home/test/pub'
 
 
 # TODO
-# def test_normalize_symlink(psftp):
+# def test_normalize_symlink(sftp):
 #     '''test normalize against a symlink'''
-#     psftp.chdir('/home/test')
+#     sftp.chdir('/home/test')
 #     rsym = 'readme.sym'
-#     assert psftp.normalize(rsym) == '/home/test/readme.txt'
+#     assert sftp.normalize(rsym) == '/home/test/readme.txt'
 
 
 def test_pwd(sftpserver):
     '''test the pwd property'''
-    with sftpserver.serve_content(CONTENT):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
-            psftp.chdir('/pub/foo2')
-            assert psftp.pwd == '/pub/foo2'
-            psftp.chdir('bar1')
-            assert psftp.pwd == '/pub/foo2/bar1'
-            psftp.chdir('../../foo1')
-            assert psftp.pwd == '/pub/foo1'
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            sftp.chdir('pub/foo2')
+            assert sftp.pwd == '/home/test/pub/foo2'
+            sftp.chdir('bar1')
+            assert sftp.pwd == '/home/test/pub/foo2/bar1'
+            sftp.chdir('../../foo1')
+            assert sftp.pwd == '/home/test/pub/foo1'

@@ -8,7 +8,7 @@ from mock import Mock, call
 
 def test_walktree_cbclass(sftpserver):
     '''test the walktree function with callbacks from a class'''
-    with sftpserver.serve_content(CONTENT):
+    with sftpserver.serve_content(VFS):
         with pysftp.Connection(**conn(sftpserver)) as sftp:
             wtcb = pysftp.WTCallbacks()
             sftp.walktree('.',
@@ -34,7 +34,7 @@ def test_walktree_cbmock(sftpserver):
     dir_cb = Mock(return_value=None)
     unk_cb = Mock(return_value=None)
 
-    with sftpserver.serve_content(CONTENT):
+    with sftpserver.serve_content(VFS):
         with pysftp.Connection(**conn(sftpserver)) as sftp:
             sftp.walktree('.',
                           fcallback=file_cb,
@@ -61,7 +61,7 @@ def test_walktree_no_recurse(sftpserver):
     dir_cb = Mock(return_value=None)
     unk_cb = Mock(return_value=None)
 
-    with sftpserver.serve_content(CONTENT):
+    with sftpserver.serve_content(VFS):
         with pysftp.Connection(**conn(sftpserver)) as sftp:
             sftp.walktree('.',
                           fcallback=file_cb,

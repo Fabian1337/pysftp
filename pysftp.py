@@ -288,6 +288,7 @@ class Connection(object):
         if not self._sftp_live:
             self._sftp = paramiko.SFTPClient.from_transport(self._transport)
             if self._default_path is not None:
+                # print("_default_path: [%s]" % self._default_path)
                 self._sftp.chdir(self._default_path)
             self._sftp_live = True
 

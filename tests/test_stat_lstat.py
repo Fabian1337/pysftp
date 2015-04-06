@@ -7,17 +7,17 @@ from common import *
 
 def test_stat(sftpserver):
     '''test stat'''
-    with sftpserver.serve_content(CONTENT):
+    with sftpserver.serve_content(VFS):
         with pysftp.Connection(**conn(sftpserver)) as sftp:
             dirname = 'pub'
-            sftp.chdir('/')
             rslt = sftp.stat(dirname)
             assert rslt.st_size >= 0
 
 
 @skip_if_ci
 def test_lstat(lsftp):
-    '''test lstat  minimal'''
+    '''test lstat  minimal, have to use real server, plugin doesn't support
+    lstat'''
     dirname = 'pub'
     lsftp.mkdir(dirname)
     lsftp.chdir('/home/test')

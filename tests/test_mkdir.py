@@ -19,7 +19,7 @@ def test_mkdir_mode(lsftp):
 
 def test_mkdir(sftpserver):
     '''test mkdir'''
-    with sftpserver.serve_content(CONTENT):
+    with sftpserver.serve_content(VFS):
         with pysftp.Connection(**conn(sftpserver)) as sftp:
             dirname = 'test-dir'
             assert dirname not in sftp.listdir()

@@ -43,21 +43,6 @@ def conn(sftpsrv):
             'password': 'pw', 'default_path': '/home/test'}
 
 # filesystem served by pytest-sftpserver plugin
-CONTENT = {'pub': {
-                        'make.txt': "content of make.txt",
-                        'foo1': {
-                                'foo1.txt': 'content of foo1.txt',
-                                'image01.jpg': 'data for image01.jpg'
-                        },
-                        'foo2': {
-                                'foo2.txt': 'content of foo2.txt',
-                                'bar1': {
-                                    'bar1.txt': 'contents bar1.txt'
-                                }
-                        }
-                    },
-           'read.me': 'contents of read.me',
-           }
 VFS = {
     'home': {
         'test': {

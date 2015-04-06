@@ -7,33 +7,33 @@ from common import *
 
 def test_isfile(sftpserver):
     '''test .isfile() functionality'''
-    with sftpserver.serve_content(CONTENT):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
-            rfile = '/pub/make.txt'
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            rfile = 'pub/make.txt'
             rdir = 'pub'
-            assert psftp.isfile(rfile)
-            assert psftp.isfile(rdir) is False
+            assert sftp.isfile(rfile)
+            assert sftp.isfile(rdir) is False
 
 
 # TODO
-# def test_isfile_2(psftp):
+# def test_isfile_2(sftp):
 #     '''test .isfile() functionality against a symlink'''
 #     rsym = '/home/test/readme.sym'
-#     assert psftp.isfile(rsym)
+#     assert sftp.isfile(rsym)
 
 
 def test_isdir(sftpserver):
     '''test .isdir() functionality'''
-    with sftpserver.serve_content(CONTENT):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
-            rfile = '/pub/make.txt'
-            rdir = '/pub'
-            assert psftp.isdir(rfile) is False
-            assert psftp.isdir(rdir)
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            rfile = 'pub/make.txt'
+            rdir = 'pub'
+            assert sftp.isdir(rfile) is False
+            assert sftp.isdir(rdir)
 
 
 # TODO
-# def test_isdir_2(psftp):
+# def test_isdir_2(sftp):
 #     '''test .isdir() functionality against a symlink'''
 #     rsym = '/home/test/readme.sym'
-#     assert psftp.isdir(rsym) is False
+#     assert sftp.isdir(rsym) is False

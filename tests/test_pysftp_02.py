@@ -80,13 +80,13 @@ def test_symlink(lsftp):
 
 def test_exists(sftpserver):
     '''test .exists() fuctionality'''
-    with sftpserver.serve_content(CONTENT):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
-            rfile = '/pub/foo2/bar1/bar1.txt'
-            rbad = '/pub/foo2/bar1/peek-a-boo.txt'
-            assert psftp.exists(rfile)
-            assert psftp.exists(rbad) is False
-            assert psftp.exists('pub')
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            rfile = 'pub/foo2/bar1/bar1.txt'
+            rbad = 'pub/foo2/bar1/peek-a-boo.txt'
+            assert sftp.exists(rfile)
+            assert sftp.exists(rbad) is False
+            assert sftp.exists('pub')
 
 
 @skip_if_ci

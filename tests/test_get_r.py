@@ -8,11 +8,10 @@ import shutil
 
 def test_get_r(sftpserver):
     '''test the get_r for remotepath is pwd '.' '''
-    with sftpserver.serve_content(CONTENT):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
-            psftp.cwd('/')
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
             localpath = mkdtemp()
-            psftp.get_r('.', localpath)
+            sftp.get_r('.', localpath)
 
             checks = [([''], ['pub', 'read.me']),
                       (['', 'pub'], ['foo1', 'foo2', 'make.txt']),
@@ -29,11 +28,10 @@ def test_get_r(sftpserver):
 
 def test_get_r_pwd(sftpserver):
     '''test the get_r for remotepath is pwd '/pub/foo2' '''
-    with sftpserver.serve_content(CONTENT):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
-            psftp.cwd('/')
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
             localpath = mkdtemp()
-            psftp.get_r('/pub/foo2', localpath)
+            sftp.get_r('pub/foo2', localpath)
 
             checks = [(['', ], ['pub', ]),
                       (['', 'pub', ], ['foo2', ]),
@@ -49,11 +47,11 @@ def test_get_r_pwd(sftpserver):
 
 def test_get_r_pathed(sftpserver):
     '''test the get_r for localpath, starting deeper then pwd '''
-    with sftpserver.serve_content(CONTENT):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
-            psftp.cwd('/pub/foo2')
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            sftp.cwd('pub/foo2')
             localpath = mkdtemp()
-            psftp.get_r('./bar1', localpath)
+            sftp.get_r('./bar1', localpath)
 
             checks = [(['', ], ['bar1', ]),
                       (['', 'bar1'], ['bar1.txt', ]),
@@ -67,12 +65,11 @@ def test_get_r_pathed(sftpserver):
 
 def test_get_r_cdd(sftpserver):
     '''test the get_r for chdir('pub/foo2')'''
-    with sftpserver.serve_content(CONTENT):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
-            psftp.cwd('/')
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
             localpath = mkdtemp()
-            psftp.chdir('pub/foo2')
-            psftp.get_r('.', localpath)
+            sftp.chdir('pub/foo2')
+            sftp.get_r('.', localpath)
 
             checks = [(['', ], ['bar1', 'foo2.txt']),
                       (['bar1', ], ['bar1.txt', ])

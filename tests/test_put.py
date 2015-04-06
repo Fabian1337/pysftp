@@ -58,13 +58,13 @@ def test_put(lsftp):
 
 def test_put_bad_local(sftpserver):
     '''try to put a non-existing file to a read-only server'''
-    with sftpserver.serve_content(CONTENT):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
             with tempfile_containing('should fail') as fname:
                 pass
             # tempfile has been removed
             with pytest.raises(OSError):
-                psftp.put(fname)
+                sftp.put(fname)
 
 
 # TODO

@@ -21,7 +21,7 @@ def test_issue_15(lsftp):
 
 def test_issue_67(sftpserver):
     """isdir fails if you don't specify a root path"""
-    with sftpserver.serve_content(CONTENT):
+    with sftpserver.serve_content(VFS):
         with pysftp.Connection(**conn(sftpserver)) as sftp:
             assert sftp.isdir('pub')
 

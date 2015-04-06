@@ -7,47 +7,47 @@ from common import *
 
 def test_cd_none(sftpserver):
     '''test .cd with None'''
-    with sftpserver.serve_content(CONTENT):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
-            home = psftp.pwd
-            with psftp.cd():
-                psftp.chdir('pub')
-                assert psftp.pwd == '/pub'
-            assert home == psftp.pwd
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            home = sftp.pwd
+            with sftp.cd():
+                sftp.chdir('pub')
+                assert sftp.pwd == '/home/test/pub'
+            assert home == sftp.pwd
 
 
 def test_cd_path(sftpserver):
     '''test .cd with a path'''
-    with sftpserver.serve_content(CONTENT):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
-            home = psftp.pwd
-            with psftp.cd('pub'):
-                assert psftp.pwd == '/pub'
-            assert home == psftp.pwd
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            home = sftp.pwd
+            with sftp.cd('pub'):
+                assert sftp.pwd == '/home/test/pub'
+            assert home == sftp.pwd
 
 
 def test_cd_nested(sftpserver):
     '''test nested cd's'''
-    with sftpserver.serve_content(CONTENT):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
-            home = psftp.pwd
-            with psftp.cd('pub'):
-                assert psftp.pwd == '/pub'
-                with psftp.cd('foo1'):
-                    assert psftp.pwd == '/pub/foo1'
-                assert psftp.pwd == '/pub'
-            assert home == psftp.pwd
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            home = sftp.pwd
+            with sftp.cd('pub'):
+                assert sftp.pwd == '/home/test/pub'
+                with sftp.cd('foo1'):
+                    assert sftp.pwd == '/home/test/pub/foo1'
+                assert sftp.pwd == '/home/test/pub'
+            assert home == sftp.pwd
 
 
 def test_cd_bad_path(sftpserver):
     '''test .cd with a bad path'''
-    with sftpserver.serve_content(CONTENT):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
-            home = psftp.pwd
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            home = sftp.pwd
             with pytest.raises(IOError):
-                with psftp.cd('not-there'):
+                with sftp.cd('not-there'):
                     pass
-            assert home == psftp.pwd
+            assert home == sftp.pwd
 
 
 def test_cd_local():
@@ -59,7 +59,7 @@ def test_cd_local():
 
 
 def test_cd_local_bad():
-    '''test pysftp.cd on non-existing directory'''
+    '''test pysftp.cd on non-existing local directory'''
     with pytest.raises(OSError):
         with pysftp.cd('not-there'):
             pass

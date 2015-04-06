@@ -7,7 +7,7 @@ from common import *
 
 def test_chdir_bad_dir(sftpserver):
     '''try to chdir() to a non-existing remote dir'''
-    with sftpserver.serve_content(CONTENT):
+    with sftpserver.serve_content(VFS):
         with pysftp.Connection(**conn(sftpserver)) as psftp:
             with pytest.raises(IOError):
                 psftp.chdir('i-dont-exist')

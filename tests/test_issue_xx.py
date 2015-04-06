@@ -39,4 +39,3 @@ def test_issue_xx_local_sftpserver(lsftp):
     # now we make our assertions
     assert pubdir       # test the assertions AFTER we cleanup
     assert homedir
-

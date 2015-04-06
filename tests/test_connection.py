@@ -7,7 +7,7 @@ from common import *
 
 def test_connection_with(sftpserver):
     '''connect to a public sftp server'''
-    with sftpserver.serve_content(CONTENT):
+    with sftpserver.serve_content(VFS):
         with pysftp.Connection(**conn(sftpserver)) as psftp:
             assert psftp.listdir() == ['pub', 'read.me']
 
@@ -33,6 +33,6 @@ def test_connection_bad_credentials(lsftp):
 
 def test_connection_good(sftpserver):
     '''connect to a public sftp server'''
-    with sftpserver.serve_content(CONTENT):
+    with sftpserver.serve_content(VFS):
         sftp = pysftp.Connection(**conn(sftpserver))
         sftp.close()
