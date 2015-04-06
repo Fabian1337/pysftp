@@ -3,7 +3,7 @@
 from __future__ import print_function
 
 # pylint: disable = W0142
-from common import VFS, conn, pysftp
+from common import VFS, conn, pysftp, skip_if_ci
 
 
 # this is the preferred test type as it can be run on the CI server and
@@ -21,6 +21,7 @@ def test_issue_xx_sftpserver_plugin(sftpserver):
             assert home == sftp.pwd
 
 
+@skip_if_ci     # required when using the local sftp server - lsftp
 def test_issue_xx_local_sftpserver(lsftp):
     '''same as test_issue_xx_sftpserver_plugin but written with the local
     sfptserver mechanism, lsftp'''
