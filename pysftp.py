@@ -586,8 +586,8 @@ class Connection(object):
         :returns: None
         :raises: IOError, if remote path doesn't exist
         """
+        original_path = self.pwd
         try:
-            original_path = self.pwd
             if remotepath is not None:
                 self.cwd(remotepath)
             yield
