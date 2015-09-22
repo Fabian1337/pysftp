@@ -2,7 +2,7 @@ Change Log
 ----------
 
 
-* 0.2.9 (dev)
+* 0.2.9 (current, released 2015-09-23)
 
   * added support for enabling compression, ``compression`` (J. Kruth)
   * added :attr:`.active_compression`, to return the active local and remote compression settings as a tuple
@@ -11,7 +11,7 @@ Change Log
   * modified :meth:`pysftp.Conection.walktree` to always use posixpath conventions when walking a remote directory per the latest draft-ietf-secsh-filexfer-13.txt. Issue encountered with windows clients (#60)
   * modified :func:`pysftp.reparent` to handle mis-matched pathing, i.e. windows -> posix, better (#61)
 
-* 0.2.8 (current, released 2014-05-28)
+* 0.2.8 (released 2014-05-28)
 
   * created :func:`pysftp.walktree` for walking local directories
   * added param recurse to :meth:`.pysftp.Connection.walktree` to allow it to do another trick
