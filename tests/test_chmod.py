@@ -7,7 +7,7 @@ from common import *
 import pytest
 
 
-def test_chmod_not_exist1(sftpserver):
+def test_chmod_not_exist(sftpserver):
     '''verify error if trying to chmod something that isn't there'''
     with sftpserver.serve_content(VFS):
         with pysftp.Connection(**conn(sftpserver)) as psftp:
