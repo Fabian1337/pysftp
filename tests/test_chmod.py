@@ -7,11 +7,12 @@ from common import *
 import pytest
 
 
-@skip_if_ci
-def test_chmod_not_exist(lsftp):
+def test_chmod_not_exist1(sftpserver):
     '''verify error if trying to chmod something that isn't there'''
-    with pytest.raises(IOError):
-        lsftp.chmod('i-do-not-exist.txt', 666)
+    with sftpserver.serve_content(VFS):
+        with pysftp.Connection(**conn(sftpserver)) as psftp:
+            with pytest.raises(IOError):
+                psftp.chmod('i-do-not-exist.txt', 666)
 
 
 @skip_if_ci
