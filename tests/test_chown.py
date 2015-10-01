@@ -1,8 +1,10 @@
 '''test pysftp.Connection.chown - uses py.test'''
+import os
 
-# pylint: disable = W0142
-# pylint: disable=E1101
-from common import *
+from dhp.test import tempfile_containing
+import pytest
+
+from common import skip_if_ci
 
 
 @skip_if_ci

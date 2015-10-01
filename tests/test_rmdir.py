@@ -1,8 +1,6 @@
 '''test pysftp.Connection.rmdir - uses py.test'''
 
-# pylint: disable = W0142
-# pylint: disable=E1101
-from common import *
+from common import skip_if_ci
 
 
 @skip_if_ci

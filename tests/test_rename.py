@@ -1,8 +1,10 @@
 '''test pysftp.Connection.rename - uses py.test'''
 
-# pylint: disable = W0142
-# pylint: disable=E1101
-from common import *
+import os
+
+from dhp.test import tempfile_containing
+
+from common import skip_if_ci
 
 
 @skip_if_ci

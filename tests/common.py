@@ -1,17 +1,9 @@
 '''common setup code for tests'''
 
-# the following 3 lines let py.test find the module
 import os
-import sys
 import warnings
 
-from dhp.test import tempfile_containing
 import pytest
-
-MYPATH = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, MYPATH + '/../')
-
-import pysftp       # noqa
 
 
 # pytest-sftpserver plugin information

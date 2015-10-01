@@ -1,10 +1,14 @@
 '''test pysftp.Connection.put - uses py.test'''
 
-# pylint: disable = W0142
-# pylint: disable=E1101
-from common import *
-from mock import Mock
+import os
 from time import sleep
+
+from dhp.test import tempfile_containing
+from mock import Mock
+import pytest
+
+from common import VFS, conn, skip_if_ci, stars8192
+import pysftp
 
 
 @skip_if_ci

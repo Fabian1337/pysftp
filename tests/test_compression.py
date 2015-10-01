@@ -3,8 +3,8 @@ from __future__ import print_function
 # these can not use fixtures as we need to set compression prior to the
 # connection being made and fixtures are already active connections.
 
-# pylint: disable = W0142
-from common import *
+from common import skip_if_ci, SFTP_LOCAL
+import pysftp
 
 
 @skip_if_ci

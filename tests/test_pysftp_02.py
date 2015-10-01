@@ -1,9 +1,13 @@
 '''test pysftp module - set 2 - uses py.test'''
 # psftp and lsftp fixtures are from conftest.py
-# pylint: disable = W0142
-# pylint: disable=E1101
-from common import *
+
+import os
 from stat import S_ISLNK
+
+from dhp.test import tempfile_containing
+
+from common import skip_if_ci, VFS, conn
+import pysftp
 
 
 @skip_if_ci

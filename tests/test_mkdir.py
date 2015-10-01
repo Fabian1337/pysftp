@@ -1,8 +1,7 @@
 '''test pysftp.Connection.mkdir - uses py.test'''
 
-# pylint: disable = W0142
-# pylint: disable=E1101
-from common import *
+from common import VFS, conn, skip_if_ci
+import pysftp
 
 
 @skip_if_ci

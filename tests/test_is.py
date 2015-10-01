@@ -1,8 +1,7 @@
 '''test pysftp.Connection.isX methods - uses py.test'''
 
-# pylint: disable = W0142
-# pylint: disable=E1101
-from common import *
+from common import VFS, conn
+import pysftp
 
 
 def test_isfile(sftpserver):

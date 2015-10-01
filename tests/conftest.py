@@ -1,6 +1,8 @@
 '''session level fixtures'''
-from common import *
 import pytest
+
+from common import SFTP_LOCAL
+import pysftp
 
 
 @pytest.fixture(scope="session")

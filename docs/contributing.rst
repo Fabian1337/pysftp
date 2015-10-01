@@ -11,7 +11,11 @@ Code
 
 1.  Fork the repository on `Bitbucket <https://bitbucket.org/dundeemt/pysftp>`_ .
 
-2.  Make a virtualenv, clone the repos, install the deps from `pip install -r requirements-dev.txt`
+2.  Install supporting software packages and pysftp in --editable mode
+
+    a.  Make a virtualenv, clone the repos, install the deps from `pip install -r requirements-dev.txt`
+
+    b.  Install pysftp in editable mode, `pip install -e .`
 
 3.  Write any new tests needed and ensure existing tests continue to pass without modification.
 

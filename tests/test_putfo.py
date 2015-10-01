@@ -1,10 +1,11 @@
 '''test pysftp.Connection.putfo - uses py.test'''
 
-# pylint: disable = W0142
-# pylint: disable=E1101
-from common import *
 from io import BytesIO
+
 from mock import Mock, call
+import pytest
+
+from common import skip_if_ci
 
 
 @skip_if_ci

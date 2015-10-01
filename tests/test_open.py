@@ -1,7 +1,7 @@
 '''test pysftp.Connection.open - uses py.test'''
 
-# pylint: disable = W0142
-from common import *
+from common import VFS, conn
+import pysftp
 
 
 def test_open_read(sftpserver):

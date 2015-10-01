@@ -1,9 +1,12 @@
 '''test pysftp.Connection.get_d - uses py.test'''
 
-# pylint: disable = W0142
-from common import *
+import os
+
 from tempfile import mkdtemp
 import shutil
+
+from common import VFS, conn
+import pysftp
 
 
 def test_get_d(sftpserver):

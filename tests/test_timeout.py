@@ -1,7 +1,6 @@
 '''test pysftp.Connection.timeout - uses py.test'''
 
-# pylint: disable = W0142
-from common import *
+from common import skip_if_ci
 
 
 @skip_if_ci

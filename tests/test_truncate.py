@@ -1,12 +1,12 @@
 '''test pysftp.Connection.listdir - uses py.test'''
 
-# pylint: disable = W0142
-# pylint: disable=E1101
-from common import *
 from io import BytesIO
+
+from common import skip_if_ci, stars8192
 
 
 def makeflo():
+    '''return a proper bytesIO object based on version of py'''
     try:
         flo = BytesIO(stars8192)
     except TypeError:

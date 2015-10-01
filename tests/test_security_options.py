@@ -1,8 +1,7 @@
 '''test pysftp.Connection compression param - uses py.test'''
 from __future__ import print_function
 
-# pylint: disable = W0142
-from common import *
+from common import skip_if_ci
 
 
 @skip_if_ci

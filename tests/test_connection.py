@@ -1,8 +1,8 @@
 '''test pysftp.Connection - uses py.test'''
+import pytest
 
-# pylint: disable = W0142
-# pylint: disable=E1101
-from common import *
+from common import VFS, conn, skip_if_ci, SFTP_LOCAL
+import pysftp
 
 
 def test_connection_with(sftpserver):
@@ -22,7 +22,7 @@ def test_connection_bad_host():
 
 
 @skip_if_ci
-def test_connection_bad_credentials(lsftp):
+def test_connection_bad_credentials():
     '''attempt connection to a non-existing server'''
     copts = SFTP_LOCAL.copy()
     copts['password'] = 'badword'

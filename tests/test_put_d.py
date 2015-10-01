@@ -1,13 +1,16 @@
 '''test pysftp.Connection.put_d - uses py.test'''
 from __future__ import print_function
 
-# pylint: disable = W0142
-from common import *
-from pysftp import walktree, reparent
-from blddirs import build_dir_struct
-
-from tempfile import mkdtemp
+import os
 import shutil
+from tempfile import mkdtemp
+
+import pytest
+
+from blddirs import build_dir_struct
+from common import skip_if_ci
+from pysftp import walktree, reparent
+import pysftp
 
 
 @skip_if_ci

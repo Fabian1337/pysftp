@@ -1,8 +1,9 @@
 '''test pysftp.Connection.chdir - uses py.test'''
 
-# pylint: disable = W0142
-# pylint: disable=E1101
-from common import *
+import pytest
+
+from common import VFS, conn
+import pysftp
 
 
 def test_chdir_bad_dir(sftpserver):

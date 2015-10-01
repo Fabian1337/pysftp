@@ -1,8 +1,11 @@
 '''test pysftp.Connection.cd - uses py.test'''
 from __future__ import print_function
+import os
 
-# pylint: disable = W0142
-from common import *
+import pytest
+
+from common import VFS, conn
+import pysftp
 
 
 def test_cd_none(sftpserver):

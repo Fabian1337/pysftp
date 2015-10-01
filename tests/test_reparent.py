@@ -1,7 +1,7 @@
 '''test pysftp.reparent(newparent, oldpath) - uses py.test'''
 
-# pylint: disable = W0142
-from common import *
+import os
+
 from pysftp import reparent
 
 

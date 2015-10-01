@@ -2,8 +2,8 @@
 
 from __future__ import print_function
 
-# pylint: disable = W0142
-from common import VFS, conn, pysftp, skip_if_ci
+from common import VFS, conn, skip_if_ci
+import pysftp
 
 
 # this is the preferred test type as it can be run on the CI server and

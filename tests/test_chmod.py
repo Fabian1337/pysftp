@@ -1,10 +1,12 @@
 '''test pysftp.Connection.chmod - uses py.test'''
 from __future__ import print_function
+import os
 
-# pylint: disable = W0142
-# pylint: disable=E1101
-from common import *
+from dhp.test import tempfile_containing
 import pytest
+
+from common import VFS, conn, skip_if_ci
+import pysftp
 
 
 def test_chmod_not_exist(sftpserver):

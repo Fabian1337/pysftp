@@ -1,9 +1,11 @@
 '''test pysftp.Connection.walktree and pysftp.walktree - uses py.test'''
 from __future__ import print_function
 
-# pylint: disable = W0142
-from common import *
 from mock import Mock, call
+import pytest
+
+from common import VFS, conn
+import pysftp
 
 
 def test_walktree_cbclass(sftpserver):

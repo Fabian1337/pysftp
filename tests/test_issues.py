@@ -1,13 +1,14 @@
 '''test issues raised here if they don't fit else where - uses py.test'''
+from __future__ import print_function
 
-# pylint: disable = W0142
-# pylint: disable=E1101
+import os
 from tempfile import mkdtemp
 import shutil
 
-from common import *
+from common import skip_if_ci, VFS, conn
 from blddirs import build_dir_struct
 from pysftp import reparent
+import pysftp
 
 
 @skip_if_ci

@@ -1,10 +1,10 @@
 '''test pysftp.Connection.getfo - uses py.test'''
 
-# pylint: disable = W0142
-# pylint: disable=E1101
-from common import *
 from io import BytesIO
 from mock import Mock
+
+from common import VFS, conn
+import pysftp
 
 
 def test_getfo_flo(sftpserver):
