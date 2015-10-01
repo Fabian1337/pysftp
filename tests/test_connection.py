@@ -1,4 +1,5 @@
 '''test pysftp.Connection - uses py.test'''
+# pylint: disable=W0142
 import pytest
 
 from common import VFS, conn, skip_if_ci, SFTP_LOCAL
@@ -28,7 +29,7 @@ def test_connection_bad_credentials():
     copts['password'] = 'badword'
     with pytest.raises(pysftp.SSHException):
         with pysftp.Connection(**copts) as sftp:
-            pass
+            sftp.listdir()
 
 
 def test_connection_good(sftpserver):

@@ -31,11 +31,9 @@ def test_issue_67(sftpserver):
 def test_issue_63(lsftp):
     '''put_r-fails-when-overwriting-directory'''
     localpath = mkdtemp()
-    print(localpath)
     remote_dir = os.path.split(localpath)[1]
     build_dir_struct(localpath)
     localpath = os.path.join(localpath, 'pub')
-    print(localpath)
     # make a tidy place to put them
     lsftp.mkdir(remote_dir)
     # run the op

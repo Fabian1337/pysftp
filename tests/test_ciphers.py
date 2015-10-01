@@ -1,24 +1,27 @@
 '''test pysftp.Connection ciphers param and CnOpts.ciphers - uses py.test'''
+# pylint: disable=W0142
 from __future__ import print_function
 
 # these can not use fixtures as we need to set ciphers prior to the connection
 # being made and fixtures are already active connections.
+import warnings
 
 import pytest
 
-from common import SFTP_LOCAL, skip_if_ci, warnings_as_errors
+from common import SFTP_LOCAL, skip_if_ci
 import pysftp
 
 
 @skip_if_ci
-def test_depr_ciphers_param(warnings_as_errors):
+def test_depr_ciphers_param():
     '''test deprecation warning for Connection cipher parameter'''
+    warnings.simplefilter('always')
     copts = SFTP_LOCAL.copy()
     copts['ciphers'] = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc',
                         'arcfour256')
-    with pytest.raises(DeprecationWarning):
+    with pytest.warns(DeprecationWarning):
         with pysftp.Connection(**copts) as sftp:
-            pass
+            sftp.listdir()
 
 
 @skip_if_ci

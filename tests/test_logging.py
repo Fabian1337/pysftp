@@ -1,23 +1,24 @@
 '''test pysftp.Connection logging param and CnOpts.log - uses py.test'''
+# pylint: disable=W0142
 from __future__ import print_function
 import os
-# can't use fixtures here, as we need to get .close() to fire to clear the
-# logging handlers while we are testing.
+import warnings
 
 import pytest
 
-from common import VFS, conn, warnings_as_errors
+from common import VFS, conn
 import pysftp
 
 
-def test_depr_log_param(warnings_as_errors, sftpserver):
+def test_depr_log_param(sftpserver):
     '''test deprecation warning for Connection log parameter'''
+    warnings.simplefilter('always')
     copts = conn(sftpserver)
     copts['log'] = True
     with sftpserver.serve_content(VFS):
-        with pytest.raises(DeprecationWarning):
+        with pytest.warns(DeprecationWarning):
             with pysftp.Connection(**copts) as sftp:
-                pass
+                sftp.listdir()
 
 
 def test_log_cnopt_user_file(sftpserver):
@@ -29,7 +30,6 @@ def test_log_cnopt_user_file(sftpserver):
     with sftpserver.serve_content(VFS):
         with pysftp.Connection(**copts) as sftp:
             sftp.listdir()
-            print(sftp.logfile, cnopts.log)
             assert sftp.logfile == cnopts.log
             assert os.path.exists(sftp.logfile)
             logfile = sftp.logfile
@@ -43,7 +43,6 @@ def test_log_param_user_file(sftpserver):
     copts['log'] = os.path.expanduser('~/my-logfile.txt')
     with sftpserver.serve_content(VFS):
         with pysftp.Connection(**copts) as sftp:
-            print(sftp.logfile, copts['log'])
             assert sftp.logfile == copts['log']
             assert os.path.exists(sftp.logfile)
             logfile = sftp.logfile
