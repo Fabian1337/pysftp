@@ -7,7 +7,7 @@ from dhp.test import tempfile_containing
 from mock import Mock
 import pytest
 
-from common import VFS, conn, skip_if_ci, stars8192
+from common import VFS, conn, skip_if_ci, STARS8192
 import pysftp
 
 
@@ -82,7 +82,7 @@ def test_put_bad_local(sftpserver):
 @skip_if_ci
 def test_put_preserve_mtime(lsftp):
     '''test that m_time is preserved from local to remote, when put'''
-    with tempfile_containing(contents=stars8192) as fname:
+    with tempfile_containing(contents=STARS8192) as fname:
         base_fname = os.path.split(fname)[1]
         base = os.stat(fname)
         # with pysftp.Connection(**SFTP_LOCAL) as sftp:

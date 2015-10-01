@@ -17,7 +17,7 @@ skip_if_ci = pytest.mark.skipif(os.getenv('CI', '') > '', reason='Not Local')
 # try:
 #     stars8192 = bytes('*'*8192)
 # except TypeError:
-stars8192 = '*'*8192
+STARS8192 = '*'*8192
 
 
 def conn(sftpsrv):

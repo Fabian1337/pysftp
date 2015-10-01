@@ -1,5 +1,5 @@
 '''methods to build a known local directory structure, used in testing'''
-from common import stars8192
+from common import STARS8192
 import os
 # pylint: disable = W0142
 
@@ -21,9 +21,9 @@ def build_dir_struct(local_path):
     for fparts in FILE_LIST:
         with open(os.path.join(local_path, *fparts), 'wb') as fhndl:
             try:
-                fhndl.write(stars8192)
+                fhndl.write(STARS8192)
             except TypeError:
-                fhndl.write(bytes(stars8192, 'UTF-8'))
+                fhndl.write(bytes(STARS8192, 'UTF-8'))
 
 
 def remove_dir_struct(local_path):

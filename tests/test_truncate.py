@@ -2,15 +2,15 @@
 
 from io import BytesIO
 
-from common import skip_if_ci, stars8192
+from common import skip_if_ci, STARS8192
 
 
 def makeflo():
     '''return a proper bytesIO object based on version of py'''
     try:
-        flo = BytesIO(stars8192)
+        flo = BytesIO(STARS8192)
     except TypeError:
-        flo = BytesIO(bytes(stars8192, 'UTF-8'))
+        flo = BytesIO(bytes(STARS8192, 'UTF-8'))
     return flo
 
 
