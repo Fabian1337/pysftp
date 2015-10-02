@@ -8,12 +8,12 @@ from tempfile import mkdtemp
 import pytest
 
 from blddirs import build_dir_struct
-from common import skip_if_ci
+from common import SKIP_IF_CI
 from pysftp import walktree, reparent
 import pysftp
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_put_r(lsftp):
     '''test put_r'''
     localpath = mkdtemp()
@@ -72,7 +72,7 @@ def test_put_r(lsftp):
 #         psftp.put_r('.', '.')
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_put_r_bad_local(lsftp):
     '''test put_r failure on non-existing local directory'''
     # run the op

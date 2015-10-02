@@ -4,10 +4,10 @@ import os
 
 from dhp.test import tempfile_containing
 
-from common import skip_if_ci
+from common import SKIP_IF_CI
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_rename(lsftp):
     '''test rename on remote'''
     contents = 'now is the time\nfor all good...'

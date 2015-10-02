@@ -5,13 +5,13 @@ import os
 from tempfile import mkdtemp
 import shutil
 
-from common import skip_if_ci, VFS, conn
+from common import SKIP_IF_CI, VFS, conn
 from blddirs import build_dir_struct
 from pysftp import reparent
 import pysftp
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_issue_15(lsftp):
     '''chdir followed by execute doesn't occur in expected directory.'''
     hresults = lsftp.execute('pwd')
@@ -27,7 +27,7 @@ def test_issue_67(sftpserver):
             assert sftp.isdir('pub')
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_issue_63(lsftp):
     '''put_r-fails-when-overwriting-directory'''
     localpath = mkdtemp()

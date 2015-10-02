@@ -7,11 +7,11 @@ from dhp.test import tempfile_containing
 from mock import Mock
 import pytest
 
-from common import VFS, conn, skip_if_ci, STARS8192
+from common import VFS, conn, SKIP_IF_CI, STARS8192
 import pysftp
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_put_callback(lsftp):
     '''test the callback feature of put'''
     cback = Mock(return_value=None)
@@ -25,7 +25,7 @@ def test_put_callback(lsftp):
     assert cback.call_count >= 2
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_put_confirm(lsftp):
     '''test the confirm feature of put'''
     with tempfile_containing(contents=8192*'*') as fname:
@@ -42,7 +42,7 @@ def test_put_confirm(lsftp):
     assert result.st_mtime
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_put(lsftp):
     '''run test on localhost'''
     contents = 'now is the time\nfor all good...'
@@ -79,7 +79,7 @@ def test_put_bad_local(sftpserver):
 #             psftp.put(fname)
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_put_preserve_mtime(lsftp):
     '''test that m_time is preserved from local to remote, when put'''
     with tempfile_containing(contents=STARS8192) as fname:

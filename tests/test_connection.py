@@ -2,7 +2,7 @@
 # pylint: disable=W0142
 import pytest
 
-from common import VFS, conn, skip_if_ci, SFTP_LOCAL
+from common import VFS, conn, SKIP_IF_CI, SFTP_LOCAL
 import pysftp
 
 
@@ -22,7 +22,7 @@ def test_connection_bad_host():
         sftp.close()
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_connection_bad_credentials():
     '''attempt connection to a non-existing server'''
     copts = SFTP_LOCAL.copy()

@@ -1,7 +1,7 @@
 '''test pysftp.Connection.execute - uses py.test'''
 
 
-from common import skip_if_ci
+from common import SKIP_IF_CI
 from dhp.VI import py_ver
 
 
@@ -12,7 +12,7 @@ from dhp.VI import py_ver
 #     assert psftp.execute('ls') == results
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_execute_simple(lsftp):
     '''test execute simple'''
     if py_ver() == 2:

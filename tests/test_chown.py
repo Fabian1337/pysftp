@@ -4,10 +4,10 @@ import os
 from dhp.test import tempfile_containing
 import pytest
 
-from common import skip_if_ci
+from common import SKIP_IF_CI
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_chown_uid(lsftp):
     '''test changing just the uid'''
     with tempfile_containing('contents') as fname:
@@ -21,7 +21,7 @@ def test_chown_uid(lsftp):
     assert new_attrs.st_gid == org_attrs.st_gid  # confirm no change to gid
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_chown_gid(lsftp):
     '''test changing just the gid'''
     with tempfile_containing('contents') as fname:
@@ -35,7 +35,7 @@ def test_chown_gid(lsftp):
     assert new_attrs.st_uid == org_attrs.st_uid  # confirm no change to uid
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_chown_none(lsftp):
     '''call .chown with no gid or uid specified'''
     with tempfile_containing('contents') as fname:
@@ -48,7 +48,7 @@ def test_chown_none(lsftp):
     assert new_attrs.st_uid == org_attrs.st_uid  # confirm no change to uid
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_chown_not_exist(lsftp):
     '''call .chown on a non-existing path'''
     with pytest.raises(IOError):

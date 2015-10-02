@@ -6,11 +6,11 @@ from stat import S_ISLNK
 
 from dhp.test import tempfile_containing
 
-from common import skip_if_ci, VFS, conn
+from common import SKIP_IF_CI, VFS, conn
 import pysftp
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_sftp_client(lsftp):
     '''test for access to the underlying, active sftpclient'''
     # with pysftp.Connection(**SFTP_PUBLIC) as sftp:
@@ -44,7 +44,7 @@ def test_path_advance():
                                               '/foo/bar/baz']
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_makedirs(lsftp):
     '''test makedirs simple, testing 2 things, oh well'''
     rdir = 'foo/bar/baz'
@@ -68,7 +68,7 @@ def test_makedirs(lsftp):
 #     assert psftp.lexists(rsym)
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_symlink(lsftp):
     '''test symlink creation'''
     rdest = '/home/test/honey-boo-boo'
@@ -93,7 +93,7 @@ def test_exists(sftpserver):
             assert sftp.exists('pub')
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_lexists(lsftp):
     '''test .lexists() functionality'''
     with tempfile_containing(contents='yup') as fname:

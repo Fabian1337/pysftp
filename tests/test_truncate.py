@@ -2,7 +2,7 @@
 
 from io import BytesIO
 
-from common import skip_if_ci, STARS8192
+from common import SKIP_IF_CI, STARS8192
 
 
 def makeflo():
@@ -14,7 +14,7 @@ def makeflo():
     return flo
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_truncate_smaller(lsftp):
     '''test truncate, make file smaller'''
     flo = makeflo()
@@ -29,7 +29,7 @@ def test_truncate_smaller(lsftp):
     lsftp.remove(rname)
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_truncate_larger(lsftp):
     '''test truncate, make file larger'''
     flo = makeflo()
@@ -44,7 +44,7 @@ def test_truncate_larger(lsftp):
     lsftp.remove(rname)
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_truncate_same(lsftp):
     '''test truncate, make file same size'''
     flo = makeflo()

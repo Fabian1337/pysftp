@@ -1,6 +1,6 @@
 '''test pysftp.Connection.stat and .lstat - uses py.test'''
 
-from common import VFS, conn, skip_if_ci
+from common import VFS, conn, SKIP_IF_CI
 import pysftp
 
 
@@ -13,7 +13,7 @@ def test_stat(sftpserver):
             assert rslt.st_size >= 0
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_lstat(lsftp):
     '''test lstat  minimal, have to use real server, plugin doesn't support
     lstat'''

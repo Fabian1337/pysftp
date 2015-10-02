@@ -8,11 +8,11 @@ import warnings
 
 import pytest
 
-from common import SFTP_LOCAL, skip_if_ci
+from common import SFTP_LOCAL, SKIP_IF_CI
 import pysftp
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_depr_ciphers_param():
     '''test deprecation warning for Connection cipher parameter'''
     warnings.simplefilter('always')
@@ -24,7 +24,7 @@ def test_depr_ciphers_param():
             sftp.listdir()
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_connection_ciphers_param():
     '''test the ciphers parameter portion of the Connection'''
     ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')
@@ -36,7 +36,7 @@ def test_connection_ciphers_param():
         assert len(rslt) > 1
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_connection_ciphers_cnopts():
     '''test the CnOpts.ciphers portion of the Connection'''
     ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')
@@ -50,7 +50,7 @@ def test_connection_ciphers_cnopts():
         assert len(rslt) > 1
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_active_ciphers():
     '''test that method returns a tuple of strings, that show ciphers used'''
     ciphers = ('aes256-ctr', 'blowfish-cbc', 'aes256-cbc', 'arcfour256')

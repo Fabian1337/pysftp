@@ -1,9 +1,9 @@
 '''test pysftp.Connection.rmdir - uses py.test'''
 
-from common import skip_if_ci
+from common import SKIP_IF_CI
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_rmdir(lsftp):
     '''test mkdir'''
     dirname = 'test-rm'

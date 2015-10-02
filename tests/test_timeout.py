@@ -1,16 +1,16 @@
 '''test pysftp.Connection.timeout - uses py.test'''
 
-from common import skip_if_ci
+from common import SKIP_IF_CI
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_timeout_getter(lsftp):
     '''test getting the timeout value'''
     # always starts at no timeout,
     assert lsftp.timeout is None
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_timeout_setter(lsftp):
     '''test setting the timeout value'''
     lsftp.timeout = 10.5

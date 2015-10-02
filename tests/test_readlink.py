@@ -1,11 +1,11 @@
 '''test pysftp.Connection.readlink - uses py.test'''
 from __future__ import print_function
 
-from common import skip_if_ci
+from common import SKIP_IF_CI
 from io import BytesIO
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_readlink(lsftp):
     '''test the readlink method'''
     rfile = 'readme.txt'

@@ -5,10 +5,10 @@ import os
 from dhp.test import tempfile_containing
 import pytest
 
-from common import skip_if_ci
+from common import SKIP_IF_CI
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_remove(lsftp):
     '''test the remove method'''
     with tempfile_containing('*' * 8192) as fname:
@@ -23,7 +23,7 @@ def test_remove(lsftp):
     assert not_there
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_unlink(lsftp):
     '''test the unlink function'''
     with tempfile_containing('*' * 8192) as fname:
@@ -46,7 +46,7 @@ def test_unlink(lsftp):
 #         psftp.remove('readme.txt')
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_remove_does_not_exist(lsftp):
     '''test remove against a non-existant file'''
     lsftp.chdir('/home/test')

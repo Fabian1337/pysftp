@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 
-from common import VFS, conn, skip_if_ci
+from common import VFS, conn, SKIP_IF_CI
 import pysftp
 
 
@@ -21,7 +21,7 @@ def test_issue_xx_sftpserver_plugin(sftpserver):
             assert home == sftp.pwd
 
 
-@skip_if_ci     # required when using the local sftp server - lsftp
+@SKIP_IF_CI     # required when using the local sftp server - lsftp
 def test_issue_xx_local_sftpserver(lsftp):
     '''same as test_issue_xx_sftpserver_plugin but written with the local
     sfptserver mechanism, lsftp'''

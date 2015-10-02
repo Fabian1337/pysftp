@@ -13,7 +13,7 @@ SFTP_LOCAL = {'host': 'localhost', 'username': 'test', 'password': 'test1357'}
 # can only reach public, read-only server from CI platform, only test locally
 # if environment variable CI is set  to something to disable local tests
 # the CI env var is set to true by both drone-io and travis
-skip_if_ci = pytest.mark.skipif(os.getenv('CI', '') > '', reason='Not Local')
+SKIP_IF_CI = pytest.mark.skipif(os.getenv('CI', '') > '', reason='Not Local')
 # try:
 #     stars8192 = bytes('*'*8192)
 # except TypeError:

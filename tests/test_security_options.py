@@ -1,10 +1,10 @@
 '''test pysftp.Connection compression param - uses py.test'''
 from __future__ import print_function
 
-from common import skip_if_ci
+from common import SKIP_IF_CI
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_security_options(lsftp):
     '''test the security_options property has expected attributes and that
     they are tuples'''

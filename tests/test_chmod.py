@@ -5,7 +5,7 @@ import os
 from dhp.test import tempfile_containing
 import pytest
 
-from common import VFS, conn, skip_if_ci
+from common import VFS, conn, SKIP_IF_CI
 import pysftp
 
 
@@ -17,7 +17,7 @@ def test_chmod_not_exist(sftpserver):
                 psftp.chmod('i-do-not-exist.txt', 666)
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_chmod_simple(lsftp):
     '''test basic chmod with octal mode represented by an int'''
     new_mode = 744      # user=rwx g=r o=r

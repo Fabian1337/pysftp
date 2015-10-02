@@ -1,10 +1,10 @@
 '''test pysftp.Connection.mkdir - uses py.test'''
 
-from common import VFS, conn, skip_if_ci
+from common import VFS, conn, SKIP_IF_CI
 import pysftp
 
 
-@skip_if_ci
+@SKIP_IF_CI
 def test_mkdir_mode(lsftp):
     '''test mkdir with mode set to 711'''
     dirname = 'test-dir'
