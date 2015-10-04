@@ -221,8 +221,11 @@ class Connection(object):
 
         self._sftp_live = False
         self._sftp = None
-        if not username:
-            username = os.environ['LOGNAME']
+        if username is None:
+            username = os.environ.get('LOGNAME', None)
+            if username is None:
+                raise CredentialException('No username specified.')
+        self._username = username
 
         self._logfile = self._cnopts.log
         if self._cnopts.log:
@@ -261,8 +264,7 @@ class Connection(object):
                 elif os.path.exists(os.path.expanduser('~/.ssh/id_dsa')):
                     private_key = '~/.ssh/id_dsa'
                 else:
-                    raise CredentialException("You have not specified a "
-                                              "password or key.")
+                    raise CredentialException("No password or key specified.")
 
             isagent = isinstance(private_key, AgentKey)
             isrsakey = isinstance(private_key, paramiko.RSAKey)
