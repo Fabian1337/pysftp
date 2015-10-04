@@ -27,7 +27,8 @@ def test_username_from_environ(sftpserver):
         params = conn(sftpserver)
         del params['username']
         with pysftp.Connection(**params) as sftp:
-            os.environ['LOGNAME'] = hold_logname
+            if hold_logname is not None:
+                os.environ['LOGNAME'] = hold_logname
             assert sftp._username == username
 
 
@@ -40,4 +41,5 @@ def test_no_username_raises_err(sftpserver):
         del params['username']
         with pytest.raises(pysftp.CredentialException):
             pysftp.Connection(**params)
-    os.environ['LOGNAME'] = hold_logname
+    if hold_logname is not None:
+        os.environ['LOGNAME'] = hold_logname
