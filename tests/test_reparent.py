@@ -13,14 +13,14 @@ def test_reparent_dotted():
 
 
 def test_reparent_with_ending_slash():
-    '''test the reparent if oldpath beings with '.' '''
+    '''test the reparent if newparent ends with a slash '''
     newparent = '/tmp/fuzzy/'
     oldpath = '.'
     assert reparent(newparent, oldpath) == os.path.join(newparent, oldpath)
 
 
 def test_reparent_root():
-    '''test the reparent if oldpath beings with '.' '''
+    '''test the reparent to a root path'''
     newparent = '/tmp/fuzzy'
     oldpath = '/pub'
     assert reparent(newparent, oldpath) == os.path.join(newparent,
