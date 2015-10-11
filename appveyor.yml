@@ -48,7 +48,7 @@ environment:
 
 install:
   # uncomment the following if you need to see what is there in the environment
-  - ECHO "CI: %CI%"
+  - ECHO "CI: \%CI\%"
   # - ECHO "Filesystem root:"
   # - ps: "ls \"C:/\""
 
