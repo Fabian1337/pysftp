@@ -1,8 +1,9 @@
 '''test pysftp.Connection.readlink - uses py.test'''
 from __future__ import print_function
 
-from common import SKIP_IF_CI
 from io import BytesIO
+
+from common import SKIP_IF_CI
 
 
 @SKIP_IF_CI
@@ -17,6 +18,8 @@ def test_readlink(lsftp):
     lsftp.putfo(flo, rfile)
     lsftp.symlink(rfile, rlink)
 
-    assert lsftp.readlink(rlink) == '/home/test/readme.txt'
+    result = lsftp.readlink(rlink).endswith('/home/test/readme.txt')
     lsftp.remove(rlink)
     lsftp.remove(rfile)
+    # test assert after cleanup
+    assert result

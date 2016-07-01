@@ -33,7 +33,8 @@ def test_issue_xx_local_sftpserver(lsftp):
     with lsftp.cd():
         lsftp.chdir('pub')
         # don't throw an assert until after cleanup, just save result for later
-        pubdir = lsftp.pwd == '/home/test/pub'
+        print(lsftp.pwd)
+        pubdir = lsftp.pwd.endswith('/home/test/pub')
     homedir = home == lsftp.pwd
     # cleanup the remote directory back to pristine (empty)
     lsftp.rmdir('pub')  # clean up remote dir back to pristine
