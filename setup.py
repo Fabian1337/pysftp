@@ -20,7 +20,7 @@ setup(
     name="pysftp",
     version="0.2.9",
 
-    packages=['pysftp'],
+    packages=['pysftp', ],
 
     # Project uses reStructuredText, so ensure that the docutils get
     # installed or upgraded on the target machine
