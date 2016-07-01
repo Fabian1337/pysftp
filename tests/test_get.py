@@ -29,8 +29,8 @@ def test_get_callback(sftpserver):
             with tempfile_containing('') as fname:
                 result = psftp.get('foo1.txt', fname, callback=cback)
                 assert open(fname, 'rb').read() == b'content of foo1.txt'
-            # verify callback was called more than once - usually a min of 2
-            assert cback.call_count >= 2
+            # verify callback was called
+            assert cback.call_count
             # unlike .put() nothing is returned from the operation
             assert result is None
 

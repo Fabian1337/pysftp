@@ -21,8 +21,8 @@ def test_put_callback(lsftp):
         lsftp.put(fname, callback=cback)
         # clean up
         lsftp.remove(base_fname)
-    # verify callback was called more than once - usually a min of 2
-    assert cback.call_count >= 2
+    # verify callback was called
+    assert cback.call_count
 
 
 @SKIP_IF_CI

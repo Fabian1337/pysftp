@@ -49,8 +49,8 @@ environment:
 install:
   # uncomment the following if you need to see what is there in the environment
   - ECHO "CI: \%CI\%"
-  # - ECHO "Filesystem root:"
-  # - ps: "ls \"C:/\""
+  - ECHO "Filesystem root:"
+  - ps: "ls \"C:/\""
 
   # - ECHO "Installed SDKs:"
   # - ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""

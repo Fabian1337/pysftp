@@ -20,9 +20,9 @@ def test_putfo_callback_fsize(lsftp):
     cback = Mock(return_value=None)
     lsftp.putfo(flo, rfile, file_size=fsize, callback=cback)
     lsftp.remove(rfile)
-    assert cback.call_count >= 2
+    assert cback.call_count
     # we didn't specify file size, so second arg is 0
-    assert cback.call_args_list == [call(bwrote, fsize), call(bwrote, fsize)]
+    assert cback.call_args_list == [call(bwrote, fsize)]
 
 
 @SKIP_IF_CI
@@ -35,9 +35,9 @@ def test_putfo_callback(lsftp):
     cback = Mock(return_value=None)
     lsftp.putfo(flo, rfile, callback=cback)
     lsftp.remove(rfile)
-    assert cback.call_count >= 2
+    assert cback.call_count
     # we didn't specify file size, so second arg is 0
-    assert cback.call_args_list == [call(len(buf), 0), call(len(buf), 0)]
+    assert cback.call_args_list == [call(len(buf), 0)]
 
 
 @SKIP_IF_CI
