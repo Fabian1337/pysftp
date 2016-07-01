@@ -12,3 +12,5 @@ alabaster
 pygments
 babel
 pytest-sftpserver
+pytest-pep8
+pylint
