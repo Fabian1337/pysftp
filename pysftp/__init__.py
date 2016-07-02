@@ -134,7 +134,7 @@ class WTCallbacks(object):
         self._ulist = val
 
 
-class CnOpts(object):
+class CnOpts(object):   # pylint:disable=r0903
     '''additional connection options beyond authentication
 
     :ivar bool|str log: initial value: False -
@@ -156,7 +156,7 @@ class CnOpts(object):
         self.ciphers = None
 
 
-class Connection(object):
+class Connection(object):   # pylint:disable=r0902,r0904
     """Connects and logs into the specified hostname.
     Arguments that are not given are guessed from the environment.
 
@@ -199,8 +199,7 @@ class Connection(object):
                  ciphers=None,
                  log=False,
                  cnopts=None,
-                 default_path=None
-                 ):
+                 default_path=None):
         if cnopts is None:
             self._cnopts = CnOpts()
         else:
@@ -278,6 +277,7 @@ class Connection(object):
                                                            private_key_pass)
                 except paramiko.SSHException:   # if it fails, try dss
                     dsskey = paramiko.DSSKey
+                    # pylint:disable=r0204
                     prv_key = dsskey.from_private_key_file(private_key_file,
                                                            private_key_pass)
             else:
@@ -579,7 +579,7 @@ class Connection(object):
             return channel.makefile_stderr('rb', -1).readlines()
 
     @contextmanager
-    def cd(self, remotepath=None):
+    def cd(self, remotepath=None):  # pylint:disable=c0103
         """context manager that can change to a optionally specified remote
         directory and restores the old pwd on exit.
 
@@ -1089,6 +1089,11 @@ class Connection(object):
         channel = self._sftp.get_channel()
         channel.settimeout(val)
 
+    @property
+    def remote_server_key(self):
+        '''return the remote server's key'''
+        return self._transport.get_remote_server_key()
+
     def __del__(self):
         """Attempt to clean up if not explicitly closed."""
         self.close()
@@ -1205,7 +1210,7 @@ def walktree(localpath, fcallback, dcallback, ucallback, recurse=True):
 
 
 @contextmanager
-def cd(localpath=None):
+def cd(localpath=None):     # pylint:disable=c0103
     """context manager that can change to a optionally specified local
     directory and restores the old pwd on exit.
 
