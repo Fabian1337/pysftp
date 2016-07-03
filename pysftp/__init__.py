@@ -99,6 +99,7 @@ class Connection(object):   # pylint:disable=r0902,r0904
     :raises SSHException:
     :raises AuthenticationException:
     :raises PasswordRequiredException:
+    :raises HostKeysException:
 
     """
 
@@ -128,19 +129,13 @@ class Connection(object):   # pylint:disable=r0902,r0904
 
         self._sftp_live = False
         self._sftp = None
-        if self._tconnect['username'] is None:
-            self._tconnect['username'] = os.environ.get('LOGNAME', None)
-            if self._tconnect['username'] is None:
-                raise CredentialException('No username specified.')
+        self._set_username()
+        # if self._tconnect['username'] is None:
+        #     self._tconnect['username'] = os.environ.get('LOGNAME', None)
+        #     if self._tconnect['username'] is None:
+        #         raise CredentialException('No username specified.')
 
-        self._logfile = self._cnopts.log
-        if self._cnopts.log:
-            if isinstance(self._cnopts.log, bool):
-                # Log to a temporary file.
-                fhnd, self._logfile = tempfile.mkstemp('.txt', 'ssh-')
-                os.close(fhnd)  # don't want os file descriptors open
-            paramiko.util.log_to_file(self._logfile)
-
+        self._set_logging()
         # Begin the SSH transport.
         self._transport_live = False
         try:
@@ -185,6 +180,23 @@ class Connection(object):   # pylint:disable=r0902,r0904
                         private_key_file, private_key_pass)
             # self._transport.connect(username=username, pkey=prv_key)
         self._transport.connect(**self._tconnect)
+
+    def _set_username(self):
+        '''set the username for the connection. If not passed, then look to the
+        environment.  Still nothing? Throw exception.'''
+        if self._tconnect['username'] is None:
+            self._tconnect['username'] = os.environ.get('LOGNAME', None)
+            if self._tconnect['username'] is None:
+                raise CredentialException('No username specified.')
+
+    def _set_logging(self):
+        '''set logging for connection'''
+        if self._cnopts.log:
+            if isinstance(self._cnopts.log, bool):
+                # Log to a temporary file.
+                fhnd, self._cnopts.log = tempfile.mkstemp('.txt', 'ssh-')
+                os.close(fhnd)  # don't want os file descriptors open
+            paramiko.util.log_to_file(self._cnopts.log)
 
     def _sftp_connect(self):
         """Establish the SFTP connection."""
@@ -966,7 +978,7 @@ class Connection(object):   # pylint:disable=r0902,r0904
         :returns: (str)logfile or (bool) False
 
         '''
-        return self._logfile
+        return self._cnopts.log
 
     @property
     def timeout(self):
