@@ -132,19 +132,8 @@ class Connection(object):   # pylint:disable=r0902,r0904
         self._set_username()
         self._set_logging()
         # Begin the SSH transport.
-        self._transport_live = False
+        self._transport = None
         self._start_transport(host, port)
-        # try:
-        #     self._transport = paramiko.Transport((host, port))
-        #     # Set security ciphers if set
-        #     if self._cnopts.ciphers is not None:
-        #         ciphers = self._cnopts.ciphers
-        #         self._transport.get_security_options().ciphers = ciphers
-        #     self._transport_live = True
-        # except (AttributeError, socket.gaierror):
-        #     # couldn't connect
-        #     raise ConnectionException(host, port)
-
         # Toggle compression
         self._transport.use_compression(self._cnopts.compression)
 
@@ -185,7 +174,6 @@ class Connection(object):   # pylint:disable=r0902,r0904
             if self._cnopts.ciphers is not None:
                 ciphers = self._cnopts.ciphers
                 self._transport.get_security_options().ciphers = ciphers
-            self._transport_live = True
         except (AttributeError, socket.gaierror):
             # couldn't connect
             raise ConnectionException(host, port)
@@ -793,9 +781,9 @@ class Connection(object):   # pylint:disable=r0902,r0904
             self._sftp.close()
             self._sftp_live = False
         # Close the SSH Transport.
-        if self._transport_live:
+        if self._transport:
             self._transport.close()
-            self._transport_live = False
+            self._transport = None
         # clean up any loggers
         if self._cnopts.log:
             # if handlers are active they hang around until the app exits
