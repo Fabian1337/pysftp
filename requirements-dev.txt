@@ -1,6 +1,6 @@
 dhp>=0.0.10
 mock>=1.0.1
-paramiko>=1.14.0
+paramiko>=1.17.0
 pytest>=2.5.2
 Sphinx>=1.2.2
 sphinx_rtd_theme
@@ -15,3 +15,4 @@ babel
 pytest-sftpserver
 pytest-pep8
 pylint
+livereload
