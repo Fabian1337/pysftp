@@ -1,5 +1,5 @@
 '''test username parameter'''
-# pylint: disable=W0142,W0212
+# pylint: disable=W0212
 from __future__ import print_function
 import os
 
@@ -15,7 +15,7 @@ def test_username_specified(sftpserver):
         params = conn(sftpserver)
         params['username'] = 'bob'
         with pysftp.Connection(**params) as sftp:
-            assert sftp._username == params['username']
+            assert sftp._tconnect['username'] == params['username']
 
 
 def test_username_from_environ(sftpserver):
@@ -29,7 +29,7 @@ def test_username_from_environ(sftpserver):
         with pysftp.Connection(**params) as sftp:
             if hold_logname is not None:
                 os.environ['LOGNAME'] = hold_logname
-            assert sftp._username == username
+            assert sftp._tconnect['username'] == username
 
 
 def test_no_username_raises_err(sftpserver):

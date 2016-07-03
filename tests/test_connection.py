@@ -1,5 +1,4 @@
 '''test pysftp.Connection - uses py.test'''
-# pylint: disable=W0142
 import pytest
 
 from common import VFS, conn, SKIP_IF_CI, SFTP_LOCAL
@@ -9,16 +8,19 @@ import pysftp
 def test_connection_with(sftpserver):
     '''connect to a public sftp server'''
     with sftpserver.serve_content(VFS):
-        with pysftp.Connection(**conn(sftpserver)) as psftp:
-            assert psftp.listdir() == ['pub', 'read.me']
+        with pysftp.Connection(**conn(sftpserver)) as sftp:
+            assert sftp.listdir() == ['pub', 'read.me']
 
 
 def test_connection_bad_host():
     '''attempt connection to a non-existing server'''
     with pytest.raises(pysftp.ConnectionException):
+        cnopts = pysftp.CnOpts()
+        cnopts.hostkeys = None
         sftp = pysftp.Connection(host='',
                                  username='demo',
-                                 password='password')
+                                 password='password',
+                                 cnopts=cnopts)
         sftp.close()
 
 

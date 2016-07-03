@@ -25,3 +25,8 @@ class CredentialException(Exception):
         # Call the base class constructor with the parameters it needs
         Exception.__init__(self, message)
         self.message = message
+
+
+class HostKeysException(Exception):
+    '''raised when a problem with HostKeys is encountered'''
+    pass

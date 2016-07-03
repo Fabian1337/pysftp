@@ -7,6 +7,11 @@ import os
 from stat import S_IMODE, S_ISDIR, S_ISREG
 
 
+def known_hosts():
+    '''return a proper path to ssh's known_host file for the user'''
+    return os.path.expanduser(os.path.join('~', '.ssh', 'known_hosts'))
+
+
 def st_mode_to_int(val):
     '''SFTAttributes st_mode returns an stat type that shows more than what
     can be set.  Trim off those bits and convert to an int representation.

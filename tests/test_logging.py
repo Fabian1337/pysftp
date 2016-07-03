@@ -1,5 +1,4 @@
 '''test pysftp.Connection logging param and CnOpts.log - uses py.test'''
-# pylint: disable=W0142
 from __future__ import print_function
 import os
 import warnings
@@ -16,7 +15,7 @@ def test_depr_log_param(sftpserver):
     copts = conn(sftpserver)
     copts['log'] = True
     with sftpserver.serve_content(VFS):
-        with pytest.warns(DeprecationWarning):
+        with pytest.warns(DeprecationWarning):  # pylint:disable=e1101
             with pysftp.Connection(**copts) as sftp:
                 sftp.listdir()
 
@@ -26,6 +25,7 @@ def test_log_cnopt_user_file(sftpserver):
     copts = conn(sftpserver)
     cnopts = pysftp.CnOpts()
     cnopts.log = os.path.expanduser('~/my-logfile1.txt')
+    cnopts.hostkeys.load('sftpserver.pub')
     copts['cnopts'] = cnopts
     with sftpserver.serve_content(VFS):
         with pysftp.Connection(**copts) as sftp:
@@ -61,6 +61,7 @@ def test_log_cnopts_explicit_false(sftpserver):
     '''test .logfile returns false when CnOpts.log is set to false'''
     copts = conn(sftpserver)
     cnopts = pysftp.CnOpts()
+    cnopts.hostkeys.load('sftpserver.pub')
     copts['cnopts'] = cnopts
     with sftpserver.serve_content(VFS):
         with pysftp.Connection(**copts) as sftp:
@@ -86,6 +87,7 @@ def test_log_cnopts_true(sftpserver):
     copts = conn(sftpserver)
     cnopts = pysftp.CnOpts()
     cnopts.log = True
+    cnopts.hostkeys.load('sftpserver.pub')
     copts['cnopts'] = cnopts
     with sftpserver.serve_content(VFS):
         with pysftp.Connection(**copts) as sftp:

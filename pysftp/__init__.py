@@ -10,17 +10,17 @@ import tempfile
 import warnings
 
 import paramiko
-from paramiko import SSHException              # make available
-from paramiko import AuthenticationException   # make available
-from paramiko import AgentKey
+from paramiko import SSHException, AuthenticationException   # make available
+from paramiko import AgentKey, RSAKey, DSSKey
 
-from pysftp.exceptions import CredentialException, ConnectionException
+from pysftp.exceptions import (CredentialException, ConnectionException,
+                               HostKeysException)
 from pysftp.helpers import (st_mode_to_int, WTCallbacks, path_advance,
-                            path_retreat, reparent, walktree, cd)
+                            path_retreat, reparent, walktree, cd, known_hosts)
 
 
 __version__ = "0.2.9"
-# pylint: disable = R0913
+# pylint: disable = R0913,C0302
 
 
 class CnOpts(object):   # pylint:disable=r0903
@@ -35,12 +35,38 @@ class CnOpts(object):   # pylint:disable=r0903
         transport, if set to True.
     :ivar list|None ciphers: initial value: None -
         List of ciphers to use in order.
+    :ivar filepath|None knownhosts: initial value: None - file to load hostkeys
+        from.
 
     '''
-    def __init__(self):
+    def __init__(self, knownhosts=None):
         self.log = False
         self.compression = False
         self.ciphers = None
+        if knownhosts is None:
+            knownhosts = known_hosts()
+        self.hostkeys = paramiko.hostkeys.HostKeys()
+        try:
+            self.hostkeys.load(knownhosts)
+        except IOError:
+            # can't find known_hosts in the standard place
+            wmsg = "Failed to load HostKeys from %s.  " % knownhosts
+            wmsg += "You will need to explicitly load HostKeys "
+            wmsg += "(cnopts.hostkeys.load(filename)) or disable"
+            wmsg += "HostKey checking (cnopts.hostkeys = None)."
+            warnings.warn(wmsg, UserWarning)
+        else:
+            if len(self.hostkeys.items()) == 0:
+                raise HostKeysException('No Host Keys Found')
+
+    def get_hostkey(self, host):
+        '''return the matching hostkey to use for verification for the host
+        indicated or raise an SSHException'''
+        kval = self.hostkeys.lookup(host)  # None|{keytype: PKey}
+        if kval is None:
+            raise SSHException("No hostkey for host %s found." % host)
+        # return the pkey from the dict
+        return list(kval.values())[0]
 
 
 class Connection(object):   # pylint:disable=r0902,r0904
@@ -76,21 +102,13 @@ class Connection(object):   # pylint:disable=r0902,r0904
 
     """
 
-    def __init__(self,
-                 host,
-                 username=None,
-                 private_key=None,
-                 password=None,
-                 port=22,
-                 private_key_pass=None,
-                 ciphers=None,
-                 log=False,
-                 cnopts=None,
-                 default_path=None):
-        if cnopts is None:
-            self._cnopts = CnOpts()
-        else:
-            self._cnopts = cnopts
+    def __init__(self, host, username=None, private_key=None, password=None,
+                 port=22, private_key_pass=None, ciphers=None, log=False,
+                 cnopts=None, default_path=None):
+        # starting point for transport.connect options
+        self._tconnect = {'username': username, 'password': password,
+                          'hostkey': None, 'pkey': None}
+        self._cnopts = cnopts or CnOpts()
         self._default_path = default_path
         # TODO: remove this if block and log param above in v0.3.0
         if log:
@@ -104,14 +122,16 @@ class Connection(object):   # pylint:disable=r0902,r0904
                    "0.3.0. Use cnopts param."
             warnings.warn(wmsg, DeprecationWarning)
             self._cnopts.ciphers = ciphers
+        # check that we have a hostkey to verify
+        if self._cnopts.hostkeys is not None:
+            self._tconnect['hostkey'] = self._cnopts.get_hostkey(host)
 
         self._sftp_live = False
         self._sftp = None
-        if username is None:
-            username = os.environ.get('LOGNAME', None)
-            if username is None:
+        if self._tconnect['username'] is None:
+            self._tconnect['username'] = os.environ.get('LOGNAME', None)
+            if self._tconnect['username'] is None:
                 raise CredentialException('No username specified.')
-        self._username = username
 
         self._logfile = self._cnopts.log
         if self._cnopts.log:
@@ -138,10 +158,7 @@ class Connection(object):   # pylint:disable=r0902,r0904
         self._transport.use_compression(self._cnopts.compression)
 
         # Authenticate the transport. prefer password if given
-        if password is not None:
-            # Using Password.
-            self._transport.connect(username=username, password=password)
-        else:
+        if password is None:
             # Use Private Key.
             if not private_key:
                 # Try to use default key.
@@ -152,25 +169,22 @@ class Connection(object):   # pylint:disable=r0902,r0904
                 else:
                     raise CredentialException("No password or key specified.")
 
-            isagent = isinstance(private_key, AgentKey)
-            isrsakey = isinstance(private_key, paramiko.RSAKey)
-            if not (isagent or isrsakey):
+            if isinstance(private_key, (AgentKey, RSAKey)):
+                # use the paramiko agent or rsa key
+                self._tconnect['pkey'] = private_key
+            else:
                 # isn't a paramiko AgentKey or RSAKey, try to build a
                 # key from what we assume is a path to a key
                 private_key_file = os.path.expanduser(private_key)
                 try:  # try rsa
-                    rsakey = paramiko.RSAKey
-                    prv_key = rsakey.from_private_key_file(private_key_file,
-                                                           private_key_pass)
+                    self._tconnect['pkey'] = RSAKey.from_private_key_file(
+                        private_key_file, private_key_pass)
                 except paramiko.SSHException:   # if it fails, try dss
-                    dsskey = paramiko.DSSKey
                     # pylint:disable=r0204
-                    prv_key = dsskey.from_private_key_file(private_key_file,
-                                                           private_key_pass)
-            else:
-                # use the paramiko agent or rsa key
-                prv_key = private_key
-            self._transport.connect(username=username, pkey=prv_key)
+                    self._tconnect['pkey'] = DSSKey.from_private_key_file(
+                        private_key_file, private_key_pass)
+            # self._transport.connect(username=username, pkey=prv_key)
+        self._transport.connect(**self._tconnect)
 
     def _sftp_connect(self):
         """Establish the SFTP connection."""
