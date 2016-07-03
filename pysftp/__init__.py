@@ -37,8 +37,8 @@ class CnOpts(object):   # pylint:disable=r0903
         List of ciphers to use in order.
     :ivar paramiko.hostkeys.HostKeys|None hostkeys: HostKeys object to use for
         host key checking.
-    :param filepath|None knownhosts: initial value: None - file to load hostkeys
-        from. If not specified, uses ~/.ssh/known_hosts
+    :param filepath|None knownhosts: initial value: None - file to load
+        hostkeys. If not specified, uses ~/.ssh/known_hosts
     :returns: (obj) CnOpts - A connection options object, used for passing
         extended options to the Connection
     :raises HostKeysException:
