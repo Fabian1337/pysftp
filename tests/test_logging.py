@@ -93,7 +93,7 @@ def test_log_cnopts_true(sftpserver):
         with pysftp.Connection(**copts) as sftp:
             assert os.path.exists(sftp.logfile)
             # and we are not writing to a file named 'True'
-            assert sftp.logfile != cnopts.log
+            assert sftp.logfile == cnopts.log
             logfile = sftp.logfile
         # cleanup
         os.unlink(logfile)
