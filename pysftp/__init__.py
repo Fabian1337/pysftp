@@ -134,10 +134,12 @@ class Connection(object):   # pylint:disable=r0902,r0904
         # Begin the SSH transport.
         self._transport = None
         self._start_transport(host, port)
-        # Toggle compression
         self._transport.use_compression(self._cnopts.compression)
+        self._set_authentication(password, private_key, private_key_pass)
+        self._transport.connect(**self._tconnect)
 
-        # Authenticate the transport. prefer password if given
+    def _set_authentication(self, password, private_key, private_key_pass):
+        '''Authenticate the transport. prefer password if given'''
         if password is None:
             # Use Private Key.
             if not private_key:
@@ -163,8 +165,6 @@ class Connection(object):   # pylint:disable=r0902,r0904
                     # pylint:disable=r0204
                     self._tconnect['pkey'] = DSSKey.from_private_key_file(
                         private_key_file, private_key_pass)
-            # self._transport.connect(username=username, pkey=prv_key)
-        self._transport.connect(**self._tconnect)
 
     def _start_transport(self, host, port):
         '''start the transport and set the ciphers if specified.'''
