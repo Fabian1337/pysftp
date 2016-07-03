@@ -130,24 +130,20 @@ class Connection(object):   # pylint:disable=r0902,r0904
         self._sftp_live = False
         self._sftp = None
         self._set_username()
-        # if self._tconnect['username'] is None:
-        #     self._tconnect['username'] = os.environ.get('LOGNAME', None)
-        #     if self._tconnect['username'] is None:
-        #         raise CredentialException('No username specified.')
-
         self._set_logging()
         # Begin the SSH transport.
         self._transport_live = False
-        try:
-            self._transport = paramiko.Transport((host, port))
-            # Set security ciphers if set
-            if self._cnopts.ciphers is not None:
-                ciphers = self._cnopts.ciphers
-                self._transport.get_security_options().ciphers = ciphers
-            self._transport_live = True
-        except (AttributeError, socket.gaierror):
-            # couldn't connect
-            raise ConnectionException(host, port)
+        self._start_transport(host, port)
+        # try:
+        #     self._transport = paramiko.Transport((host, port))
+        #     # Set security ciphers if set
+        #     if self._cnopts.ciphers is not None:
+        #         ciphers = self._cnopts.ciphers
+        #         self._transport.get_security_options().ciphers = ciphers
+        #     self._transport_live = True
+        # except (AttributeError, socket.gaierror):
+        #     # couldn't connect
+        #     raise ConnectionException(host, port)
 
         # Toggle compression
         self._transport.use_compression(self._cnopts.compression)
@@ -180,6 +176,19 @@ class Connection(object):   # pylint:disable=r0902,r0904
                         private_key_file, private_key_pass)
             # self._transport.connect(username=username, pkey=prv_key)
         self._transport.connect(**self._tconnect)
+
+    def _start_transport(self, host, port):
+        '''start the transport and set the ciphers if specified.'''
+        try:
+            self._transport = paramiko.Transport((host, port))
+            # Set security ciphers if set
+            if self._cnopts.ciphers is not None:
+                ciphers = self._cnopts.ciphers
+                self._transport.get_security_options().ciphers = ciphers
+            self._transport_live = True
+        except (AttributeError, socket.gaierror):
+            # couldn't connect
+            raise ConnectionException(host, port)
 
     def _set_username(self):
         '''set the username for the connection. If not passed, then look to the
