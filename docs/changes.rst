@@ -2,8 +2,12 @@ Change Log
 ----------
 
 
-* 0.2.9 (current, released 2015-09-23)
+* 0.2.9 (current, released 2016-07-04)
 
+  * bugfix: correctly implement hostcheck. Now, be default pysftp will verify
+    the host. See :attr:`pysftp.CnOpts.hostkeys`
+  * added :meth:`pysftp.Connection.remote_server_key` - used to retrieve the
+    remote hosts server key. 
   * added support for enabling compression, ``compression`` (J. Kruth)
   * added :attr:`.active_compression`, to return the active local and remote compression settings as a tuple
   * fixed an unwanted logging side-effect, after you set logging, it would remain, even if you closed the .Connection and couldn't be changed to something else. Now when Connection closes, any logging handlers are closed and can be changed to something else upon the next .Connection

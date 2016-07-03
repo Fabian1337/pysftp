@@ -58,6 +58,60 @@ How about a ``paramiko.AgentKey`` ? no problem, just set the private_key equal t
 The connection object also allows you to use an IP Address for the ``host`` and
 you can set the ``port`` which defaults to 22, as well.
 
+:doc:`pysftp.CnOpts`
+-------------------------
+You can also specify additional connection options using the pysftp.CnOpts
+object. These options are advanced and not applicable to most uses, because of
+this they have been segmented from the Connection parameter list and made
+available via CnOpts obj/parameter.
+
+Host Key checking is enabled by default.  It will use ``~/.ssh/known_hosts`` by
+default.  If you wish to disable host key checking (NOT ADVISED) you will need
+to modify the default CnOpts and set the .hostkeys to None.
+
+.. code-block:: python
+
+    import pysftp
+    cnopts = pysftp.CnOpts()
+    cnopts.hostkeys = None
+    with pysftp.Connection('host', username='me', password='pass', cnopts=cnopts):
+        # do stuff here
+
+To use a completely different known_hosts file, you can override CnOpts looking
+for ``~/.ssh/known_hosts`` by specifying the file when instantiating.
+
+.. code-block:: python
+
+    import pysftp
+    cnopts = pysftp.CnOpts(knownhosts='path/to/your/knownhostsfile')
+    cnopts.hostkeys = None
+    with pysftp.Connection('host', username='me', password='pass', cnopts=cnopts):
+        # do stuff here
+
+If you wish to use ``~/.ssh/known_hosts`` but add additional known host keys
+you can merge with update additional known_host format files by using .load
+method.
+
+.. code-block:: python
+
+    import pysftp
+    cnopts = pysftp.CnOpts()
+    cnopts.hostkeys.load('path/to/your/extra_knownhosts')
+    with pysftp.Connection('host', username='me', password='pass', cnopts=cnopts):
+        # do stuff here
+
+For both the knownhost parameter and the load argument, pysftp expands user, so
+you can use tilde notation in your pathing.
+
+OTHER AVAILABLE CONNECTION OPTIONS via CnOpts:
+
+  * .log - replaces the log parameter in the Connection method
+  * .compression - False (Default) no compression, True - enable compression 
+  * .ciphers - replaces the ciphers parameter in the Connection method.
+
+* log and ciphers in the Connection parameter list are deprecated and will be
+  removed in version 0.3.0 Use the CnOpts to specify them.
+
 Here is a common scenario, you have your connection information stored in a
 persistence mechanism, like `yamjam <http://yamjam.rtfd.org/>`_ and when you access
 it, it is returned in dictionary form.  ``{'host':'myhost', username:'me', ...}``
@@ -222,7 +276,7 @@ to do.
     sftp.cwd('public')  # is equivalent to sftp.chdir('public')
 
 :attr:`pysftp.Connection.pwd`
--------------
+-----------------------------
 Returns the current working directory.  It returns the result of
 `.normalize('.')` but makes your code and intention easier to read. Paramiko
 has a method, :meth:`.getcwd()`, that we expose, but that method returns
