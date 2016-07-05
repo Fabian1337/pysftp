@@ -47,7 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'pysftp'
-copyright = u'2014, Jeff Hinrichs'
+copyright = u'2016, Jeff Hinrichs'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
