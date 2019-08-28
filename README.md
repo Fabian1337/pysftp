@@ -19,15 +19,15 @@ Thanks to [Martin Prikryl](https://stackoverflow.com/users/850848/martin-prikryl
 
 `auto_add_key` adds the key to knownhosts if the host key does not exist.
 
-::
 
+```python
     import pysftp
 
     with pysftp.Connection('hostname', username='me', password='secret', auto_add_key=True) as sftp:
         with sftp.cd('public'):             # temporarily chdir to public
             sftp.put('/my/local/filename')  # upload file to public/ on remote
             sftp.get('remote_file')         # get a remote file
-
+```
 
 Supports
 --------
