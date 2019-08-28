@@ -43,10 +43,11 @@ class CnOpts(object):   # pylint:disable=r0903
         extended options to the Connection
     :raises HostKeysException:
     '''
-    def __init__(self, knownhosts=None):
+    def __init__(self, knownhosts=None, auto_add_key=False):
         self.log = False
         self.compression = False
         self.ciphers = None
+        self._auto_add_key = auto_add_key
         if knownhosts is None:
             knownhosts = known_hosts()
         self.hostkeys = paramiko.hostkeys.HostKeys()
@@ -60,18 +61,21 @@ class CnOpts(object):   # pylint:disable=r0903
             wmsg += "HostKey checking (cnopts.hostkeys = None)."
             warnings.warn(wmsg, UserWarning)
         else:
-            if len(self.hostkeys.items()) == 0:
-                raise HostKeysException('No Host Keys Found')
+            if not self._auto_add_key:
+                if len(self.hostkeys.items()) == 0:
+                    raise HostKeysException('No Host Keys Found')
 
     def get_hostkey(self, host):
         '''return the matching hostkey to use for verification for the host
         indicated or raise an SSHException'''
         kval = self.hostkeys.lookup(host)  # None|{keytype: PKey}
         if kval is None:
-            raise SSHException("No hostkey for host %s found." % host)
+            if not self._auto_add_key:
+                raise SSHException("No hostkey for host %s found." % host)
+            else:
+                return None
         # return the pkey from the dict
         return list(kval.values())[0]
-
 
 class Connection(object):   # pylint:disable=r0902,r0904
     """Connects and logs into the specified hostname.
@@ -109,11 +113,13 @@ class Connection(object):   # pylint:disable=r0902,r0904
 
     def __init__(self, host, username=None, private_key=None, password=None,
                  port=22, private_key_pass=None, ciphers=None, log=False,
-                 cnopts=None, default_path=None):
+                 cnopts=None, default_path=None, auto_add_key=False):
         # starting point for transport.connect options
+        self._host = host
+        self._auto_add_key = auto_add_key
         self._tconnect = {'username': username, 'password': password,
                           'hostkey': None, 'pkey': None}
-        self._cnopts = cnopts or CnOpts()
+        self._cnopts = cnopts or CnOpts(auto_add_key=self._auto_add_key)
         self._default_path = default_path
         # TODO: remove this if block and log param above in v0.3.0
         if log:
@@ -203,6 +209,14 @@ class Connection(object):   # pylint:disable=r0902,r0904
         """Establish the SFTP connection."""
         if not self._sftp_live:
             self._sftp = paramiko.SFTPClient.from_transport(self._transport)
+
+
+            if self._auto_add_key == True:
+                hostkeys = self._cnopts.hostkeys
+                self._cnopts.hostkeys = None
+                hostkeys.add(self._host, self.remote_server_key.get_name(), self.remote_server_key)
+                hostkeys.save(known_hosts())
+
             if self._default_path is not None:
                 # print("_default_path: [%s]" % self._default_path)
                 self._sftp.chdir(self._default_path)
