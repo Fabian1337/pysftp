@@ -13,7 +13,7 @@ based on [verify-host-key-with-pysftp](https://stackoverflow.com/questions/38939
 
 >*Do not set cnopts.hostkeys = None (as the most upvoted answer shows), unless you do not care about security. You lose a protection >against Man-in-the-middle attacks by doing so.'*
 
->*Though for an absolute security, you should not retrieve the host key remotely, as you cannot be sure, if you are not being >attacked already.*
+>*Though for an absolute security, you should not retrieve the host key remotely, as you cannot be sure, if you are not being attacked already.*
 
 Thanks to [Martin Prikryl](https://stackoverflow.com/users/850848/martin-prikryl)
 
